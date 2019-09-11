@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "344312103585",
+    "firebase_url": "https://ryelloshopping.firebaseio.com",
+    "project_id": "ryelloshopping",
+    "storage_bucket": "ryelloshopping.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:344312103585:android:beec646d05490794",
+        "android_client_info": {
+          "package_name": "com.reynagagroup.ryelloshopping"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "344312103585-d19ig807k3rko441frckuu1gdveh2i41.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reynagagroup.ryelloshopping",
+            "certificate_hash": "612644f0b25099ce03aa0cee6955f647823c8726"
+          }
+        },
+        {
+          "client_id": "344312103585-n5gr6vu6m7ns0lsb5a6s6avkhirkjeds.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBEGJQjh_xS5saGpqXdmru4uEcch0MAy4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "344312103585-n5gr6vu6m7ns0lsb5a6s6avkhirkjeds.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
