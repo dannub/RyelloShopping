@@ -8,6 +8,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/my_rewards_recycleview"
         android:layout_width="match_parent"
-        android:background="@color/colorAccent"
+        android:background="@color/colorAccent3"
         android:layout_height="match_parent" />
 </FrameLayout>

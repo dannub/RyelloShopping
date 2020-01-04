@@ -10,13 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.model.AddressModel;
 
 import java.util.List;
 
-import static com.reynagagroup.ryelloshopping.DeliveryActivity.SELECT_ADDRESS;
-import static com.reynagagroup.ryelloshopping.MyAddressesActivity.refreshItem;
+import static com.reynagagroup.ryelloshopping.Activity.DeliveryActivity.SELECT_ADDRESS;
+import static com.reynagagroup.ryelloshopping.Activity.MyAddressesActivity.refreshItem;
 import static com.reynagagroup.ryelloshopping.ui.MyAcountFragment.MANAGE_ADDRESS;
 
 public class AddressesAdapter extends RecyclerView.Adapter<AddressesAdapter.Viewholder> {
@@ -28,6 +29,7 @@ public class AddressesAdapter extends RecyclerView.Adapter<AddressesAdapter.View
     public AddressesAdapter(List<AddressModel> addressModelList,int MODE) {
         this.addressModelList = addressModelList;
         this.MODE = MODE;
+        preSelectedPosition = DBqueries.selectedAddress;
     }
 
     @NonNull
@@ -91,6 +93,7 @@ public class AddressesAdapter extends RecyclerView.Adapter<AddressesAdapter.View
                             addressModelList.get(preSelectedPosition).setSelected(false);
                             refreshItem(preSelectedPosition,position);
                             preSelectedPosition =position;
+                            DBqueries.selectedAddress = position;
                         }
 
                     }

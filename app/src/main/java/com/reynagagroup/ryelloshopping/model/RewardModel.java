@@ -1,35 +1,49 @@
 package com.reynagagroup.ryelloshopping.model;
 
+import com.google.firebase.Timestamp;
+
+import java.util.Date;
+
 public class RewardModel {
 
-    private String title;
-    private String expiryDate;
+    private String type;
+    private String lowerLimit;
+    private String upperLimit;
     private String discount;
-    private String CouponBody1;
-    private String CouponBody2;
+    private String CouponBody;
+    private Timestamp validity;
 
-    public RewardModel(String title, String expiryDate, String discount, String couponBody1, String couponBody2) {
-        this.title = title;
-        this.expiryDate = expiryDate;
+    public RewardModel(String type, String lowerLimit, String upperLimit, String discount, String couponBody, Timestamp validity) {
+        this.type = type;
+        this.lowerLimit = lowerLimit;
+        this.upperLimit = upperLimit;
         this.discount = discount;
-        CouponBody1 = couponBody1;
-        CouponBody2 = couponBody2;
+        this.CouponBody = couponBody;
+        this.validity = validity;
     }
 
-    public String getTitle() {
-        return title;
+    public String getType() {
+        return type;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getExpiryDate() {
-        return expiryDate;
+    public String getLowerLimit() {
+        return lowerLimit;
     }
 
-    public void setExpiryDate(String expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setLowerLimit(String lowerLimit) {
+        this.lowerLimit = lowerLimit;
+    }
+
+    public String getUpperLimit() {
+        return upperLimit;
+    }
+
+    public void setUpperLimit(String upperLimit) {
+        this.upperLimit = upperLimit;
     }
 
     public String getDiscount() {
@@ -40,19 +54,20 @@ public class RewardModel {
         this.discount = discount;
     }
 
-    public String getCouponBody1() {
-        return CouponBody1;
+    public String getCouponBody() {
+        return CouponBody;
     }
 
-    public void setCouponBody1(String couponBody1) {
-        CouponBody1 = couponBody1;
+    public void setCouponBody(String couponBody) {
+        this.CouponBody = couponBody;
     }
 
-    public String getCouponBody2() {
-        return CouponBody2;
+
+    public Timestamp getValidity() {
+        return validity;
     }
 
-    public void setCouponBody2(String couponBody2) {
-        CouponBody2 = couponBody2;
+    public void setValidity(Timestamp validity) {
+        this.validity = validity;
     }
 }

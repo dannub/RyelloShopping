@@ -13,7 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.reynagagroup.ryelloshopping.OrderDetailsActivity;
+import com.reynagagroup.ryelloshopping.Activity.OrderDetailsActivity;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.model.MyOrderItemModel;
 

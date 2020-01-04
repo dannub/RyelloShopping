@@ -1,4 +1,4 @@
-package com.reynagagroup.ryelloshopping;
+package com.reynagagroup.ryelloshopping.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.CategoryAdapter;
 import com.reynagagroup.ryelloshopping.adapter.HomePageAdapter;
 import com.reynagagroup.ryelloshopping.model.CategoryModel;

@@ -77,22 +77,13 @@
         android:id="@+id/reward_body1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Diskon hingga Rp10rb"
+        android:text="Diskon hingga Rp10rb\nMin. Blj Rp.300rb"
         android:textColor="@color/colorAccent"
         android:textSize="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/reward_title"
         app:layout_constraintTop_toBottomOf="@+id/reward_title" />
 
-    <TextView
-        android:id="@+id/reward_body2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Min. Blj Rp.300rb"
-        android:textColor="@color/colorAccent"
-        android:textSize="15dp"
-        app:layout_constraintStart_toStartOf="@+id/reward_body1"
-        app:layout_constraintTop_toBottomOf="@+id/reward_body1" />
 
     <TextView
         android:id="@+id/tv_SK"
@@ -110,7 +101,7 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reward_body2" />
+        app:layout_constraintTop_toBottomOf="@+id/reward_body1" />
 
 <!--    <TextView-->
 <!--        android:id="@+id/reward_till_date"-->

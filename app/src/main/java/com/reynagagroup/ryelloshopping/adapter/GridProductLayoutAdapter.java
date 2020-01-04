@@ -2,7 +2,6 @@ package com.reynagagroup.ryelloshopping.adapter;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.reynagagroup.ryelloshopping.ProductDetailActivity;
+import com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.model.HorizontalProductScrollModel;
 
@@ -63,7 +62,7 @@ public class GridProductLayoutAdapter extends BaseAdapter {
             TextView productDescription = view.findViewById(R.id.hs_product_description);
             TextView productPrice = view.findViewById(R.id.hs_product_price);
 
-            Glide.with(parent.getContext()).load(horizontalProductScrollModelList.get(position).getProductImage()).apply(new RequestOptions().placeholder(R.mipmap.icon2_round)).into(productImage);
+            Glide.with(parent.getContext()).load(horizontalProductScrollModelList.get(position).getProductImage()).apply(new RequestOptions().placeholder(R.drawable.load)).into(productImage);
             productTitle.setText(horizontalProductScrollModelList.get(position).getProductTitle());
             productDescription.setText(horizontalProductScrollModelList.get(position).getProductDescription());
             if(!horizontalProductScrollModelList.get(position).getProducPrice().equals("")){

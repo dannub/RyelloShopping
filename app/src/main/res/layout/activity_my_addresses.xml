@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_form"
-    tools:context=".MyAddressesActivity">
+    tools:context=".Activity.MyAddressesActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout6"
@@ -20,7 +20,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -51,7 +51,8 @@
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="2"
-                android:text="2 saved address"
+                android:background="@drawable/slider_background"
+                android:text=" 2 saved address "
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="16dp"
                 android:textStyle="bold"

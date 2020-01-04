@@ -2,7 +2,6 @@ package com.reynagagroup.ryelloshopping.fragment;
 
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -29,9 +28,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.reynagagroup.ryelloshopping.MainActivity;
+import com.reynagagroup.ryelloshopping.DBqueries;
+import com.reynagagroup.ryelloshopping.Activity.MainActivity;
 import com.reynagagroup.ryelloshopping.R;
 
 import java.util.ArrayList;
@@ -251,18 +250,27 @@ public class SignUpFragment extends Fragment {
                                                         wishlistMap.put("list_size",(long)0);
 
                                                         Map<String ,Object> ratingMap = new HashMap<>();
-                                                        wishlistMap.put("list_size",(long)0);
+                                                        ratingMap.put("list_size",(long)0);
 
+                                                        Map<String ,Object> cartMap = new HashMap<>();
+                                                        cartMap.put("list_size",(long)0);
+
+                                                        Map<String ,Object> myAddressesMap = new HashMap<>();
+                                                        myAddressesMap.put("list_size",(long)0);
                                                         ///MAPS
 
                                                         final List<String> documentNames = new ArrayList<>();
                                                         documentNames.add("MY_WISHLIST");
                                                         documentNames.add("MY_RATINGS");
+                                                        documentNames.add("MY_CART");
+                                                        documentNames.add("MY_ADDRESSES");
 
 
                                                         List<Map<String,Object>> documentFields = new ArrayList<>();
                                                         documentFields.add(wishlistMap);
                                                         documentFields.add(ratingMap);
+                                                        documentFields.add(cartMap);
+                                                        documentFields.add(myAddressesMap);
 
                                                         for (int x = 0;x<documentNames.size();x++){
 
@@ -347,6 +355,9 @@ public class SignUpFragment extends Fragment {
 
     private  void mainIntent(){
         getActivity().finishAffinity();
+        DBqueries.clearData();
+        MainActivity.currentFragment = -1;
+        MainActivity.mainActivity = null;
         Intent mainIntent = new Intent(getActivity(), MainActivity.class);
         startActivity(mainIntent);
         disableCloseBtn = false;

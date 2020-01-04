@@ -1,4 +1,4 @@
-package com.reynagagroup.ryelloshopping;
+package com.reynagagroup.ryelloshopping.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.fragment.SignInFragment;
 import com.reynagagroup.ryelloshopping.fragment.SignUpFragment;
 

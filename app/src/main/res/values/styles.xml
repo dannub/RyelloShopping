@@ -29,9 +29,9 @@
     <style name="Form" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="windowNoTitle">true</item>
-        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
 
         <item name="android:autofilledHighlight" tools:targetApi="o">@color/fbutton_color_transparent</item>
         <item name="colorControlNormal">@color/colorPrimaryDark3</item>

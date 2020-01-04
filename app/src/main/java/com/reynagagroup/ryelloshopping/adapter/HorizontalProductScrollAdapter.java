@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.reynagagroup.ryelloshopping.ProductDetailActivity;
+import com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.model.HorizontalProductScrollModel;
 
@@ -73,7 +73,7 @@ public class HorizontalProductScrollAdapter extends RecyclerView.Adapter<Horizon
         }
 
         private  void  setData(final String productId, String resource, String title, String price, String description){
-            Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.mipmap.icon2_round)).into(productImage);
+            Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.drawable.load)).into(productImage);
             productTitle.setText(title);
             productDescription.setText(description);
             if(!price.equals("")){

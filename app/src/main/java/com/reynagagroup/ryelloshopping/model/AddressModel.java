@@ -4,20 +4,14 @@ public class AddressModel {
     private String fullname;
     private String address;
     private String pincode;
+    private String phone;
     private Boolean selected;
 
-    public AddressModel(String fullname, String address, String pincode, Boolean selected) {
+    public AddressModel(String fullname, String address, String pincode, String phone, Boolean selected) {
         this.fullname = fullname;
         this.address = address;
         this.pincode = pincode;
-        this.selected = selected;
-    }
-
-    public Boolean getSelected() {
-        return selected;
-    }
-
-    public void setSelected(Boolean selected) {
+        this.phone = phone;
         this.selected = selected;
     }
 
@@ -43,5 +37,21 @@ public class AddressModel {
 
     public void setPincode(String pincode) {
         this.pincode = pincode;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
     }
 }

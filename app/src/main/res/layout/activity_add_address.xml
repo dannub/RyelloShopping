@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_address"
-    tools:context=".AddAddressActivity">
+    tools:context=".Activity.AddAddressActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout5"
@@ -20,7 +20,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -69,7 +69,7 @@
                     android:textColor="@color/colorAccent1"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="City*"
+                    android:hint="Provinsi*, Kota*/City*"
                     android:inputType="textPersonName"/>
 
                 <EditText
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:isScrollContainer="true"
-                    android:hint="Locality,area or street*"
+                    android:hint="Kecamatan*,Jalan*,RT*,RW*/Locality,area or street*"
                     android:inputType="textImeMultiLine"/>
 
                 <EditText
@@ -99,7 +99,7 @@
                     android:textColor="@color/colorAccent1"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Flat no. ,building name*"
+                    android:hint="No. Rumah*/Flat no. ,building name*"
                     android:inputType="textImeMultiLine"/>
                 <LinearLayout
                     android:layout_marginTop="8dp"
@@ -113,20 +113,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:hint="Pincode"
+                        android:hint="KodePos*/Pincode*"
                         android:layout_marginEnd="8dp"
                         android:inputType="number"
                         android:textColor="@color/colorAccent1"
                         />
-                    <EditText
-                        android:id="@+id/state"
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/state_spinner"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:hint="State*"
-                        android:inputType="textPersonName"
-                        android:textColor="@color/colorAccent1"
-                        />
+                        android:background="@drawable/border_background"
+                        android:backgroundTint="@color/colorAccent3"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="16dp"
+                         />
                 </LinearLayout>
 
 
@@ -140,7 +141,7 @@
                     android:textColor="@color/colorAccent1"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Landmark (Optional)"
+                    android:hint="Info Tambahan/ Landmark(Optional)"
                     android:inputType="textPersonName"/>
             </LinearLayout>
 

@@ -1,17 +1,16 @@
-package com.reynagagroup.ryelloshopping;
+package com.reynagagroup.ryelloshopping.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.reynagagroup.ryelloshopping.R;
 
-public class Splash extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     private int splash = 3000;
 
@@ -28,13 +27,13 @@ public class Splash extends AppCompatActivity {
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-//                Intent i = new Intent(Splash.this,RegisterActivity.class);
+//                Intent i = new Intent(SplashActivity.this,RegisterActivity.class);
 //                startActivity(i);
 //
-//                Splash.this.finish();
+//                SplashActivity.this.finish();
 //            }
 //            public  void  finish(){
-//                Splash.this.finish();
+//                SplashActivity.this.finish();
 //            }
 //        },splash);
         new Handler().postDelayed(new Runnable() {
@@ -42,12 +41,13 @@ public class Splash extends AppCompatActivity {
             public void run() {
                 FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
-                    Intent mainIntent = new Intent(Splash.this,MainActivity.class);
+                    Intent mainIntent = new Intent(SplashActivity.this,MainActivity.class);
+                    MainActivity.showCart =false;
                     startActivity(mainIntent);
                     finish();
             }
             public  void  finish(){
-                Splash.this.finish();
+                SplashActivity.this.finish();
             }
         },splash);
     }

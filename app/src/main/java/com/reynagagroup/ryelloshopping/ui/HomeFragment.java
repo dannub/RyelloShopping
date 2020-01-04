@@ -2,44 +2,32 @@ package com.reynagagroup.ryelloshopping.ui;
 
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.reynagagroup.ryelloshopping.MainActivity;
+import com.reynagagroup.ryelloshopping.DBqueries;
+import com.reynagagroup.ryelloshopping.Activity.MainActivity;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.CategoryAdapter;
-import com.reynagagroup.ryelloshopping.adapter.GridProductLayoutAdapter;
 import com.reynagagroup.ryelloshopping.adapter.HomePageAdapter;
-import com.reynagagroup.ryelloshopping.adapter.HorizontalProductScrollAdapter;
-import com.reynagagroup.ryelloshopping.adapter.SliderAdapter;
 import com.reynagagroup.ryelloshopping.model.CategoryModel;
 import com.reynagagroup.ryelloshopping.model.HomePageModel;
 import com.reynagagroup.ryelloshopping.model.HorizontalProductScrollModel;
@@ -48,15 +36,13 @@ import com.reynagagroup.ryelloshopping.model.WishlistModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static com.reynagagroup.ryelloshopping.DBqueries.categoryModelList;
-import static com.reynagagroup.ryelloshopping.DBqueries.firebaseFirestore;
 import static com.reynagagroup.ryelloshopping.DBqueries.lists;
 import static com.reynagagroup.ryelloshopping.DBqueries.loadCategories;
 import static com.reynagagroup.ryelloshopping.DBqueries.loadFragmentData;
 import static com.reynagagroup.ryelloshopping.DBqueries.loadedCategoriesNames;
+import static com.reynagagroup.ryelloshopping.Activity.MainActivity.badgeCount;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -96,6 +82,9 @@ public class HomeFragment extends Fragment {
         retryBtn = view.findViewById(R.id.retry_btn);
 
         swipeRefreshLayout.setColorSchemeColors(getContext().getResources().getColor(R.color.colorPrimary),getContext().getResources().getColor(R.color.colorPrimary),getContext().getResources().getColor(R.color.colorPrimary));
+
+
+
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -156,6 +145,8 @@ public class HomeFragment extends Fragment {
         networkInfo = connectivityManager.getActiveNetworkInfo();
 
 
+        Log.i("hvhvv","hhhj");
+
         if (networkInfo !=null && networkInfo.isConnected()==true) {
             MainActivity.drawer.setDrawerLockMode(0);
             noInternetConnection.setVisibility(View.GONE);
@@ -170,6 +161,7 @@ public class HomeFragment extends Fragment {
                 categoryAdapter = new CategoryAdapter(categoryModelList);
                 categoryAdapter.notifyDataSetChanged();
             }
+            categoryRecyclerView.setAdapter(categoryAdapter);
 
             if (lists.size() == 0){
                 loadedCategoriesNames.add("HOME");
@@ -180,7 +172,6 @@ public class HomeFragment extends Fragment {
                 adapter = new HomePageAdapter(lists.get(0));
                 adapter.notifyDataSetChanged();
             }
-            categoryRecyclerView.setAdapter(categoryAdapter);
             home_page_recycle.setAdapter(adapter);
 
 
@@ -217,9 +208,11 @@ public class HomeFragment extends Fragment {
     @SuppressLint("WrongConstant")
     private void  reloadPage(){
         networkInfo = connectivityManager.getActiveNetworkInfo();
-        categoryModelList.clear();
-        lists.clear();
-        loadedCategoriesNames.clear();
+
+//        categoryModelList.clear();
+       //  lists.clear();
+//        loadedCategoriesNames.clear();
+        DBqueries.clearData();
 
         if (networkInfo !=null && networkInfo.isConnected()==true) {
             MainActivity.drawer.setDrawerLockMode(0);
@@ -233,11 +226,14 @@ public class HomeFragment extends Fragment {
             categoryRecyclerView.setAdapter(categoryAdapter);
             home_page_recycle.setAdapter(adapter);
 
+
+            DBqueries.loadCartList(getContext(), new Dialog(getContext()),false,badgeCount,new TextView(getContext()));
             loadCategories(categoryRecyclerView,getContext());
 
             loadedCategoriesNames.add("HOME");
             lists.add(new ArrayList<HomePageModel>());
             loadFragmentData(home_page_recycle,getContext(),0,"HOME");
+
 
         }else {
             MainActivity.drawer.setDrawerLockMode(1);

@@ -1,4 +1,4 @@
-package com.reynagagroup.ryelloshopping;
+package com.reynagagroup.ryelloshopping.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 
+import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.GridProductLayoutAdapter;
 import com.reynagagroup.ryelloshopping.adapter.WishlistAdapter;
 import com.reynagagroup.ryelloshopping.model.HorizontalProductScrollModel;

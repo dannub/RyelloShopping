@@ -26,12 +26,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.reynagagroup.ryelloshopping.MainActivity;
+import com.reynagagroup.ryelloshopping.DBqueries;
+import com.reynagagroup.ryelloshopping.Activity.MainActivity;
 import com.reynagagroup.ryelloshopping.R;
 
 import info.hoang8f.widget.FButton;
 
-import static com.reynagagroup.ryelloshopping.RegisterActivity.onResetPasswordFragment;
+import static com.reynagagroup.ryelloshopping.Activity.RegisterActivity.onResetPasswordFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -221,7 +222,11 @@ public class SignInFragment extends Fragment {
 
     private void mainIntent() {
         getActivity().finishAffinity();
+        DBqueries.clearData();
+        MainActivity.currentFragment = -1;
+        MainActivity.mainActivity = null;
         Intent mainIntent = new Intent(getActivity(), MainActivity.class);
+        MainActivity.showCart=false;
         startActivity(mainIntent);
         disableCloseBtn = false;
 

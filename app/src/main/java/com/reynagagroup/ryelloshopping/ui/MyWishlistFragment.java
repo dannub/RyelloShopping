@@ -12,14 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.reynagagroup.ryelloshopping.DBqueries;
-import com.reynagagroup.ryelloshopping.ProductDetailActivity;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.WishlistAdapter;
-import com.reynagagroup.ryelloshopping.model.WishlistModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.reynagagroup.ryelloshopping.DBqueries.loadWishlist;
 import static com.reynagagroup.ryelloshopping.DBqueries.wishlist;

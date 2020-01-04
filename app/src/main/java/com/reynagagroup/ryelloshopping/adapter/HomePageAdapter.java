@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,9 +23,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.reynagagroup.ryelloshopping.ProductDetailActivity;
+import com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity;
 import com.reynagagroup.ryelloshopping.R;
-import com.reynagagroup.ryelloshopping.ViewAllActivity;
+import com.reynagagroup.ryelloshopping.Activity.ViewAllActivity;
 import com.reynagagroup.ryelloshopping.model.HomePageModel;
 import com.reynagagroup.ryelloshopping.model.HorizontalProductScrollModel;
 import com.reynagagroup.ryelloshopping.model.SliderModel;
@@ -251,7 +249,7 @@ public class HomePageAdapter extends RecyclerView.Adapter {
 
         }
         private void setStripAd(String resource,String color){
-            Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.mipmap.icon2_round)).into(stripAdImage);
+            Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.drawable.load)).into(stripAdImage);
             stripAdContainer.setBackgroundColor(Color.parseColor(color));
         }
 
@@ -334,7 +332,7 @@ public class HomePageAdapter extends RecyclerView.Adapter {
                 TextView productPrice = gridProductLayout.getChildAt(x).findViewById(R.id.hs_product_price);
 
 
-                Glide.with(itemView.getContext()).load(horizontalProductScrollModelList.get(x).getProductImage()).apply(new RequestOptions().placeholder(R.mipmap.icon2_round)).into(productImage);
+                Glide.with(itemView.getContext()).load(horizontalProductScrollModelList.get(x).getProductImage()).apply(new RequestOptions().placeholder(R.drawable.load)).into(productImage);
                 productTitle.setText(horizontalProductScrollModelList.get(x).getProductTitle());
                 productDescription.setText(horizontalProductScrollModelList.get(x).getProductDescription());
                 if(!horizontalProductScrollModelList.get(x).getProducPrice().equals("")) {

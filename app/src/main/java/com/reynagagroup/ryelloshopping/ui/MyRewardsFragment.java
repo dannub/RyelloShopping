@@ -1,6 +1,7 @@
 package com.reynagagroup.ryelloshopping.ui;
 
 
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.MyRewardsAdapter;
 import com.reynagagroup.ryelloshopping.model.RewardModel;
@@ -29,7 +31,8 @@ public class  MyRewardsFragment extends Fragment {
     }
 
     private RecyclerView rewardRecyclerView;
-
+    private  Dialog loadingDialog;
+    public  static MyRewardsAdapter myRewardsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,21 +40,28 @@ public class  MyRewardsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_rewards, container, false);
 
+
+        //loading dialog
+        loadingDialog = new Dialog(getContext());
+        loadingDialog.setContentView(R.layout.loading_progress_dialog);
+        loadingDialog.setCancelable(false);
+        loadingDialog.getWindow().setBackgroundDrawable(getContext().getDrawable(R.drawable.slider_background));
+        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+
+        //loading dialog
+
         rewardRecyclerView = view.findViewById(R.id.my_rewards_recycleview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rewardRecyclerView.setLayoutManager(linearLayoutManager);
-
-        List<RewardModel> rewardModelList = new ArrayList<>();
-        rewardModelList.add(new RewardModel("Cashback","till 3.9.2019","20 %","Diskon hingga Rp10rb","Min. Blj Rp300rb"));
-        rewardModelList.add(new RewardModel("Cashback","till 3.9.2019","8 %","Diskon hingga Rp15rb",""));
-        rewardModelList.add(new RewardModel("Cashback","till 3.9.2019","5 %","Diskon hingga Rp10rb",""));
-        rewardModelList.add(new RewardModel("Cashback","till 3.9.2019","16 %","Diskon hingga Rp10rb","Min. Blj Rp400rb"));
-        rewardModelList.add(new RewardModel("Cashback","till 3.9.2019","25 %","Diskon hingga Rp20rb","Min. Blj Rp600rb"));
-        rewardModelList.add(new RewardModel("Cashback","till 3.9.2019","35 %","Diskon hingga Rp10rb","Min. Blj Rp900rb"));
-
-        MyRewardsAdapter myRewardsAdapter = new MyRewardsAdapter(rewardModelList,false);
+        myRewardsAdapter = new MyRewardsAdapter(DBqueries.rewardModelList,false);
         rewardRecyclerView.setAdapter(myRewardsAdapter);
+
+        DBqueries.loadRewards(getContext(),loadingDialog);
+
+
         myRewardsAdapter.notifyDataSetChanged();
 
         return view;

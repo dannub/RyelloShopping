@@ -15,20 +15,22 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:tint="@color/colorAccent"
         app:layout_constraintStart_toEndOf="@+id/discount_layout"
-        app:layout_constraintTop_toTopOf="@+id/discount_layout"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/rewards" />
 
     <LinearLayout
         android:id="@+id/discount_layout"
         android:layout_width="100dp"
         android:layout_height="0dp"
+        android:visibility="visible"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/colorAccent"
         android:background="@drawable/slider_background"
+        android:backgroundTint="@color/colorAccent"
         android:elevation="5dp"
         android:gravity="center"
         android:orientation="vertical"
@@ -72,30 +74,22 @@
 
     <TextView
         android:id="@+id/reward_body1"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Diskon hingga Rp10rb"
+        android:layout_marginEnd="16dp"
+        android:text="Diskon hingga Rp10rb\nMin. Blj Rp.300rb"
         android:textColor="@color/colorAccent"
         android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/reward_icon"
         app:layout_constraintTop_toBottomOf="@+id/reward_till_date" />
-
-    <TextView
-        android:id="@+id/reward_body2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Min. Blj Rp.300rb"
-        android:textColor="@color/colorAccent"
-        android:textSize="15dp"
-        app:layout_constraintStart_toStartOf="@+id/reward_body1"
-        app:layout_constraintTop_toBottomOf="@+id/reward_body1" />
 
     <TextView
         android:id="@+id/tv_SK"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:shadowColor="@color/colorPrimaryDark"
@@ -107,7 +101,7 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reward_body2" />
+        app:layout_constraintTop_toBottomOf="@+id/reward_body1" />
 
     <TextView
         android:id="@+id/reward_till_date"

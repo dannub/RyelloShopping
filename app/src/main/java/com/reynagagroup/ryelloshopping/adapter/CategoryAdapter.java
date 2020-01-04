@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.reynagagroup.ryelloshopping.CategoryActivity;
+import com.reynagagroup.ryelloshopping.Activity.CategoryActivity;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.model.CategoryModel;
 
@@ -72,7 +72,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
         private void  setCategoryIcon(String iconUri){
             if (!iconUri.equals("null")){
-                Glide.with(itemView.getContext()).load(iconUri).apply(new RequestOptions().placeholder(R.mipmap.icon2_round)).into(categoryIcon);
+                Glide.with(itemView.getContext()).load(iconUri).apply(new RequestOptions().placeholder(R.drawable.load)).into(categoryIcon);
             }
 
         }

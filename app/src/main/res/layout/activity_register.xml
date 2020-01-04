@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         android:theme="@style/Form"
     android:background="@color/fbutton_color_transparent"
-        tools:context=".RegisterActivity">
+        tools:context=".Activity.RegisterActivity">
 
         <FrameLayout
             android:layout_width="match_parent"
