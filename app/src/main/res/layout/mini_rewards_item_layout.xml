@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="3dp"
+    android:id="@+id/coupon_layout"
     android:layout_marginBottom="4dp"
     android:layout_marginTop="4dp"
     android:background="@drawable/reward_gradient_background"
@@ -15,9 +15,10 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
         android:tint="@color/colorAccent"
         app:layout_constraintStart_toEndOf="@+id/discount_layout"
-        app:layout_constraintTop_toTopOf="@+id/discount_layout"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/rewards" />
 
     <LinearLayout
@@ -32,6 +33,7 @@
         android:elevation="5dp"
         android:gravity="center"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -62,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="Reward"
+        android:text="My Reward"
         android:textColor="@color/colorAccent"
         android:textSize="15dp"
         android:textStyle="bold"
@@ -75,26 +77,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-        android:text="Diskon hingga Rp10rb"
+        android:text="Klik icon di pojok kanan atas untuk memilih kupon Anda"
         android:textColor="@color/colorAccent"
         android:textSize="15dp"
         app:layout_constraintStart_toStartOf="@+id/reward_icon"
         app:layout_constraintTop_toBottomOf="@+id/reward_till_date" />
+ />
 
     <TextView
-        android:id="@+id/reward_body2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Min. Blj Rp.300rb"
-        android:textColor="@color/colorAccent"
-        android:textSize="15dp"
-        app:layout_constraintStart_toStartOf="@+id/reward_body1"
-        app:layout_constraintTop_toBottomOf="@+id/reward_body1" />
-
-    <TextView
+        android:visibility="invisible"
         android:id="@+id/tv_SK"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:shadowColor="@color/colorPrimaryDark"
@@ -106,9 +101,11 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reward_body2" />
+        app:layout_constraintTop_toBottomOf="@+id/reward_body1" />
 
     <TextView
+        android:visibility="invisible"
+
         android:id="@+id/reward_till_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -117,7 +114,7 @@
         android:elevation="3dp"
         android:padding="6dp"
         android:text="Till 24.03.2019"
-        android:textColor="@color/colorAccent"
+        android:textColor ="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

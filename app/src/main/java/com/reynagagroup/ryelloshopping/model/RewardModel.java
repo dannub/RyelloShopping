@@ -12,14 +12,24 @@ public class RewardModel {
     private String discount;
     private String CouponBody;
     private Timestamp validity;
+    private Boolean alreadyUsed;
 
-    public RewardModel(String type, String lowerLimit, String upperLimit, String discount, String couponBody, Timestamp validity) {
+    public RewardModel(String type, String lowerLimit, String upperLimit, String discount, String couponBody, Timestamp validity,Boolean alreadyUsed) {
         this.type = type;
         this.lowerLimit = lowerLimit;
         this.upperLimit = upperLimit;
         this.discount = discount;
         this.CouponBody = couponBody;
         this.validity = validity;
+        this.alreadyUsed = alreadyUsed;
+    }
+
+    public Boolean getAlreadyUsed() {
+        return alreadyUsed;
+    }
+
+    public void setAlreadyUsed(Boolean alreadyUsed) {
+        this.alreadyUsed = alreadyUsed;
     }
 
     public String getType() {

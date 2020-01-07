@@ -59,7 +59,7 @@ public class  MyRewardsFragment extends Fragment {
         myRewardsAdapter = new MyRewardsAdapter(DBqueries.rewardModelList,false);
         rewardRecyclerView.setAdapter(myRewardsAdapter);
 
-        DBqueries.loadRewards(getContext(),loadingDialog);
+        DBqueries.loadRewards(getContext(),loadingDialog,true);
 
 
         myRewardsAdapter.notifyDataSetChanged();

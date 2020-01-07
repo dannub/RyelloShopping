@@ -159,6 +159,8 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
         super.onStart();
         this_fragment = MyCartFragment.this;
         DBqueries.loadCartList(getContext(), loadingDialog,true,new TextView(getContext()),totalAmount);
+        DBqueries.loadRewards(getContext(),loadingDialog,false);
+
 
         if (cartItemModelList.size()==0){
             totalAmount.setText("Rp. -/-");
