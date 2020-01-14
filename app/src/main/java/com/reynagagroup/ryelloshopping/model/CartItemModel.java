@@ -21,24 +21,42 @@ public class CartItemModel {
     private  String productTitle;
     private  Long freeCoupons;
     private  String productPrice;
-    private  String cuttedPrice;
+    private  String oriPrice;
     private  Long productQuantity;
     private  Long offersApplied;
     private  Long couponsApplied;
     private  Boolean inStock;
+    private String selectedCouponId;
+    private String discountedPrice;
 
-    public CartItemModel(int type,String productID, String productImage, String productTitle, Long freeCoupons, String productPrice, String cuttedPrice, Long productQuantity, Long offersApplied, Long couponsApplied,Boolean inStock) {
+    public CartItemModel(int type,String productID, String productImage, String productTitle, Long freeCoupons, String productPrice, String oriPrice, Long productQuantity, Long offersApplied, Long couponsApplied,Boolean inStock) {
         this.type = type;
         this.productID = productID;
         this.productImage = productImage;
         this.productTitle = productTitle;
         this.freeCoupons = freeCoupons;
         this.productPrice = productPrice;
-        this.cuttedPrice = cuttedPrice;
+        this.oriPrice = oriPrice;
         this.productQuantity = productQuantity;
         this.offersApplied = offersApplied;
         this.couponsApplied = couponsApplied;
         this.inStock = inStock;
+    }
+
+    public String getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public void setDiscountedPrice(String discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
+
+    public String getSelectedCouponId() {
+        return selectedCouponId;
+    }
+
+    public void setSelectedCouponId(String selectedCouponId) {
+        this.selectedCouponId = selectedCouponId;
     }
 
     public Boolean getInStock() {
@@ -89,12 +107,12 @@ public class CartItemModel {
         this.productPrice = productPrice;
     }
 
-    public String getCuttedPrice() {
-        return cuttedPrice;
+    public String getOriPrice() {
+        return oriPrice;
     }
 
-    public void setCuttedPrice(String cuttedPrice) {
-        this.cuttedPrice = cuttedPrice;
+    public void setOriPrice(String oriPrice) {
+        this.oriPrice = oriPrice;
     }
 
     public Long getProductQuantity() {
@@ -124,10 +142,51 @@ public class CartItemModel {
     //////cart item
 
     //////cart total
+    private  int totalItems,totalItemsPrice,totalAmount,savedAmount;
+    private String deliveryPrice;
     public CartItemModel(int type) {
         this.type = type;
     }
 
+    public int getTotalItems() {
+        return totalItems;
+    }
+
+    public void setTotalItems(int totalItems) {
+        this.totalItems = totalItems;
+    }
+
+    public int getTotalItemsPrice() {
+        return totalItemsPrice;
+    }
+
+    public void setTotalItemsPrice(int totalItemsPrice) {
+        this.totalItemsPrice = totalItemsPrice;
+    }
+
+    public int getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(int totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public int getSavedAmount() {
+        return savedAmount;
+    }
+
+    public void setSavedAmount(int savedAmount) {
+        this.savedAmount = savedAmount;
+    }
+
+    public String getDeliveryPrice() {
+        return deliveryPrice;
+    }
+
+    public void setDeliveryPrice(String deliveryPrice) {
+        this.deliveryPrice = deliveryPrice;
+    }
     //////cart total
 
 

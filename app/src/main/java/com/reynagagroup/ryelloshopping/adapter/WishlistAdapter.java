@@ -2,6 +2,7 @@ package com.reynagagroup.ryelloshopping.adapter;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,11 +54,12 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         String ratting = wishlistModelList.get(position).getRatting();
         long totalRattings = wishlistModelList.get(position).getTotalRattings();
         String productPrice = wishlistModelList.get(position).getProductPrice();
-        String cuttedPrice = wishlistModelList.get(position).getCuttedPrice();
+        String oriPrice = wishlistModelList.get(position).getOriPrice();
         Boolean COD = wishlistModelList.get(position).getCOD();
         Boolean inStock = wishlistModelList.get(position).getInStock();
+        long offersApplied = wishlistModelList.get(position).getOffersApplied();
 
-        viewHolder.SetData(productId,resource,freeCoupon,title,ratting,totalRattings,productPrice,cuttedPrice,COD,position,inStock);
+        viewHolder.SetData(productId,resource,freeCoupon,title,ratting,totalRattings,productPrice,oriPrice,COD,position,inStock,offersApplied);
 
 
         if (lastPosition <position) {
@@ -82,7 +84,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         private View priceCut;
         private  TextView totalRattings;
         private TextView productPrice;
-        private TextView cuttedPrice;
+        private TextView oriPrice;
         private TextView paymentMethod;
         private ImageButton deleteBtn;
 
@@ -97,14 +99,16 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             totalRattings = itemView.findViewById(R.id.total_ratting);
             priceCut = itemView.findViewById(R.id.price_cut);
             productPrice = itemView.findViewById(R.id.product_price);
-            cuttedPrice = itemView.findViewById(R.id.cutted_price);
+            oriPrice = itemView.findViewById(R.id.ori_price);
             paymentMethod = itemView.findViewById(R.id.payment_method);
             deleteBtn = itemView.findViewById(R.id.delete_btn);
 
         }
 
-        private void SetData(final String productId, String resource, long freeCouponNo, String title, String avarageRate, long totalRattingNo, String price, String cuttedPriceValue, Boolean COD, final int index,Boolean inStock){
+        private void SetData(final String productId, String resource, long freeCouponNo, String title, String avarageRate, long totalRattingNo, String price, String oriPriceValue, Boolean COD, final int index,Boolean inStock,long offersApplied){
+
             Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.drawable.load)).into(productImage);
+            Log.i("image",resource);
             productTitle.setText(title);
             if(freeCouponNo !=0 && inStock){
                 couponIcon.setVisibility(View.VISIBLE);
@@ -125,20 +129,27 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                 totalRattings.setVisibility(View.VISIBLE);
                 productPrice.setText("Out of Stock");
                 productPrice.setTextColor(Color.parseColor("#000000"));
-                cuttedPrice.setVisibility(View.VISIBLE);
+                oriPrice.setVisibility(View.VISIBLE);
                 linearLayout.setVisibility(View.VISIBLE);
 
 
                 ratting.setText(avarageRate);
                 totalRattings.setText("("+totalRattingNo+")rattings");
                 productPrice.setText("Rp."+price+"/-");
-                cuttedPrice.setText("Rp."+cuttedPriceValue+"/-");
                 if(COD){
                     paymentMethod.setVisibility(View.VISIBLE);
                 }else {
                     paymentMethod.setVisibility(View.GONE);
                 }
-                priceCut.setVisibility(View.VISIBLE);
+
+                if (offersApplied>0) {
+                    oriPrice.setText("Rp." + oriPriceValue + "/-");
+                    priceCut.setVisibility(View.VISIBLE);
+                    oriPrice.setVisibility(View.VISIBLE);
+                }else {
+                    priceCut.setVisibility(View.INVISIBLE);
+                    oriPrice.setVisibility(View.INVISIBLE);
+                }
 
             }else {
                 linearLayout.setVisibility(View.INVISIBLE);
@@ -146,7 +157,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                 totalRattings.setVisibility(View.INVISIBLE);
                 productPrice.setText("Out of Stock");
                 productPrice.setTextColor(itemView.getContext().getResources().getColor(R.color.colorPrimary));
-                cuttedPrice.setVisibility(View.INVISIBLE);
+                oriPrice.setVisibility(View.INVISIBLE);
                 paymentMethod.setVisibility(View.INVISIBLE);
                 priceCut.setVisibility(View.INVISIBLE);
             }

@@ -1,6 +1,7 @@
 package com.reynagagroup.ryelloshopping.adapter;
 
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.Timestamp;
 import com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity;
+import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.R;
+import com.reynagagroup.ryelloshopping.model.CartItemModel;
 import com.reynagagroup.ryelloshopping.model.RewardModel;
 
 import java.text.SimpleDateFormat;
@@ -31,19 +34,37 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
     private TextView selectedcouponExpiryDate;
     private TextView selectedcouponBody;
     private TextView selectedcouponDiscount;
-    private TextView tv_SK;
+    private ConstraintLayout selectedcouponLayout;
+    private TextView selectedtv_SK;
+
     private LinearLayout selectedCoupon;
     private LinearLayout selecteddiscountLayout;
-    private ConstraintLayout couponLayout;
     private TextView discountedPrice;
-
+    private int cartItemPosition = -1;
+    private List<CartItemModel> cartItemModelList;
 
     public MyRewardsAdapter(List<RewardModel> rewardModelList, Boolean userMiniLayout) {
         this.rewardModelList = rewardModelList;
         this.userMiniLayout = userMiniLayout;
     }
 
-    public MyRewardsAdapter(List<RewardModel> rewardModelList, Boolean userMiniLayout, RecyclerView couponRecycleView, LinearLayout selectedCoupon, String productOriginalPrice, TextView couponTitle, TextView couponExpiryDate, TextView couponBody, TextView couponDiscount, LinearLayout discountLayout, TextView tv_SK, ConstraintLayout couponLayout, TextView discountedPrice) {
+    public MyRewardsAdapter(List<RewardModel> rewardModelList, Boolean userMiniLayout, RecyclerView couponRecycleView, LinearLayout selectedCoupon, String productOriginalPrice, TextView couponTitle, TextView couponExpiryDate, TextView couponBody, TextView couponDiscount, LinearLayout discountLayout, ConstraintLayout selectedcouponLayout,TextView selectedtv_SK,TextView discountedPrice) {
+        this.rewardModelList = rewardModelList;
+        this.userMiniLayout = userMiniLayout;
+        this.couponRecyclerView = couponRecycleView;
+        this.selectedCoupon = selectedCoupon;
+        this.productOriginalPrice = productOriginalPrice;
+        this.selectedcouponTitle = couponTitle;
+        this.selectedcouponExpiryDate = couponExpiryDate;
+        this.selectedcouponBody = couponBody;
+        this.selectedcouponDiscount = couponDiscount;
+        this.selectedcouponLayout =selectedcouponLayout;
+        this.selectedtv_SK = selectedtv_SK;
+        this.discountedPrice = discountedPrice;
+        this.selecteddiscountLayout = discountLayout;
+
+    }
+    public MyRewardsAdapter(int cartItemPosition,List<RewardModel> rewardModelList, Boolean userMiniLayout, RecyclerView couponRecycleView, LinearLayout selectedCoupon, String productOriginalPrice, TextView couponTitle, TextView couponExpiryDate, TextView couponBody, TextView couponDiscount, LinearLayout discountLayout, ConstraintLayout selectedcouponLayout,TextView selectedtv_SK,  TextView discountedPrice,List<CartItemModel> cartItemModelList) {
         this.rewardModelList = rewardModelList;
         this.userMiniLayout = userMiniLayout;
         this.couponRecyclerView = couponRecycleView;
@@ -54,11 +75,13 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
         this.selectedcouponBody = couponBody;
         this.selectedcouponDiscount = couponDiscount;
         this.discountedPrice = discountedPrice;
-        this.tv_SK = tv_SK;
-        this.couponLayout = couponLayout;
+        this.selectedcouponLayout =selectedcouponLayout;
+        this.selectedtv_SK = selectedtv_SK;
         this.selecteddiscountLayout = discountLayout;
-
+        this.cartItemPosition = cartItemPosition;
+        this.cartItemModelList = cartItemModelList;
     }
+
 
     @NonNull
     @Override
@@ -74,6 +97,7 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
 
     @Override
     public void onBindViewHolder(@NonNull Viewholder viewholder, int position) {
+        String couponId = rewardModelList.get(position).getCouponId();
         String type = rewardModelList.get(position).getType();
         Timestamp date = rewardModelList.get(position).getValidity();
         String body = rewardModelList.get(position).getCouponBody();
@@ -81,7 +105,7 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
         String lowerlimit = rewardModelList.get(position).getLowerLimit();
         String upperlimit = rewardModelList.get(position).getUpperLimit();
         Boolean alreadyUsed = rewardModelList.get(position).getAlreadyUsed();
-        viewholder.SetData(type,date,discount,body,upperlimit,lowerlimit,alreadyUsed);
+        viewholder.SetData(couponId,type,date,discount,body,upperlimit,lowerlimit,alreadyUsed);
 
     }
 
@@ -97,6 +121,9 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
         private TextView couponExpiryDate;
         private TextView couponBody;
         private LinearLayout discountlayout;
+        private ConstraintLayout couponLayout;
+        private TextView tv_SK;
+
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
@@ -105,10 +132,16 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
             couponExpiryDate = itemView.findViewById(R.id.reward_till_date);
             couponBody = itemView.findViewById(R.id.reward_body1);
             discountlayout = itemView.findViewById(R.id.discount_layout);
+            couponLayout = itemView.findViewById(R.id.coupon_layout);
+            tv_SK = itemView.findViewById(R.id.tv_SK);
 
         }
 
-        private void SetData(final String type, final Timestamp date, final String discount, final String body, final String upperLimit, final String lowerLimit,final Boolean alreadyUsed){
+        private void SetData(final String couponId, final String type, final Timestamp date, final String discount, final String body, final String upperLimit, final String lowerLimit,final Boolean alreadyUsed){
+            tv_SK.setVisibility(View.VISIBLE);
+            couponExpiryDate.setVisibility(View.VISIBLE);
+            tv_SK.setVisibility(View.VISIBLE);
+
             if (type.toUpperCase().equals("DISCOUNT")){
                 discountlayout.setVisibility(View.VISIBLE);
                 couponTitle.setText(type.toUpperCase());
@@ -122,26 +155,31 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
 
             final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM YYYY");
 
-            if (alreadyUsed){
-                couponLayout.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.border_background));
-                couponExpiryDate.setText("Already used");
-                couponExpiryDate.setTextColor(itemView.getContext().getResources().getColor(R.color.colorAccent4));
-            }else {
-                couponLayout.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.reward_gradient_background));
-                couponExpiryDate.setText("till "+simpleDateFormat.format(date.toDate()));
+            if (userMiniLayout) {
+                if (alreadyUsed) {
+                    couponLayout.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.border_background));
+                    couponExpiryDate.setText("Already used");
+                    couponExpiryDate.setTextColor(itemView.getContext().getResources().getColor(R.color.colorAccent4));
+                } else {
+                    couponLayout.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.reward_gradient_background));
+                    couponExpiryDate.setText("till " + simpleDateFormat.format(date.toDate()));
+                }
             }
             couponBody.setText(body);
 
 
             if (userMiniLayout){
-                tv_SK.setVisibility(View.VISIBLE);
-                selectedcouponExpiryDate.setVisibility(View.VISIBLE);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
                         if (!alreadyUsed){
+                            selectedtv_SK.setVisibility(View.VISIBLE);
+                            selectedcouponExpiryDate.setVisibility(View.VISIBLE);
+                            selectedcouponLayout.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.reward_gradient_background));
+
+
                             if (type.toUpperCase().equals("DISCOUNT")) {
                                 selecteddiscountLayout.setVisibility(View.VISIBLE);
                                 selectedcouponTitle.setText(type.toUpperCase());
@@ -162,7 +200,13 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
                                 } else {
                                     discountedPrice.setText("Rp." + String.valueOf(Long.valueOf(productOriginalPrice) - Long.valueOf(discount)) + "/-");
                                 }
+                                if (cartItemPosition!= -1) {
+                                    cartItemModelList.get(cartItemPosition).setSelectedCouponId(couponId);
+                                }
                             } else {
+                                if (cartItemPosition!= -1) {
+                                    cartItemModelList.get(cartItemPosition).setSelectedCouponId(null);
+                                }
                                 discountedPrice.setText("Invalid");
                                 Toast.makeText(itemView.getContext(), "Maaf, kupon ini tidak bisa digunakan di produk ini", Toast.LENGTH_LONG).show();
                             }

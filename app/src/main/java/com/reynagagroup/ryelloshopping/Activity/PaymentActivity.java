@@ -335,7 +335,11 @@ public class PaymentActivity extends AppCompatActivity {
                                             ,currentUser.getEmail()
                                             ,DBqueries.addressModelList.get(DBqueries.selectedAddress).getPincode()
                                             ,dateString
-                                            ,totalAmount.getText().toString()
+                                            ,cartItemModelList.get(cartItemModelList.size()-1).getTotalAmount()
+                                            ,cartItemModelList.get(cartItemModelList.size()-1).getTotalItems()
+                                            ,cartItemModelList.get(cartItemModelList.size()-1).getTotalItemsPrice()
+                                            ,cartItemModelList.get(cartItemModelList.size()-1).getSavedAmount()
+                                            ,cartItemModelList.get(cartItemModelList.size()-1).getDeliveryPrice()
                                             ,false,false,false,false,"","","","","",""
                                             ,isfree
                                     );
@@ -350,7 +354,7 @@ public class PaymentActivity extends AppCompatActivity {
                                                 final String key = task.getResult().getId();
 
                                                 idPayment.setText("Kode.Pesanan: " + key);
-                                                totalBayar.setText(totalAmount.getText().toString());
+                                                totalBayar.setText("Rp."+cartItemModelList.get(cartItemModelList.size()-1).getTotalAmount()+"/-");
                                                 waktuPesan.setText(dateString);
                                                 status.setText("Belum Dikonfirmasi");
                                                 alamat.setText(DBqueries.addressModelList.get(DBqueries.selectedAddress).getFullname() + " " + DBqueries.addressModelList.get(DBqueries.selectedAddress).getAddress()+" "+DBqueries.addressModelList.get(DBqueries.selectedAddress).getPincode());
@@ -461,6 +465,7 @@ public class PaymentActivity extends AppCompatActivity {
                                                 for (int i = 0; i < cartItemModelList.size()-1; i++) {
                                                     firebaseFirestore.collection("USERS").document(currentUser.getUid()).collection("USER_DATA")
                                                             .document("MY_BUY").collection("MY_NOTA").document(key).collection("ITEM").add(cartItemModelList.get(i));
+
                                                 }
                                                 Save.setEnabled(true);
                                                 loadingDialog.dismiss();
@@ -697,7 +702,7 @@ public class PaymentActivity extends AppCompatActivity {
             } else {
                 //do here
                 now = Long.toString(System.currentTimeMillis());
-                File f = new File(android.os.Environment.getExternalStorageDirectory().toString()+"/Download/"+now+"nota.jpg");
+                File f = new File(android.os.Environment.getExternalStorageDirectory().toString()+"/Download/"+now+"_nota.jpg");
                 try {
 
                     f.createNewFile();
@@ -711,7 +716,7 @@ public class PaymentActivity extends AppCompatActivity {
         } else {
             //do here
             now = Long.toString(System.currentTimeMillis());
-            File f = new File(android.os.Environment.getExternalStorageDirectory().toString()+"/Download/"+now+ "nota.jpg");
+            File f = new File(android.os.Environment.getExternalStorageDirectory().toString()+"/Download/"+now+ "_nota.jpg");
             try {
 
                 f.createNewFile();
@@ -729,7 +734,7 @@ public class PaymentActivity extends AppCompatActivity {
         try {
             Document document = new Document(PageSize.A4);
             dirpath = android.os.Environment.getExternalStorageDirectory().toString();
-            PdfWriter.getInstance(document, new FileOutputStream(dirpath + "/Download/"+now+"nota.pdf")); //  Change pdf's name.
+            PdfWriter.getInstance(document, new FileOutputStream(dirpath + "/Download/"+now+"_nota.pdf")); //  Change pdf's name.
             document.open();
             Image img = Image.getInstance(dirpath +"/Download/" + now+"nota.jpg");
             float scaler = ((document.getPageSize().getWidth() - document.leftMargin()

@@ -9,11 +9,12 @@ public class WishlistModel {
     private String ratting;
     private long totalRattings;
     private String productPrice;
-    private String cuttedPrice;
+    private String oriPrice;
     private Boolean COD;
     private Boolean inStock;
+    private long offersApplied;
 
-    public WishlistModel(String productID,String productImage, String productTitle, long freeCoupons, String ratting, long totalRattings, String productPrice, String cuttedPrice, Boolean COD, Boolean inStock) {
+    public WishlistModel( String productID,String productImage, String productTitle, long freeCoupons, String ratting, long totalRattings, String productPrice, String oriPrice, Boolean COD, Boolean inStock, long offersApplied) {
         this.productImage = productImage;
         this.productID = productID;
         this.productTitle = productTitle;
@@ -21,25 +22,10 @@ public class WishlistModel {
         this.ratting = ratting;
         this.totalRattings = totalRattings;
         this.productPrice = productPrice;
-        this.cuttedPrice = cuttedPrice;
+        this.oriPrice = oriPrice;
         this.COD = COD;
         this.inStock = inStock;
-    }
-
-    public Boolean getInStock() {
-        return inStock;
-    }
-
-    public void setInStock(Boolean inStock) {
-        this.inStock = inStock;
-    }
-
-    public String getProductID() {
-        return productID;
-    }
-
-    public void setProductID(String productID) {
-        this.productID = productID;
+        this.offersApplied = offersApplied;
     }
 
     public String getProductImage() {
@@ -48,6 +34,14 @@ public class WishlistModel {
 
     public void setProductImage(String productImage) {
         this.productImage = productImage;
+    }
+
+    public String getProductID() {
+        return productID;
+    }
+
+    public void setProductID(String productID) {
+        this.productID = productID;
     }
 
     public String getProductTitle() {
@@ -90,12 +84,12 @@ public class WishlistModel {
         this.productPrice = productPrice;
     }
 
-    public String getCuttedPrice() {
-        return cuttedPrice;
+    public String getOriPrice() {
+        return oriPrice;
     }
 
-    public void setCuttedPrice(String cuttedPrice) {
-        this.cuttedPrice = cuttedPrice;
+    public void setOriPrice(String oriPrice) {
+        this.oriPrice = oriPrice;
     }
 
     public Boolean getCOD() {
@@ -104,5 +98,21 @@ public class WishlistModel {
 
     public void setCOD(Boolean COD) {
         this.COD = COD;
+    }
+
+    public Boolean getInStock() {
+        return inStock;
+    }
+
+    public void setInStock(Boolean inStock) {
+        this.inStock = inStock;
+    }
+
+    public long getOffersApplied() {
+        return offersApplied;
+    }
+
+    public void setOffersApplied(long offersApplied) {
+        this.offersApplied = offersApplied;
     }
 }

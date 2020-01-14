@@ -15,7 +15,9 @@ public class UploadBuktiModel {
     private String email;
     private String pincodeAddress;
     private String tgl_pesan;
-    private String totalAmount;
+    private int totalAmount;
+    private int totalItems,totalItemsPrice,savedAmount;
+    private String deliveryPrice;
     private boolean ordered;
     private boolean packed;
     private boolean shipped;
@@ -34,7 +36,7 @@ public class UploadBuktiModel {
     }
 
 
-    public UploadBuktiModel(String atasNama, String id_user, String username, String imageUrl, String bank, String tgl_transfer, String fullnameAddress, String fullAddress, String phone, String email, String pincodeAddress, String tgl_pesan, String totalAmount, boolean ordered, boolean packed, boolean shipped, boolean delivered, String ordered_date, String packed_date, String shipped_date, String delivered_date, String ket_kirim, String metode_kirim, boolean isfree) {
+    public UploadBuktiModel(String atasNama, String id_user, String username, String imageUrl, String bank, String tgl_transfer, String fullnameAddress, String fullAddress, String phone, String email, String pincodeAddress, String tgl_pesan, int totalAmount, int totalItems, int totalItemsPrice, int savedAmount, String deliveryPrice, boolean ordered, boolean packed, boolean shipped, boolean delivered, String ordered_date, String packed_date, String shipped_date, String delivered_date, String ket_kirim, String metode_kirim, boolean isfree) {
         this.atasNama = atasNama;
         this.id_user = id_user;
         this.username = username;
@@ -48,6 +50,10 @@ public class UploadBuktiModel {
         this.pincodeAddress = pincodeAddress;
         this.tgl_pesan = tgl_pesan;
         this.totalAmount = totalAmount;
+        this.totalItems = totalItems;
+        this.totalItemsPrice = totalItemsPrice;
+        this.savedAmount = savedAmount;
+        this.deliveryPrice = deliveryPrice;
         this.ordered = ordered;
         this.packed = packed;
         this.shipped = shipped;
@@ -60,7 +66,6 @@ public class UploadBuktiModel {
         this.metode_kirim = metode_kirim;
         this.isfree = isfree;
     }
-
 
     public String getAtasNama() {
         return atasNama;
@@ -158,12 +163,44 @@ public class UploadBuktiModel {
         this.tgl_pesan = tgl_pesan;
     }
 
-    public String getTotalAmount() {
+    public int getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(String totalAmount) {
+    public void setTotalAmount(int totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public int getTotalItems() {
+        return totalItems;
+    }
+
+    public void setTotalItems(int totalItems) {
+        this.totalItems = totalItems;
+    }
+
+    public int getTotalItemsPrice() {
+        return totalItemsPrice;
+    }
+
+    public void setTotalItemsPrice(int totalItemsPrice) {
+        this.totalItemsPrice = totalItemsPrice;
+    }
+
+    public int getSavedAmount() {
+        return savedAmount;
+    }
+
+    public void setSavedAmount(int savedAmount) {
+        this.savedAmount = savedAmount;
+    }
+
+    public String getDeliveryPrice() {
+        return deliveryPrice;
+    }
+
+    public void setDeliveryPrice(String deliveryPrice) {
+        this.deliveryPrice = deliveryPrice;
     }
 
     public boolean isOrdered() {

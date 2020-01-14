@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
                 } }
         });
 
-            }
+        }
         return true;
     }
 
@@ -443,12 +443,63 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         }else  if (id == android.R.id.home){
-            if (showCart){
-                mainActivity = null;
-                showCart = false;
-                finish();
-                return true;
+
+
+            if(drawer.isDrawerOpen(GravityCompat.START)){
+                drawer.closeDrawer(GravityCompat.START);
+            }else {
+                if (currentFragment==HOME_FRAGMENT){
+                    getSupportActionBar().setDisplayShowTitleEnabled(false);
+                    currentFragment = -1;
+                    super.onBackPressed();
+
+                }else if (currentFragment==CART_FRAGMENT){
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
+
+                    if ((fragment instanceof IOnBackPressed) || ((IOnBackPressed) fragment).onBackPressed()) {
+                        if (showCart){
+                            mainActivity = null;
+                            showCart = false;
+                            getSupportActionBar().setDisplayShowTitleEnabled(true);
+                            currentFragment = -1;
+                            finish();
+                        }else {
+                            actionBarLogo.setVisibility(View.VISIBLE);
+                            invalidateOptionsMenu();
+                            setFragment(new HomeFragment(), HOME_FRAGMENT);
+                            getSupportActionBar().setDisplayShowTitleEnabled(false);
+                            navigationView.getMenu().getItem(0).setChecked(true);
+                        }
+                    }
+                } else {
+                    if (showCart){
+                        mainActivity = null;
+                        showCart = false;
+                        getSupportActionBar().setDisplayShowTitleEnabled(true);
+                        currentFragment = -1;
+                        finish();
+                        super.onBackPressed();
+                    }
+
+                    else {
+                        actionBarLogo.setVisibility(View.VISIBLE);
+                        invalidateOptionsMenu();
+                        setFragment(new HomeFragment(), HOME_FRAGMENT);
+                        getSupportActionBar().setDisplayShowTitleEnabled(false);
+                        navigationView.getMenu().getItem(0).setChecked(true);
+                    }
+                }
+
             }
+
+
+
+//          if (showCart){
+////                mainActivity = null;
+////                showCart = false;
+////                finish();
+////                return true;
+//            }
         }
 
         return super.onOptionsItemSelected(item);

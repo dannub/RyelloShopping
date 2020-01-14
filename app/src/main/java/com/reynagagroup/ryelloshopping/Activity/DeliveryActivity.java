@@ -13,6 +13,7 @@ import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -41,7 +42,7 @@ public class DeliveryActivity extends AppCompatActivity {
     private TextView fullAddress;
     private TextView pincode;
     public  static CartAdapter cartlistAdapter;
-    private Dialog loadingDialog;
+    public static Dialog loadingDialog;
     private  Dialog paymentMethodDialog;
     private Button continueBtn;
     private Parcelable recyclerViewState;
@@ -54,6 +55,9 @@ public class DeliveryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery);
+
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         //loading dialog
         loadingDialog = new Dialog(DeliveryActivity.this);
         loadingDialog.setContentView(R.layout.loading_progress_dialog);

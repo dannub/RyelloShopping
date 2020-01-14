@@ -7,7 +7,7 @@
     android:id="@+id/coupon_layout"
     android:layout_marginBottom="4dp"
     android:layout_marginTop="4dp"
-    android:background="@drawable/reward_gradient_background"
+    android:background="@drawable/border_background"
     android:orientation="vertical">
 
     <ImageView
@@ -77,9 +77,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
+        android:layout_marginEnd="16dp"
         android:text="Klik icon di pojok kanan atas untuk memilih kupon Anda"
         android:textColor="@color/colorAccent"
         android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/reward_icon"
         app:layout_constraintTop_toBottomOf="@+id/reward_till_date" />
  />

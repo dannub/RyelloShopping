@@ -117,30 +117,32 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
 
     <TextView
-        android:id="@+id/cutted_price"
+        android:id="@+id/ori_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:visibility="gone"
         android:text="Rp.500000/-"
         app:layout_constraintBottom_toBottomOf="@+id/product_price"
         app:layout_constraintStart_toEndOf="@+id/product_price" />
 
     <View
         android:id="@+id/divider3"
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="@color/colorAccent1"
-        app:layout_constraintBottom_toBottomOf="@+id/cutted_price"
-        app:layout_constraintEnd_toEndOf="@+id/cutted_price"
-        app:layout_constraintStart_toStartOf="@+id/cutted_price"
-        app:layout_constraintTop_toTopOf="@+id/cutted_price" />
+        app:layout_constraintBottom_toBottomOf="@+id/ori_price"
+        app:layout_constraintEnd_toEndOf="@+id/ori_price"
+        app:layout_constraintStart_toStartOf="@+id/ori_price"
+        app:layout_constraintTop_toTopOf="@+id/ori_price" />
 
     <ImageView
         android:id="@+id/cod_img_indicator"
         android:layout_width="30sp"
         android:layout_height="30sp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/cutted_price"
+        app:layout_constraintBottom_toBottomOf="@+id/ori_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_title"
         app:srcCompat="@mipmap/cod" />

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.reynagagroup.ryelloshopping.Activity.PaymentActivity;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.CartAdapter;
 import com.reynagagroup.ryelloshopping.model.CartItemModel;
+import com.reynagagroup.ryelloshopping.model.RewardModel;
 
 import java.util.ArrayList;
 
@@ -185,6 +187,25 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
 
         cartlistAdapter.notifyDataSetChanged();
 
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        for (CartItemModel cartItemModel : cartItemModelList){
+            if (!TextUtils.isEmpty(cartItemModel.getSelectedCouponId())){
+                for (RewardModel rewardModel: DBqueries.rewardModelList){
+                    if (rewardModel.getCouponId().equals(cartItemModel.getSelectedCouponId())){
+                        rewardModel.setAlreadyUsed(false);
+                    }
+                }
+                cartItemModel.setSelectedCouponId(null);
+                if (MyRewardsFragment.myRewardsAdapter != null) {
+                    MyRewardsFragment.myRewardsAdapter.notifyDataSetChanged();
+                }
+            }
+        }
 
     }
 

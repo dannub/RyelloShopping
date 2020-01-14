@@ -42,7 +42,6 @@ import com.reynagagroup.ryelloshopping.fragment.SignInFragment;
 import com.reynagagroup.ryelloshopping.fragment.SignUpFragment;
 import com.reynagagroup.ryelloshopping.model.CartItemModel;
 import com.reynagagroup.ryelloshopping.model.ProductSpesificationModel;
-import com.reynagagroup.ryelloshopping.model.RewardModel;
 import com.reynagagroup.ryelloshopping.model.WishlistModel;
 
 import java.util.ArrayList;
@@ -69,11 +68,12 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TabLayout viewpagerIndikator;
     private TextView productPrice;
     private String productOriginalPrice;
-    private TextView cuttedPrice;
+    private TextView oriPrice;
     private  Button couponRedermBtn;
     private  TextView totalRatingMiniView;
     private ImageView codIndicator;
     private  TextView tvCodIndicator;
+    private View divider;
 
 
     private  LinearLayout couponRedemptionLayout;
@@ -97,6 +97,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView discountedPrice;
     private TextView originalPrice;
     private ConstraintLayout couponLayout;
+    private LinearLayout applyOrRemoveBtnContainer;
     ////coupondialog
 
     ///ProductDescription
@@ -183,6 +184,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         discountLayout = checkCouponPriceDialog.findViewById(R.id.discount_layout);
         couponLayout = checkCouponPriceDialog.findViewById(R.id.coupon_layout);
 
+        applyOrRemoveBtnContainer = checkCouponPriceDialog.findViewById(R.id.apply_or_remove_btn_container);
+
+        applyOrRemoveBtnContainer.setVisibility(View.GONE);
+
         tv_SK = checkCouponPriceDialog.findViewById(R.id.tv_SK);
 
         originalPrice = checkCouponPriceDialog.findViewById(R.id.original_price);
@@ -227,16 +232,19 @@ public class ProductDetailActivity extends AppCompatActivity {
         buyNowBtn = findViewById(R.id.buy_now_btn);
         couponRedermBtn = findViewById(R.id.coupen_redemption_btn);
         productTitle = findViewById(R.id.product_title);
+        divider = findViewById(R.id.divider3);
         averageRatingMiniView = findViewById(R.id.tv_product_ratting_miniview);
         totalRatingMiniView = findViewById(R.id.total_ratings_minview);
         productPrice = findViewById(R.id.product_price);
-        cuttedPrice = findViewById(R.id.cutted_price);
+        oriPrice = findViewById(R.id.ori_price);
         tvCodIndicator= findViewById(R.id.cod_indicator);
         codIndicator = findViewById(R.id.cod_img_indicator);
         rewardTitle = findViewById(R.id.reward_title);
         rewardIcon = findViewById(R.id.reward_icon);
         rewardBody = findViewById(R.id.reward_body1);
         rewarddiscount = findViewById(R.id.discount_reward);
+
+
 
         totalRatings = findViewById(R.id.total_rattings);
         ratingsNoContainer = findViewById(R.id.ratttings_number_container);
@@ -275,17 +283,29 @@ public class ProductDetailActivity extends AppCompatActivity {
                     averageRatingMiniView.setText(documentSnapshot.get("average_ratting").toString());
                     totalRatingMiniView.setText("("+(long)documentSnapshot.get("total_ratings")+")ratings");
 
-                    productPrice.setText("Rp."+documentSnapshot.get("product_price").toString()+"/-");
+                    if ((Long)documentSnapshot.get("offers_applied")>0) {
+                        oriPrice.setVisibility(View.VISIBLE);
+                        divider.setVisibility(View.VISIBLE);
+                        productPrice.setText("Rp." + documentSnapshot.get("cutted_price").toString() + "/-");
+                        oriPrice.setText("Rp." + documentSnapshot.get("product_price").toString() + "/-");
+                    }else {
+                        oriPrice.setVisibility(View.GONE);
+                        divider.setVisibility(View.GONE);
+                        productPrice.setText("Rp." + documentSnapshot.get("product_price").toString() + "/-");
+                    }
 
                     ///for  coupon dialog
                     originalPrice.setText(productPrice.getText());
-                    productOriginalPrice = documentSnapshot.get("product_price").toString();
-                    MyRewardsAdapter myRewardsAdapter = new MyRewardsAdapter(DBqueries.rewardModelList,true,couponRecyclerView,selectedCoupon,productOriginalPrice,coupontitle,couponexpiryDate,couponCouponBody1,coupondiscount,discountLayout,tv_SK,couponLayout,discountedPrice);
+                    if ((Long)documentSnapshot.get("offers_applied")>0) {
+                        productOriginalPrice = documentSnapshot.get("cutted_price").toString();
+                    }else {
+                        productOriginalPrice = documentSnapshot.get("product_price").toString();
+                    }
+                    MyRewardsAdapter myRewardsAdapter = new MyRewardsAdapter(DBqueries.rewardModelList,true,couponRecyclerView,selectedCoupon,productOriginalPrice,coupontitle,couponexpiryDate,couponCouponBody1,coupondiscount,discountLayout,couponLayout,tv_SK,discountedPrice);
                     couponRecyclerView.setAdapter(myRewardsAdapter);
                     myRewardsAdapter.notifyDataSetChanged();
                     ///for  coupon dialog
 
-                    cuttedPrice.setText("Rp."+documentSnapshot.get("cutted_price").toString()+"/-");
 
                     if ((boolean)documentSnapshot.get("COD")){
                         codIndicator.setVisibility(View.VISIBLE);
@@ -376,6 +396,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                     if ((boolean)documentSnapshot.get("in_stock")){
                         loadingDialog.show();
+                        buyNowBtn.setVisibility(View.VISIBLE);
                         addToCartBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -409,17 +430,31 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                                 if (task.isSuccessful()) {
 
 
-                                                                    cartItemModelList.add(0,new CartItemModel(CartItemModel.CART_ITEM,
-                                                                            productID,documentSnapshot.get("product_image_1").toString()
-                                                                            , documentSnapshot.get("product_title").toString()
-                                                                            , (long) documentSnapshot.get("free_coupon")
-                                                                            , documentSnapshot.get("product_price").toString()
-                                                                            , documentSnapshot.get("cutted_price").toString()
-                                                                            , (long)1
-                                                                            , (long)0
-                                                                            , (long)0
-                                                                            ,(Boolean) documentSnapshot.get("in_stock")
-                                                                    ));
+                                                                    if ((Long)documentSnapshot.get("offers_applied")>0) {
+                                                                        cartItemModelList.add(0, new CartItemModel(CartItemModel.CART_ITEM,
+                                                                                productID, documentSnapshot.get("product_image_1").toString()
+                                                                                , documentSnapshot.get("product_title").toString()
+                                                                                , (long) documentSnapshot.get("free_coupon")
+                                                                                , documentSnapshot.get("cutted_price").toString()
+                                                                                , documentSnapshot.get("product_price").toString()
+                                                                                , (long) 1
+                                                                                , (long) documentSnapshot.get("offers_applied")
+                                                                                , (long) 0
+                                                                                , (Boolean) documentSnapshot.get("in_stock")
+                                                                        ));
+                                                                    }else {
+                                                                        cartItemModelList.add(0, new CartItemModel(CartItemModel.CART_ITEM,
+                                                                                productID, documentSnapshot.get("product_image_1").toString()
+                                                                                , documentSnapshot.get("product_title").toString()
+                                                                                , (long) documentSnapshot.get("free_coupon")
+                                                                                , documentSnapshot.get("product_price").toString()
+                                                                                ,""
+                                                                                , (long) 1
+                                                                                , (long) documentSnapshot.get("offers_applied")
+                                                                                , (long) 0
+                                                                                , (Boolean) documentSnapshot.get("in_stock")
+                                                                        ));
+                                                                    }
 
                                                                     DBqueries.loadCartList(ProductDetailActivity.this, new Dialog(ProductDetailActivity.this),false,badgeCount,new TextView(ProductDetailActivity.this));
                                                                     ALREADY_ADDED_TO_CART = true;
@@ -499,18 +534,36 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         if (DBqueries.wishlistModelList.size() != 0) {
-                                            DBqueries.wishlistModelList.add(new WishlistModel(
-                                                    productID
-                                                    , documentSnapshot.get("product_image_1").toString()
-                                                    , documentSnapshot.get("product_title").toString() + " " + documentSnapshot.get("product_subtitle").toString()
-                                                    , (long) documentSnapshot.get("free_coupon")
-                                                    , documentSnapshot.get("average_ratting").toString()
-                                                    , (long) documentSnapshot.get("total_ratings")
-                                                    , documentSnapshot.get("product_price").toString()
-                                                    , documentSnapshot.get("cutted_price").toString()
-                                                    , (Boolean) documentSnapshot.get("COD")
-                                                    ,(Boolean) documentSnapshot.get("in_stock")
-                                            ));
+
+                                            if ((Long)documentSnapshot.get("offers_applied")>0) {
+                                                DBqueries.wishlistModelList.add(new WishlistModel(
+                                                        productID
+                                                        , documentSnapshot.get("product_image_1").toString()
+                                                        , documentSnapshot.get("product_title").toString() + " " + documentSnapshot.get("product_subtitle").toString()
+                                                        , (long) documentSnapshot.get("free_coupon")
+                                                        , documentSnapshot.get("average_ratting").toString()
+                                                        , (long) documentSnapshot.get("total_ratings")
+                                                        , documentSnapshot.get("cutted_price").toString()
+                                                        , documentSnapshot.get("product_price").toString()
+                                                        , (Boolean) documentSnapshot.get("COD")
+                                                        , (Boolean) documentSnapshot.get("in_stock")
+                                                        ,(long)documentSnapshot.get("offers_applied")
+                                                ));
+                                            }else {
+                                                DBqueries.wishlistModelList.add(new WishlistModel(
+                                                        productID
+                                                        , documentSnapshot.get("product_image_1").toString()
+                                                        , documentSnapshot.get("product_title").toString() + " " + documentSnapshot.get("product_subtitle").toString()
+                                                        , (long) documentSnapshot.get("free_coupon")
+                                                        , documentSnapshot.get("average_ratting").toString()
+                                                        , (long) documentSnapshot.get("total_ratings")
+                                                        , documentSnapshot.get("product_price").toString()
+                                                        ,""
+                                                        , (Boolean) documentSnapshot.get("COD")
+                                                        , (Boolean) documentSnapshot.get("in_stock")
+                                                        ,(long)documentSnapshot.get("offers_applied")
+                                                ));
+                                            }
                                             DBqueries.loadRatingList(ProductDetailActivity.this);
                                         }
 
@@ -691,17 +744,31 @@ public class ProductDetailActivity extends AppCompatActivity {
                     //DeliveryActivity.cartItemModelList.clear();
                     DeliveryActivity.cartItemModelList = new ArrayList<>();
                     DeliveryActivity.cartItemModelList.clear();
-                    DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.CART_ITEM,
-                            productID,documentSnapshot.get("product_image_1").toString()
-                            , documentSnapshot.get("product_title").toString()
-                            , (long) documentSnapshot.get("free_coupon")
-                            , documentSnapshot.get("product_price").toString()
-                            , documentSnapshot.get("cutted_price").toString()
-                            , (long)1
-                            , (long)0
-                            , (long)0
-                            ,(Boolean) documentSnapshot.get("in_stock")
-                    ));
+                    if ((Long)documentSnapshot.get("offers_applied")>0) {
+                        DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.CART_ITEM,
+                                productID, documentSnapshot.get("product_image_1").toString()
+                                , documentSnapshot.get("product_title").toString()
+                                , (long) documentSnapshot.get("free_coupon")
+                                , documentSnapshot.get("cutted_price").toString()
+                                , documentSnapshot.get("product_price").toString()
+                                , (long) 1
+                                , (long) documentSnapshot.get("offers_applied")
+                                , (long) 0
+                                , (Boolean) documentSnapshot.get("in_stock")
+                        ));
+                    }else {
+                        DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.CART_ITEM,
+                                productID, documentSnapshot.get("product_image_1").toString()
+                                , documentSnapshot.get("product_title").toString()
+                                , (long) documentSnapshot.get("free_coupon")
+                                , documentSnapshot.get("cutted_price").toString()
+                                ,""
+                                , (long) 1
+                                , (long) documentSnapshot.get("offers_applied")
+                                , (long) 0
+                                , (Boolean) documentSnapshot.get("in_stock")
+                        ));
+                    }
                     DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.TOTAL_AMOUNT));
                     if (DBqueries.addressModelList.size()==0){
                         DBqueries.loadAddresses(ProductDetailActivity.this,loadingDialog);
@@ -778,8 +845,13 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
             if (DBqueries.wishlist.size() == 0) {
                 DBqueries.loadWishlist(ProductDetailActivity.this, loadingDialog,false);
-                DBqueries.loadRatingList(ProductDetailActivity.this);
             } else {
+                loadingDialog.dismiss();
+            }
+            if (DBqueries.rewardModelList.size()==0){
+                DBqueries.loadRewards(ProductDetailActivity.this,loadingDialog,false);
+            }
+            if (DBqueries.cartlist.size()!=0 && DBqueries.rewardModelList.size()!=0 && DBqueries.wishlist.size() != 0){
                 loadingDialog.dismiss();
             }
         }else {
@@ -901,6 +973,8 @@ public class ProductDetailActivity extends AppCompatActivity {
             productDetailsActivity = null;
             showCart = false;
             finish();
+            MainActivity.currentFragment = MainActivity.HOME_FRAGMENT;
+
             return true;
         }else if(id ==R.id.search_icon){
             //todo: search

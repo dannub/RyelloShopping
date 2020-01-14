@@ -138,19 +138,35 @@ public class DBqueries {
                                                 ,documentSnapshot.get("product_subtitle_"+x).toString()
                                                 ,documentSnapshot.get("product_price_"+x).toString()
                                         ));
-
-                                        vieAllProductList.add(new WishlistModel(
-                                                documentSnapshot.get("product_ID_"+x).toString()
-                                                ,documentSnapshot.get("product_image_"+x).toString()
-                                                ,documentSnapshot.get("product_title_"+x).toString()+" "+documentSnapshot.get("product_subtitle_"+x).toString()
-                                                ,(long)documentSnapshot.get("free_coupon_"+x)
-                                                ,documentSnapshot.get("average_rating_"+x).toString()
-                                                ,(long)documentSnapshot.get("total_ratings_"+x)
-                                                ,documentSnapshot.get("product_price_"+x).toString()
-                                                ,documentSnapshot.get("cutted_price_"+x).toString()
-                                                ,(Boolean)documentSnapshot.get("COD_"+x)
-                                                ,(Boolean)documentSnapshot.get("in_stock_"+x)
-                                        ));
+                                        if ((long)documentSnapshot.get("offers_applied_"+ x)>0) {
+                                            vieAllProductList.add(new WishlistModel(
+                                                    documentSnapshot.get("product_ID_" + x).toString()
+                                                    , documentSnapshot.get("product_image_" + x).toString()
+                                                    , documentSnapshot.get("product_title_" + x).toString() + " " + documentSnapshot.get("product_subtitle_" + x).toString()
+                                                    , (long) documentSnapshot.get("free_coupon_" + x)
+                                                    , documentSnapshot.get("average_rating_" + x).toString()
+                                                    , (long) documentSnapshot.get("total_ratings_" + x)
+                                                    , documentSnapshot.get("cutted_price_" + x).toString()
+                                                    , documentSnapshot.get("product_price_" + x).toString()
+                                                    , (Boolean) documentSnapshot.get("COD_" + x)
+                                                    , (Boolean) documentSnapshot.get("in_stock_" + x)
+                                                    , (long) documentSnapshot.get("offers_applied_"+ x)
+                                            ));
+                                        }else {
+                                            vieAllProductList.add(new WishlistModel(
+                                                    documentSnapshot.get("product_ID_" + x).toString()
+                                                    , documentSnapshot.get("product_image_" + x).toString()
+                                                    , documentSnapshot.get("product_title_" + x).toString() + " " + documentSnapshot.get("product_subtitle_" + x).toString()
+                                                    , (long) documentSnapshot.get("free_coupon_" + x)
+                                                    , documentSnapshot.get("average_rating_" + x).toString()
+                                                    , (long) documentSnapshot.get("total_ratings_" + x)
+                                                    , documentSnapshot.get("product_price_" + x).toString()
+                                                    ,""
+                                                    , (Boolean) documentSnapshot.get("COD_" + x)
+                                                    , (Boolean) documentSnapshot.get("in_stock_" + x)
+                                                    , (long) documentSnapshot.get("offers_applied_"+ x)
+                                            ));
+                                        }
                                     }
                                     lists.get(index).add(new HomePageModel(2,documentSnapshot.get("layout_title").toString(),documentSnapshot.get("layout_background").toString(),horizontalProductScrollModelList,vieAllProductList));
 
@@ -216,17 +232,33 @@ public class DBqueries {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     if (task.isSuccessful()) {
-                                        wishlistModelList.add(new WishlistModel(
-                                                productId,task.getResult().get("product_image_1").toString()
-                                                , task.getResult().get("product_title").toString()
-                                                , (long) task.getResult().get("free_coupon")
-                                                , task.getResult().get("average_ratting").toString()
-                                                , (long) task.getResult().get("total_ratings")
-                                                , task.getResult().get("product_price").toString()
-                                                , task.getResult().get("cutted_price").toString()
-                                                , (Boolean) task.getResult().get("COD")
-                                                ,(Boolean)task.getResult().get("in_stock")
-                                        ));
+                                        if ((Long)task.getResult().get("offers_applied")>0) {
+                                            wishlistModelList.add(new WishlistModel(
+                                                    productId, task.getResult().get("product_image_1").toString()
+                                                    , task.getResult().get("product_title").toString()
+                                                    , (long) task.getResult().get("free_coupon")
+                                                    , task.getResult().get("average_ratting").toString()
+                                                    , (long) task.getResult().get("total_ratings")
+                                                    , task.getResult().get("cutted_price").toString()
+                                                    , task.getResult().get("product_price").toString()
+                                                    , (Boolean) task.getResult().get("COD")
+                                                    , (Boolean) task.getResult().get("in_stock")
+                                                    ,(Long)task.getResult().get("offers_applied")
+                                            ));
+                                        }else {
+                                            wishlistModelList.add(new WishlistModel(
+                                                    productId, task.getResult().get("product_image_1").toString()
+                                                    , task.getResult().get("product_title").toString()
+                                                    , (long) task.getResult().get("free_coupon")
+                                                    , task.getResult().get("average_ratting").toString()
+                                                    , (long) task.getResult().get("total_ratings")
+                                                    , task.getResult().get("product_price").toString()
+                                                    , ""
+                                                    , (Boolean) task.getResult().get("COD")
+                                                    , (Boolean) task.getResult().get("in_stock")
+                                                    ,(Long)task.getResult().get("offers_applied")
+                                            ));
+                                        }
                                         MyWishlistFragment.wishlistAdapter.notifyDataSetChanged();
 
                                     } else {
@@ -371,18 +403,31 @@ public class DBqueries {
                                         if (cartlist.size() >= 2){
                                             index = cartlist.size()-2;
                                         }
-
-                                        cartItemModelList.add(index,new CartItemModel(CartItemModel.CART_ITEM,
-                                                productId,task.getResult().get("product_image_1").toString()
-                                                , task.getResult().get("product_title").toString()
-                                                , (long) task.getResult().get("free_coupon")
-                                                , task.getResult().get("product_price").toString()
-                                                , task.getResult().get("cutted_price").toString()
-                                                , (long)1
-                                                , (long)0
-                                                , (long)0
-                                                ,(Boolean) task.getResult().get("in_stock")
-                                                ));
+                                        if ((Long)task.getResult().get("offers_applied")>0) {
+                                            cartItemModelList.add(index, new CartItemModel(CartItemModel.CART_ITEM,
+                                                    productId, task.getResult().get("product_image_1").toString()
+                                                    , task.getResult().get("product_title").toString()
+                                                    , (long) task.getResult().get("free_coupon")
+                                                    , task.getResult().get("cutted_price").toString()
+                                                    , task.getResult().get("product_price").toString()
+                                                    , (long) 1
+                                                    , (long) task.getResult().get("offers_applied")
+                                                    , (long) 0
+                                                    , (Boolean) task.getResult().get("in_stock")
+                                            ));
+                                        }else {
+                                            cartItemModelList.add(index, new CartItemModel(CartItemModel.CART_ITEM,
+                                                    productId, task.getResult().get("product_image_1").toString()
+                                                    , task.getResult().get("product_title").toString()
+                                                    , (long) task.getResult().get("free_coupon")
+                                                    , task.getResult().get("product_price").toString()
+                                                    , ""
+                                                    , (long) 1
+                                                    , (long) task.getResult().get("offers_applied")
+                                                    , (long) 0
+                                                    , (Boolean) task.getResult().get("in_stock")
+                                            ));
+                                        }
                                         String temp = cartlist.remove(cartlist.size()-1);
                                         cartlist.add(index, temp);
 
@@ -642,7 +687,7 @@ public class DBqueries {
                                             if (task.isSuccessful()){
                                                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
                                                     if (documentSnapshot.get("type").toString().toLowerCase().equals("discount") && lastseenDate.before(documentSnapshot.getDate("validity"))){
-                                                        rewardModelList.add(new RewardModel(documentSnapshot.get("type").toString()
+                                                        rewardModelList.add(new RewardModel(documentSnapshot.getId(),documentSnapshot.get("type").toString()
                                                                 ,documentSnapshot.get("lower_limit").toString()
                                                                 ,documentSnapshot.get("upper_limit").toString()
                                                                 ,documentSnapshot.get("precentage").toString()
@@ -651,7 +696,7 @@ public class DBqueries {
                                                                 ,(Boolean) documentSnapshot.get("already_used")
                                                         ));
                                                     }else if(documentSnapshot.get("type").toString().equals("Potongan Rp.*") && lastseenDate.before(documentSnapshot.getDate("validity"))){
-                                                        rewardModelList.add(new RewardModel(documentSnapshot.get("type").toString()
+                                                        rewardModelList.add(new RewardModel(documentSnapshot.getId(),documentSnapshot.get("type").toString()
                                                                 ,documentSnapshot.get("lower_limit").toString()
                                                                 ,documentSnapshot.get("upper_limit").toString()
                                                                 ,documentSnapshot.get("amount").toString()
