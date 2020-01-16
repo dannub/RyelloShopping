@@ -32,8 +32,10 @@ import com.reynagagroup.ryelloshopping.model.CartItemModel;
 import com.reynagagroup.ryelloshopping.model.CategoryModel;
 import com.reynagagroup.ryelloshopping.model.HomePageModel;
 import com.reynagagroup.ryelloshopping.model.HorizontalProductScrollModel;
+import com.reynagagroup.ryelloshopping.model.MyOrderItemModel;
 import com.reynagagroup.ryelloshopping.model.RewardModel;
 import com.reynagagroup.ryelloshopping.model.SliderModel;
+import com.reynagagroup.ryelloshopping.model.UploadBuktiModel;
 import com.reynagagroup.ryelloshopping.model.WishlistModel;
 import com.reynagagroup.ryelloshopping.ui.MyCartFragment;
 import com.reynagagroup.ryelloshopping.ui.MyRewardsFragment;
@@ -78,6 +80,8 @@ public class DBqueries {
     public static List<AddressModel> addressModelList = new ArrayList<>();
 
     public static List<RewardModel> rewardModelList = new ArrayList<>();
+
+    public static List<MyOrderItemModel> myOrderItemModelArrayList = new ArrayList<>();
 
     public static void loadCategories(final RecyclerView categoryRecyclerView, final Context context){
         categoryModelList.clear();
@@ -414,6 +418,7 @@ public class DBqueries {
                                                     , (long) task.getResult().get("offers_applied")
                                                     , (long) 0
                                                     , (Boolean) task.getResult().get("in_stock")
+                                                    ,(long)0
                                             ));
                                         }else {
                                             cartItemModelList.add(index, new CartItemModel(CartItemModel.CART_ITEM,
@@ -426,6 +431,7 @@ public class DBqueries {
                                                     , (long) task.getResult().get("offers_applied")
                                                     , (long) 0
                                                     , (Boolean) task.getResult().get("in_stock")
+                                                    ,(long)0
                                             ));
                                         }
                                         String temp = cartlist.remove(cartlist.size()-1);
@@ -727,11 +733,143 @@ public class DBqueries {
 
     }
 
+    public static void loadOrders(final Context context,final Dialog loadingDialog){
+        myOrderItemModelArrayList.clear();
+        firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA").document("MY_BUY")
+                .collection("MY_NOTA").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (final DocumentSnapshot documentSnapshot :task.getResult().getDocuments()){
+                        firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA").document("MY_BUY")
+                                .collection("MY_NOTA").document(documentSnapshot.getId())
+                                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()){
+                                    final UploadBuktiModel uploadBuktiModel = new UploadBuktiModel(task.getResult().getString("atasNama")
+                                            ,task.getResult().getString("id_user")
+                                            ,task.getResult().getString("username")
+                                            ,task.getResult().getString("imageUrl")
+                                            ,task.getResult().getString("bank")
+                                            ,task.getResult().getString("tgl_transfer")
+                                            ,task.getResult().getString("fullnameAddress")
+                                            ,task.getResult().getString("fullAddress")
+                                            ,task.getResult().getString("phone")
+                                            ,task.getResult().getString("email")
+                                            ,task.getResult().getString("pincodeAddress")
+                                            ,task.getResult().getString("tgl_pesan")
+                                            ,(int)task.getResult().get("totalAmount")
+                                            ,(int)task.getResult().get("totalItems")
+                                            ,(int)task.getResult().get("totalItemsPrice")
+                                            ,(int)task.getResult().get("savedAmount")
+                                            ,task.getResult().getString("deliveryPrice")
+                                            ,(boolean)task.getResult().get("ordered")
+                                            ,(boolean)task.getResult().get("packed")
+                                            ,(boolean)task.getResult().get("shipped")
+                                            ,(boolean)task.getResult().get("delivered")
+                                            ,task.getResult().getString("ordered_date")
+                                            ,task.getResult().getString("packed_date")
+                                            ,task.getResult().getString("shipped_date")
+                                            ,task.getResult().getString("delivered_date")
+                                            ,task.getResult().getString("ket_kirim")
+                                            ,task.getResult().getString("metode_kirim")
+                                            ,(boolean)task.getResult().get("isfree")
+
+                                    );
+
+                                    firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA").document("MY_BUY")
+                                            .collection("MY_NOTA").document(documentSnapshot.getId())
+                                            .collection("ITEM").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()){
+                                                final String idnota = documentSnapshot.getId();
+                                                for (DocumentSnapshot documentSnapshot :task.getResult().getDocuments()){
+                                                    firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA").document("MY_BUY")
+                                                            .collection("MY_NOTA").document(idnota)
+                                                            .collection("ITEM").document(documentSnapshot.getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                            if (task.isSuccessful()){
+                                                                myOrderItemModelArrayList.add(new MyOrderItemModel(
+                                                                        uploadBuktiModel.getAtasNama(),
+                                                                        uploadBuktiModel.getId_user(),
+                                                                        uploadBuktiModel.getUsername(),
+                                                                        uploadBuktiModel.getImageUrl(),
+                                                                        uploadBuktiModel.getBank(),
+                                                                        uploadBuktiModel.getTgl_transfer(),
+                                                                        uploadBuktiModel.getFullnameAddress(),
+                                                                        uploadBuktiModel.getFullAddress(),
+                                                                        uploadBuktiModel.getPhone(),
+                                                                        uploadBuktiModel.getEmail(),
+                                                                        uploadBuktiModel.getPincodeAddress(),
+                                                                        uploadBuktiModel.getTgl_pesan(),
+                                                                        uploadBuktiModel.getTotalAmount(),
+                                                                        uploadBuktiModel.getTotalItems(),
+                                                                        uploadBuktiModel.getTotalItemsPrice(),
+                                                                        uploadBuktiModel.getSavedAmount(),
+                                                                        uploadBuktiModel.getDeliveryPrice(),
+                                                                        uploadBuktiModel.isOrdered(),
+                                                                        uploadBuktiModel.isPacked(),
+                                                                        uploadBuktiModel.isShipped(),
+                                                                        uploadBuktiModel.isDelivered(),
+                                                                        uploadBuktiModel.getOrdered_date(),
+                                                                        uploadBuktiModel.getPacked_date(),
+                                                                        uploadBuktiModel.getShipped_date(),
+                                                                        uploadBuktiModel.getDelivered_date(),
+                                                                        uploadBuktiModel.getKet_kirim(),
+                                                                        uploadBuktiModel.getMetode_kirim(),
+                                                                        uploadBuktiModel.isIsfree(),
+                                                                        task.getResult().getString("productID"),
+                                                                        task.getResult().getString("productImage"),
+                                                                        task.getResult().getString("productTitle"),
+                                                                        task.getResult().getString("productPrice"),
+                                                                        task.getResult().getString("oriPrice"),
+                                                                        (long)task.getResult().get("productQuantity"),
+                                                                        (long)task.getResult().get("offersApplied"),
+                                                                        (long)task.getResult().get("couponsApplied"),
+                                                                        task.getResult().getString("selectedCouponId"),
+                                                                        task.getResult().getString("discountedPrice"),
+                                                                        (long)task.getResult().get("ratting")
+                                                                ));
+                                                            }else {
+                                                                String error = task.getException().getMessage();
+                                                                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }else {
+                                                String error = task.getException().getMessage();
+                                                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+
+                                }else {
+                                    String error = task.getException().getMessage();
+                                    Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }else {
+                    loadingDialog.dismiss();
+                    String error = task.getException().getMessage();
+                    Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
     public static void clearData(){
         categoryModelList.clear();
         if (!MainActivity.showCart) {
             lists.clear();
         }
+        myOrderItemModelArrayList.clear();
         loadedCategoriesNames.clear();
         wishlist.clear();
         wishlistModelList.clear();

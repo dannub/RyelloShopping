@@ -68,7 +68,7 @@
                         android:layout_marginStart="16dp"
                         android:text="Total Pembayaran:"
                         android:textColor="@color/colorAccent1"
-                        android:textSize="15dp"
+                        android:textSize="10dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                     <TextView
@@ -80,7 +80,7 @@
                         android:layout_marginStart="16dp"
                         android:text="Rp.800000/-"
                         android:textColor="@color/colorAccent1"
-                        android:textSize="18dp"
+                        android:textSize="15dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -98,7 +98,7 @@
                         android:layout_marginStart="16dp"
                         android:text="Status Pemesanan:"
                         android:textColor="@color/colorAccent1"
-                        android:textSize="15dp"
+                        android:textSize="10dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                     <TextView
@@ -110,7 +110,7 @@
                         android:layout_marginStart="16dp"
                         android:text="Belum Dikonfirmasi"
                         android:textColor="@color/colorAccent1"
-                        android:textSize="18dp"
+                        android:textSize="15dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                     <TextView
@@ -122,7 +122,7 @@
                         android:layout_marginStart="16dp"
                         android:text="22-08-2019 09:09:09"
                         android:textColor="@color/colorAccent1"
-                        android:textSize="18dp"
+                        android:textSize="15dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -160,7 +160,7 @@
                         android:layout_marginStart="16dp"
                         android:text="Rincian Pengiriman:"
                         android:textColor="@color/colorAccent1"
-                        android:textSize="15dp"
+                        android:textSize="10dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -173,7 +173,7 @@
                         android:layout_marginTop="8dp"
                         android:text="Ayu Maharani Jl.Kepu Barat, KOTA JAKARTA PUSAT,KEMAYORAN DKI JAKARTA,ID,51355,625656676767"
                         android:textColor="@color/colorAccent1"
-                        android:textSize="15dp"
+                        android:textSize="10dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -192,7 +192,7 @@
                         android:layout_marginStart="16dp"
                         android:text="Metode Pembayaran:"
                         android:textColor="@color/colorAccent1"
-                        android:textSize="15dp"
+                        android:textSize="10dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -204,7 +204,7 @@
                         android:layout_marginTop="8dp"
                         android:text="Bank BCA"
                         android:textColor="@color/colorAccent1"
-                        android:textSize="18dp"
+                        android:textSize="15dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 

@@ -43,15 +43,10 @@ public class MyOrdersFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         myOrderRecycleView.setLayoutManager(layoutManager);
 
-        List<MyOrderItemModel> myOrderItemModelList = new ArrayList<>();
-        myOrderItemModelList.add(new MyOrderItemModel(R.drawable.barang,2,"BAN TERKENAL 45S","Delivered on Mon,15th Jan 2019"));
-        myOrderItemModelList.add(new MyOrderItemModel(R.drawable.banner_slide,1,"BAN TERKENAL 45S","Cancelled"));
-        myOrderItemModelList.add(new MyOrderItemModel(R.drawable.barang,2,"BAN TERKENAL 45S","Delivered on Mon,15th Jan 2019"));
-        myOrderItemModelList.add(new MyOrderItemModel(R.drawable.barang,4,"BAN TERKENAL 45S","Delivered on Mon,15th Jan 2019"));
 
-        MyOrderAdapter myOrderAdapter = new MyOrderAdapter(myOrderItemModelList);
-        myOrderRecycleView.setAdapter(myOrderAdapter);
-        myOrderAdapter.notifyDataSetChanged();
+//        MyOrderAdapter myOrderAdapter = new MyOrderAdapter(myOrderItemModelList);
+//        myOrderRecycleView.setAdapter(myOrderAdapter);
+//        myOrderAdapter.notifyDataSetChanged();
 
         return view;
     }

@@ -702,7 +702,7 @@ public class PaymentActivity extends AppCompatActivity {
             } else {
                 //do here
                 now = Long.toString(System.currentTimeMillis());
-                File f = new File(android.os.Environment.getExternalStorageDirectory().toString()+"/Download/"+now+"_nota.jpg");
+                File f = new File(android.os.Environment.getExternalStorageDirectory().toString()+"/Download/"+now+"nota.jpg");
                 try {
 
                     f.createNewFile();
@@ -716,7 +716,7 @@ public class PaymentActivity extends AppCompatActivity {
         } else {
             //do here
             now = Long.toString(System.currentTimeMillis());
-            File f = new File(android.os.Environment.getExternalStorageDirectory().toString()+"/Download/"+now+ "_nota.jpg");
+            File f = new File(android.os.Environment.getExternalStorageDirectory().toString()+"/Download/"+now+ "nota.jpg");
             try {
 
                 f.createNewFile();
@@ -734,7 +734,7 @@ public class PaymentActivity extends AppCompatActivity {
         try {
             Document document = new Document(PageSize.A4);
             dirpath = android.os.Environment.getExternalStorageDirectory().toString();
-            PdfWriter.getInstance(document, new FileOutputStream(dirpath + "/Download/"+now+"_nota.pdf")); //  Change pdf's name.
+            PdfWriter.getInstance(document, new FileOutputStream(dirpath + "/Download/"+now+"nota.pdf")); //  Change pdf's name.
             document.open();
             Image img = Image.getInstance(dirpath +"/Download/" + now+"nota.jpg");
             float scaler = ((document.getPageSize().getWidth() - document.leftMargin()

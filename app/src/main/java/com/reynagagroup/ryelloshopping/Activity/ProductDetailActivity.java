@@ -441,6 +441,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                                                 , (long) documentSnapshot.get("offers_applied")
                                                                                 , (long) 0
                                                                                 , (Boolean) documentSnapshot.get("in_stock")
+                                                                                ,(long)0
                                                                         ));
                                                                     }else {
                                                                         cartItemModelList.add(0, new CartItemModel(CartItemModel.CART_ITEM,
@@ -453,6 +454,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                                                 , (long) documentSnapshot.get("offers_applied")
                                                                                 , (long) 0
                                                                                 , (Boolean) documentSnapshot.get("in_stock")
+                                                                                ,(long)0
                                                                         ));
                                                                     }
 
@@ -755,6 +757,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 , (long) documentSnapshot.get("offers_applied")
                                 , (long) 0
                                 , (Boolean) documentSnapshot.get("in_stock")
+                                ,(long)0
                         ));
                     }else {
                         DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.CART_ITEM,
@@ -767,6 +770,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 , (long) documentSnapshot.get("offers_applied")
                                 , (long) 0
                                 , (Boolean) documentSnapshot.get("in_stock")
+                                ,(long)0
                         ));
                     }
                     DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.TOTAL_AMOUNT));
