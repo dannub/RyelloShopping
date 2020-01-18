@@ -36,7 +36,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.Viewhold
 
     @Override
     public void onBindViewHolder(@NonNull MyOrderAdapter.Viewholder viewholder, int position) {
-        int resource = myOrderItemModelList.get(position).getProductImage();
+        String resource = myOrderItemModelList.get(position).getProductImage();
         int ratting = myOrderItemModelList.get(position).getRatting();
         String title = myOrderItemModelList.get(position).getProductTitle();
         String deliveryDate = myOrderItemModelList.get(position).getDeliverStatus();
