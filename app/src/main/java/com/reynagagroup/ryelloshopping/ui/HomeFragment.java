@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity;
 import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.Activity.MainActivity;
 import com.reynagagroup.ryelloshopping.R;
@@ -227,7 +228,7 @@ public class HomeFragment extends Fragment {
             home_page_recycle.setAdapter(adapter);
 
 
-            DBqueries.loadCartList(getContext(), new Dialog(getContext()),false,badgeCount,new TextView(getContext()));
+            DBqueries.loadCartList(getContext(), new Dialog(getContext()),false,badgeCount,new TextView(getContext()),false,null);
             loadCategories(categoryRecyclerView,getContext());
 
             loadedCategoriesNames.add("HOME");

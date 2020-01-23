@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".Activity.OrderDetailsActivity">
 
+    <include layout="@layout/nota_payment_layout"
+        android:visibility="invisible"
+        />
+
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout3"
         android:layout_width="match_parent"
@@ -45,7 +50,61 @@
 
             <include layout="@layout/shipping_details_layout" />
 
+
             <include layout="@layout/cart_total_amaount_layout" />
+
+
+            <Button
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/delivered"
+                android:background="@drawable/slider_background"
+                android:textColor="@color/colorAccent"
+                android:text="Pesanan telah Sampai"
+                android:id="@+id/pesanan_sampai"
+                />
+            <Button
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colordetail"
+                android:background="@drawable/slider_background"
+                android:textColor="@color/colorAccent"
+                android:text="Hubungi Admin"
+                android:id="@+id/call"
+                />
+
+            <Button
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorcoupon"
+                android:background="@drawable/slider_background"
+                android:textColor="@color/colorAccent"
+                android:text="Cancel Order"
+                android:id="@+id/cancel_order"
+                />
+
+            <Button
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorcoupon"
+                android:background="@drawable/slider_background"
+                android:textColor="@color/colorAccent"
+                android:text="Hapus Pesanan"
+                android:id="@+id/hapus"
+                />
+
         </LinearLayout>
     </ScrollView>
 

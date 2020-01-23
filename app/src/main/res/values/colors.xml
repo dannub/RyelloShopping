@@ -19,4 +19,12 @@
     <color name="colorAccent3">#CCC8C8</color>
     <color name="colorAccent4">#ce0000</color>
 
+
+    <color name="pesanan">#CCC8C8</color>
+    <color name="canceled">#ff0000</color>
+    <color name="ordered">#0F7FB6</color>
+    <color name="packed">#aaccff</color>
+    <color name="shipping">#FFdd56</color>
+    <color name="delivered">#05f922</color>
+
 </resources>

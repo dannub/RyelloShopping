@@ -52,6 +52,7 @@
         android:text="Qty:1"
         android:textColor="@color/colorPrimary"
         android:background="@drawable/border_background"
+
         android:padding="3dp"
         app:layout_constraintBottom_toBottomOf="@+id/product_image"
         app:layout_constraintEnd_toStartOf="@+id/product_image" />
@@ -157,7 +158,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Ordered"
+        android:text="Dikonfirmasi"
         android:textStyle="bold"
         android:textSize="12sp"
         android:textColor="@color/colordetail"
@@ -169,30 +170,29 @@
         android:id="@+id/ordered_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:text="Mon,12th Dec 2015 - 7:00 A.M."
-        android:textSize="12sp"
         android:textColor="@color/colordetail"
-        app:layout_constraintBottom_toBottomOf="@+id/ordered_title"
-        app:layout_constraintStart_toEndOf="@+id/ordered_title"
-        app:layout_constraintTop_toTopOf="@+id/ordered_title" />
+        android:textSize="10sp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/ordered_title"
+        app:layout_constraintTop_toBottomOf="@+id/ordered_title" />
 
     <TextView
         android:id="@+id/ordered_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your order has been placed"
-        android:textSize="10sp"
+        android:text="Pesananmu telah dikonfirmasi"
         android:textColor="@color/colordetail"
+        android:textSize="10sp"
         app:layout_constraintStart_toStartOf="@+id/ordered_title"
-        app:layout_constraintTop_toBottomOf="@+id/ordered_title" />
+        app:layout_constraintTop_toBottomOf="@+id/ordered_date" />
 
     <TextView
         android:id="@+id/packed_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Packed"
+        android:text="Dikemas"
         android:textStyle="bold"
         android:textSize="12sp"
         android:textColor="@color/colordetail"
@@ -202,32 +202,33 @@
 
     <TextView
         android:id="@+id/packed_date"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:text="Mon,12th Dec 2015 - 7:00 A.M."
-        android:textSize="12sp"
         android:textColor="@color/colordetail"
-        app:layout_constraintBottom_toBottomOf="@+id/packed_title"
-        app:layout_constraintStart_toEndOf="@+id/packed_title"
-        app:layout_constraintTop_toTopOf="@+id/packed_title" />
+        android:textSize="10sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/textView36"
+        app:layout_constraintStart_toStartOf="@+id/packed_title"
+        app:layout_constraintTop_toBottomOf="@+id/packed_title" />
 
     <TextView
         android:id="@+id/packed_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your order has been packed"
-        android:textSize="10sp"
+        android:text="Pesananmu telah dikemas"
         android:textColor="@color/colordetail"
+        android:textSize="10sp"
         app:layout_constraintStart_toStartOf="@+id/packed_title"
-        app:layout_constraintTop_toBottomOf="@+id/packed_title" />
+        app:layout_constraintTop_toBottomOf="@+id/packed_date" />
 
     <TextView
         android:id="@+id/shipping_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Shipping"
+        android:text="Dikirim"
         android:textStyle="bold"
         android:textSize="12sp"
         android:textColor="@color/colordetail"
@@ -237,32 +238,33 @@
 
     <TextView
         android:id="@+id/shipping_date"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:text="Mon,12th Dec 2015 - 7:00 A.M."
-        android:textSize="12sp"
         android:textColor="@color/colordetail"
-        app:layout_constraintBottom_toBottomOf="@+id/shipping_title"
-        app:layout_constraintStart_toEndOf="@+id/shipping_title"
-        app:layout_constraintTop_toTopOf="@+id/shipping_title" />
+        android:textSize="10sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/copy_resi"
+        app:layout_constraintStart_toStartOf="@+id/shipping_title"
+        app:layout_constraintTop_toBottomOf="@+id/shipping_title" />
 
     <TextView
         android:id="@+id/shipping_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your order has been shipped"
-        android:textSize="10sp"
+        android:text="Pesananmu telah dikirim"
         android:textColor="@color/colordetail"
+        android:textSize="10sp"
         app:layout_constraintStart_toStartOf="@+id/shipping_title"
-        app:layout_constraintTop_toBottomOf="@+id/shipping_title" />
+        app:layout_constraintTop_toBottomOf="@+id/shipping_date" />
 
     <TextView
         android:id="@+id/delivered_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Delivered"
+        android:text="Sampai"
         android:textStyle="bold"
         android:textSize="12sp"
         android:textColor="@color/colordetail"
@@ -272,25 +274,25 @@
 
     <TextView
         android:id="@+id/delivered_date"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:text="Mon,12th Dec 2015 - 7:00 A.M."
-        android:textSize="12sp"
         android:textColor="@color/colordetail"
-        app:layout_constraintBottom_toBottomOf="@+id/delivered_title"
-        app:layout_constraintStart_toEndOf="@+id/delivered_title"
-        app:layout_constraintTop_toTopOf="@+id/delivered_title" />
+        android:textSize="10sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/delivered_title"
+        app:layout_constraintTop_toBottomOf="@+id/delivered_title" />
 
     <TextView
         android:id="@+id/delivered_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your order has been delivered"
-        android:textSize="10sp"
+        android:text="Pesananmu telah sampai"
         android:textColor="@color/colordetail"
+        android:textSize="10sp"
         app:layout_constraintStart_toStartOf="@+id/delivered_title"
-        app:layout_constraintTop_toBottomOf="@+id/delivered_title" />
+        app:layout_constraintTop_toBottomOf="@+id/delivered_date" />
 
     <LinearLayout
         android:id="@+id/rate_now_container"
@@ -378,4 +380,63 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider10" />
+
+    <TextView
+        android:id="@+id/detail_shiping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="JNE Resi : 78789789798"
+        android:visibility="gone"
+        android:textSize="10sp"
+        android:textColor="@color/colordetail"
+        app:layout_constraintStart_toStartOf="@+id/shipping_body"
+        app:layout_constraintTop_toBottomOf="@+id/shipping_body" />
+
+    <Button
+
+        android:id="@+id/copy_resi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:background="@drawable/border_background4"
+        android:text="Copy Resi"
+        android:textColor="@color/colordetail"
+
+        android:visibility="gone"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/shipping_body"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/shipping_date" />
+
+    <TextView
+        android:id="@+id/cancel_dikemas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent4"
+        android:background="@drawable/border_background5"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:textSize="6dp"
+        android:text="Cancel Order \nMon,12th Dec 2015 - 7:00 A.M."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/packed_date" />
+
+    <TextView
+        android:id="@+id/cancel_konfirmasi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:textColor="@color/colorAccent4"
+        android:background="@drawable/border_background5"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="center"
+        android:textSize="6dp"
+        android:text="Cancel Order \nMon,12th Dec 2015 - 7:00 A.M."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ordered_date" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

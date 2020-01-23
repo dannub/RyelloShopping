@@ -94,7 +94,7 @@ public class DeliveryActivity extends AppCompatActivity {
 
 
 
-        cartlistAdapter = new CartAdapter(DeliveryActivity.this,deliveryRecycleView,linearLayoutManager,cartItemModelList,totalAmount,false);
+        cartlistAdapter = new CartAdapter(DeliveryActivity.this,deliveryRecycleView,linearLayoutManager,cartItemModelList,totalAmount,false,loadingDialog);
         cartlistAdapter.SetAdapter(cartlistAdapter);
         deliveryRecycleView.setAdapter(cartlistAdapter);
 
@@ -109,7 +109,9 @@ public class DeliveryActivity extends AppCompatActivity {
 
         recyclerViewState = deliveryRecycleView.getLayoutManager().onSaveInstanceState();
         deliveryRecycleView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-        linearLayoutManager.scrollToPosition(cartItemModelList.size() - 1);
+        if (cartItemModelList.size()!=0) {
+            linearLayoutManager.scrollToPosition(cartItemModelList.size() - 1);
+        }
 //        deliveryRecycleView.smoothScrollToPosition(0);
 //        linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
@@ -139,7 +141,7 @@ public class DeliveryActivity extends AppCompatActivity {
                     deliveryActivity = DeliveryActivity.this;
 
                     if (DBqueries.addressModelList.size() == 0) {
-                        DBqueries.loadAddresses(DeliveryActivity.this, loadingDialog);
+                        DBqueries.loadAddresses(DeliveryActivity.this, loadingDialog,SELECT_ADDRESS);
                     } else {
 
                         paymentMethodDialog.show();

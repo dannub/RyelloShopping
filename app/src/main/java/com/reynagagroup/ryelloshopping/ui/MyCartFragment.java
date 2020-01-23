@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,7 +120,7 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
                             }
                         }
                         DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.TOTAL_AMOUNT));
-                        DeliveryActivity.cartlistAdapter = new CartAdapter(getContext(),cartItemsRecyclerView,null,DeliveryActivity.cartItemModelList,DeliveryActivity.totalAmount,false);
+                        DeliveryActivity.cartlistAdapter = new CartAdapter(getContext(),cartItemsRecyclerView,null,DeliveryActivity.cartItemModelList,DeliveryActivity.totalAmount,false,loadingDialog);
                         DeliveryActivity.cartlistAdapter.SetAdapter(DeliveryActivity.cartlistAdapter);
                         DeliveryActivity.deliveryRecycleView.setAdapter(DeliveryActivity.cartlistAdapter);
                         DeliveryActivity.cartlistAdapter.notifyDataSetChanged();
@@ -127,7 +128,7 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
 
                         loadingDialog.show();
                         if (DBqueries.addressModelList.size() == 0) {
-                            DBqueries.loadAddresses(getContext(), loadingDialog);
+                            DBqueries.loadAddresses(getContext(), loadingDialog,0);
                         } else {
                             loadingDialog.dismiss();
                             Intent deliveryIntent = new Intent(getContext(), DeliveryActivity.class);
@@ -160,7 +161,7 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
 
         super.onStart();
         this_fragment = MyCartFragment.this;
-        DBqueries.loadCartList(getContext(), loadingDialog,true,new TextView(getContext()),totalAmount);
+        DBqueries.loadCartList(getContext(), loadingDialog,true,new TextView(getContext()),totalAmount,false,null);
         DBqueries.loadRewards(getContext(),loadingDialog,false);
 
 
@@ -175,17 +176,12 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
         }
 
 
-        cartlistAdapter = new CartAdapter(getContext(),cartItemsRecyclerView,linearLayoutManager,DBqueries.cartItemModelList,totalAmount,true);
-        cartlistAdapter.SetAdapter(cartlistAdapter);
-        cartItemsRecyclerView.setAdapter(cartlistAdapter);
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        cartItemsRecyclerView.setLayoutManager(linearLayoutManager);
-        cartItemsRecyclerView.smoothScrollToPosition(0);
-        linearLayoutManager.scrollToPositionWithOffset(0, 0);
 
 
-        cartlistAdapter.notifyDataSetChanged();
+
+
+
+
 
 
     }

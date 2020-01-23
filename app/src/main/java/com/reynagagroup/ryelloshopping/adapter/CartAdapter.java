@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,14 +47,16 @@ public class CartAdapter extends RecyclerView.Adapter {
     private CartAdapter cartAdapter;
     private RecyclerView cartItemsRecyclerView;
     private LinearLayoutManager linearLayoutManager;
+    private Dialog loadingDialog;
 
-    public CartAdapter(Context context,RecyclerView cartItemsRecyclerView,LinearLayoutManager linearLayoutManager,List<CartItemModel> cartItemModelList,TextView cartTotalAmount,boolean showDeleteBtn) {
+    public CartAdapter(Context context,RecyclerView cartItemsRecyclerView,LinearLayoutManager linearLayoutManager,List<CartItemModel> cartItemModelList,TextView cartTotalAmount,boolean showDeleteBtn,Dialog loadingDialog) {
         this.cartItemModelList = cartItemModelList;
         this.context=context;
         this.cartItemsRecyclerView = cartItemsRecyclerView;
         this.linearLayoutManager = linearLayoutManager;
         this.cartTotalAmount = cartTotalAmount;
         this.showDeleteBtn = showDeleteBtn;
+        this.loadingDialog = loadingDialog;
     }
     public void SetAdapter(CartAdapter cartAdapter){
         this.cartAdapter=cartAdapter;
@@ -110,7 +113,7 @@ public class CartAdapter extends RecyclerView.Adapter {
             case CartItemModel.TOTAL_AMOUNT:
                 int totalItems = 0;
                 int totalItemPrice =0;
-                String deliveryPrice ;
+                String deliveryPrice = "";
                 int totalAmount ;
                 int saveAmount = 0;
 
@@ -142,7 +145,7 @@ public class CartAdapter extends RecyclerView.Adapter {
 
                 if (totalItemPrice > 500000 || totalItemPrice == 0){
                     PaymentActivity.isfree = true;
-                    deliveryPrice = "FREE";
+                    deliveryPrice="FREE";
                     totalAmount = totalItemPrice;
                 }else {
                     PaymentActivity.isfree = false;
@@ -155,7 +158,10 @@ public class CartAdapter extends RecyclerView.Adapter {
                 cartItemModelList.get(position).setDeliveryPrice(deliveryPrice);
                 cartItemModelList.get(position).setTotalAmount(totalAmount);
                 cartItemModelList.get(position).setSavedAmount(saveAmount);
-                ((CartTotalAmountViewholder)viewHolder).setTotalAmount(totalItems,totalItemPrice,deliveryPrice,totalAmount,saveAmount);
+
+
+
+                ((CartTotalAmountViewholder)viewHolder).setTotalAmount(totalItems,totalItemPrice,deliveryPrice,totalAmount,saveAmount,position);
                 break;
             default:
                 return;
@@ -447,7 +453,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                                         productQuantity.setText("Qty: " + quantityNo.getText());
                                         notifyItemChanged(cartItemModelList.size()-1);
 
-                                        DeliveryActivity.loadingDialog.show();
+                                        loadingDialog.show();
 
                                         cartItemModelList.get(position).setProductQuantity(Long.parseLong(quantityNo.getText().toString()));
 
@@ -457,6 +463,7 @@ public class CartAdapter extends RecyclerView.Adapter {
 
                                         linearLayoutManager.scrollToPosition(cartItemModelList.size() - 1);
                                         cartAdapter.notifyDataSetChanged();
+                                        loadingDialog.dismiss();
                                         quantityDialog.dismiss();
                                     }else {
                                         Toast.makeText(context,"Maximal pesan 5",Toast.LENGTH_SHORT).show();
@@ -564,7 +571,10 @@ public class CartAdapter extends RecyclerView.Adapter {
             saveAmount = itemView.findViewById(R.id.saved_amount);
         }
 
-        private  void setTotalAmount(int totalItemText, int totalItemPriceText,String deliveryPriceText,int totalAmountText, int saveAmountText){
+        private  void setTotalAmount(int totalItemText, int totalItemPriceText,String deliveryPriceText,int totalAmountText, int saveAmountText,int position){
+
+
+
             totalItems.setText("Price("+totalItemText+" items)");
             totalItemPrice.setText("Rp."+totalItemPriceText+"/-");
             if (deliveryPriceText.equals("FREE")) {

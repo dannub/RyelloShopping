@@ -23,14 +23,16 @@
 
     <TextView
         android:id="@+id/product_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text="BAN TERKENAL 4S35"
+        android:textColor="@color/colorAccent1"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@color/colorAccent1"
+        app:layout_constraintEnd_toStartOf="@+id/product_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,13 +49,15 @@
 
     <TextView
         android:id="@+id/order_delivered_day"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:text="Delivered on Mon,15th Jan 2019"
         android:textColor="@color/colordetail"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/order_status_indicator"
+        app:layout_constraintEnd_toStartOf="@+id/product_image"
         app:layout_constraintStart_toEndOf="@+id/order_status_indicator"
         app:layout_constraintTop_toTopOf="@+id/order_status_indicator" />
 

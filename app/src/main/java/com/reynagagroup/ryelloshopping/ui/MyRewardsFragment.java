@@ -52,6 +52,9 @@ public class  MyRewardsFragment extends Fragment {
 
         //loading dialog
 
+        DBqueries.loadRewards(getContext(),loadingDialog,true);
+
+
         rewardRecyclerView = view.findViewById(R.id.my_rewards_recycleview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -59,7 +62,6 @@ public class  MyRewardsFragment extends Fragment {
         myRewardsAdapter = new MyRewardsAdapter(DBqueries.rewardModelList,false);
         rewardRecyclerView.setAdapter(myRewardsAdapter);
 
-        DBqueries.loadRewards(getContext(),loadingDialog,true);
 
 
         myRewardsAdapter.notifyDataSetChanged();

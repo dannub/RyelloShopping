@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
             if (currentUser !=null){
 
 
-                DBqueries.loadCartList(MainActivity.this, new Dialog(MainActivity.this),false,badgeCount,new TextView(MainActivity.this));
+                DBqueries.loadCartList(MainActivity.this, new Dialog(MainActivity.this),false,badgeCount,new TextView(MainActivity.this),false,null);
 
             }
 
@@ -391,6 +391,7 @@ public class MainActivity extends AppCompatActivity {
                         currentFragment = -1;
                         finish();
                     }else {
+
                         actionBarLogo.setVisibility(View.VISIBLE);
                         invalidateOptionsMenu();
                         setFragment(new HomeFragment(), HOME_FRAGMENT);
@@ -445,6 +446,7 @@ public class MainActivity extends AppCompatActivity {
         }else  if (id == android.R.id.home){
 
 
+
             if(drawer.isDrawerOpen(GravityCompat.START)){
                 drawer.closeDrawer(GravityCompat.START);
             }else {
@@ -454,6 +456,7 @@ public class MainActivity extends AppCompatActivity {
                     super.onBackPressed();
 
                 }else if (currentFragment==CART_FRAGMENT){
+
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
 
                     if ((fragment instanceof IOnBackPressed) || ((IOnBackPressed) fragment).onBackPressed()) {

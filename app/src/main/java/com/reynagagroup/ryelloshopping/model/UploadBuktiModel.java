@@ -2,6 +2,9 @@ package com.reynagagroup.ryelloshopping.model;
 
 import android.widget.TextView;
 
+
+import java.util.Date;
+
 public class UploadBuktiModel {
     private String atasNama;
     private String id_user;
@@ -14,7 +17,7 @@ public class UploadBuktiModel {
     private String phone;
     private String email;
     private String pincodeAddress;
-    private String tgl_pesan;
+    private Date tgl_pesan;
     private int totalAmount;
     private int totalItems,totalItemsPrice,savedAmount;
     private String deliveryPrice;
@@ -22,13 +25,22 @@ public class UploadBuktiModel {
     private boolean packed;
     private boolean shipped;
     private boolean delivered;
-    private String ordered_date;
-    private String packed_date;
-    private String shipped_date;
-    private String delivered_date;
+    private boolean canceled;
+
+    private Date ordered_date;
+    private Date packed_date;
+    private Date shipped_date;
+    private Date delivered_date;
+    private Date canceled_date;
+
+
     private String ket_kirim;
     private String metode_kirim;
+
     private boolean isfree;
+
+    private boolean ishapus;
+
 
 
     public UploadBuktiModel(){
@@ -36,7 +48,7 @@ public class UploadBuktiModel {
     }
 
 
-    public UploadBuktiModel(String atasNama, String id_user, String username, String imageUrl, String bank, String tgl_transfer, String fullnameAddress, String fullAddress, String phone, String email, String pincodeAddress, String tgl_pesan, int totalAmount, int totalItems, int totalItemsPrice, int savedAmount, String deliveryPrice, boolean ordered, boolean packed, boolean shipped, boolean delivered, String ordered_date, String packed_date, String shipped_date, String delivered_date, String ket_kirim, String metode_kirim, boolean isfree) {
+    public UploadBuktiModel(String atasNama, String id_user, String username, String imageUrl, String bank, String tgl_transfer, String fullnameAddress, String fullAddress, String phone, String email, String pincodeAddress, Date tgl_pesan, int totalAmount, int totalItems, int totalItemsPrice, int savedAmount, String deliveryPrice, boolean ordered, boolean packed, boolean shipped, boolean delivered, boolean canceled, Date ordered_date, Date packed_date, Date shipped_date, Date delivered_date, Date canceled_date, String ket_kirim, String metode_kirim, boolean isfree, boolean ishapus) {
         this.atasNama = atasNama;
         this.id_user = id_user;
         this.username = username;
@@ -58,13 +70,16 @@ public class UploadBuktiModel {
         this.packed = packed;
         this.shipped = shipped;
         this.delivered = delivered;
+        this.canceled = canceled;
         this.ordered_date = ordered_date;
         this.packed_date = packed_date;
         this.shipped_date = shipped_date;
         this.delivered_date = delivered_date;
+        this.canceled_date = canceled_date;
         this.ket_kirim = ket_kirim;
         this.metode_kirim = metode_kirim;
         this.isfree = isfree;
+        this.ishapus = ishapus;
     }
 
     public String getAtasNama() {
@@ -155,11 +170,11 @@ public class UploadBuktiModel {
         this.pincodeAddress = pincodeAddress;
     }
 
-    public String getTgl_pesan() {
+    public Date getTgl_pesan() {
         return tgl_pesan;
     }
 
-    public void setTgl_pesan(String tgl_pesan) {
+    public void setTgl_pesan(Date tgl_pesan) {
         this.tgl_pesan = tgl_pesan;
     }
 
@@ -235,36 +250,52 @@ public class UploadBuktiModel {
         this.delivered = delivered;
     }
 
-    public String getOrdered_date() {
+    public boolean isCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
+
+    public Date getOrdered_date() {
         return ordered_date;
     }
 
-    public void setOrdered_date(String ordered_date) {
+    public void setOrdered_date(Date ordered_date) {
         this.ordered_date = ordered_date;
     }
 
-    public String getPacked_date() {
+    public Date getPacked_date() {
         return packed_date;
     }
 
-    public void setPacked_date(String packed_date) {
+    public void setPacked_date(Date packed_date) {
         this.packed_date = packed_date;
     }
 
-    public String getShipped_date() {
+    public Date getShipped_date() {
         return shipped_date;
     }
 
-    public void setShipped_date(String shipped_date) {
+    public void setShipped_date(Date shipped_date) {
         this.shipped_date = shipped_date;
     }
 
-    public String getDelivered_date() {
+    public Date getDelivered_date() {
         return delivered_date;
     }
 
-    public void setDelivered_date(String delivered_date) {
+    public void setDelivered_date(Date delivered_date) {
         this.delivered_date = delivered_date;
+    }
+
+    public Date getCanceled_date() {
+        return canceled_date;
+    }
+
+    public void setCanceled_date(Date canceled_date) {
+        this.canceled_date = canceled_date;
     }
 
     public String getKet_kirim() {
@@ -289,5 +320,13 @@ public class UploadBuktiModel {
 
     public void setIsfree(boolean isfree) {
         this.isfree = isfree;
+    }
+
+    public boolean isIshapus() {
+        return ishapus;
+    }
+
+    public void setIshapus(boolean ishapus) {
+        this.ishapus = ishapus;
     }
 }

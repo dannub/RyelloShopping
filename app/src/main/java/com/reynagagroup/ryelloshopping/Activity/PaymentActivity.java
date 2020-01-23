@@ -48,6 +48,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -322,6 +323,8 @@ public class PaymentActivity extends AppCompatActivity {
                                     final String dateString = sdf.format(new Date(dateInMillis));
 
 
+                                    Date date= new Date();
+
                                     Toast.makeText(PaymentActivity.this,"Upload successful",Toast.LENGTH_LONG).show();
                                     final UploadBuktiModel uploadBuktiModel = new UploadBuktiModel(
                                             an.getText().toString().trim()
@@ -334,23 +337,29 @@ public class PaymentActivity extends AppCompatActivity {
                                             ,DBqueries.addressModelList.get(DBqueries.selectedAddress).getPhone()
                                             ,currentUser.getEmail()
                                             ,DBqueries.addressModelList.get(DBqueries.selectedAddress).getPincode()
-                                            ,dateString
+                                            , date
                                             ,cartItemModelList.get(cartItemModelList.size()-1).getTotalAmount()
                                             ,cartItemModelList.get(cartItemModelList.size()-1).getTotalItems()
                                             ,cartItemModelList.get(cartItemModelList.size()-1).getTotalItemsPrice()
                                             ,cartItemModelList.get(cartItemModelList.size()-1).getSavedAmount()
                                             ,cartItemModelList.get(cartItemModelList.size()-1).getDeliveryPrice()
-                                            ,false,false,false,false,"","","","","",""
+                                            ,false,false,false,false,false
+                                            ,date,date,date,date,date
+                                            ,"",""
                                             ,isfree
+                                            ,false
                                     );
 
 
-                                    firebaseFirestore.collection("USERS").document(currentUser.getUid()).collection("USER_DATA")
-                                            .document("MY_BUY").collection("MY_NOTA")
+                                    firebaseFirestore.collection("USERS").document(currentUser.getUid()).collection("USER_NOTA")
                                             .add(uploadBuktiModel).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                             if (task.isSuccessful()) {
+
+
+
+
                                                 final String key = task.getResult().getId();
 
                                                 idPayment.setText("Kode.Pesanan: " + key);
@@ -362,6 +371,8 @@ public class PaymentActivity extends AppCompatActivity {
 
 
                                                 successResponse = true;
+
+
 
 
                                                 if (MainActivity.mainActivity != null) {
@@ -463,8 +474,19 @@ public class PaymentActivity extends AppCompatActivity {
                                                 });
 
                                                 for (int i = 0; i < cartItemModelList.size()-1; i++) {
-                                                    firebaseFirestore.collection("USERS").document(currentUser.getUid()).collection("USER_DATA")
-                                                            .document("MY_BUY").collection("MY_NOTA").document(key).collection("ITEM").add(cartItemModelList.get(i));
+                                                    cartItemModelList.get(i).setTotalItems(cartItemModelList.get(cartItemModelList.size()-1).getTotalItems());
+                                                    cartItemModelList.get(i).setTotalItemsPrice(cartItemModelList.get(cartItemModelList.size()-1).getTotalItemsPrice());
+                                                    cartItemModelList.get(i).setDeliveryPrice(cartItemModelList.get(cartItemModelList.size()-1).getDeliveryPrice());
+                                                    cartItemModelList.get(i).setTotalAmount(cartItemModelList.get(cartItemModelList.size()-1).getTotalAmount());
+                                                    cartItemModelList.get(i).setSavedAmount(cartItemModelList.get(cartItemModelList.size()-1).getSavedAmount());
+
+                                                    Map<String ,Object> updateReward = new HashMap<>();
+                                                    updateReward.put("already_used",true);
+
+                                                    firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_REWARDS")
+                                                            .document(cartItemModelList.get(i).getSelectedCouponId()).update(updateReward);
+
+                                                    firebaseFirestore.collection("USERS").document(currentUser.getUid()).collection("USER_NOTA").document(key).collection("ITEM").add(cartItemModelList.get(i));
 
                                                 }
                                                 Save.setEnabled(true);

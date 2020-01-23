@@ -24,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.AddressesAdapter;
+import com.reynagagroup.ryelloshopping.ui.MyOrdersFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,11 +39,12 @@ public class MyAddressesActivity extends AppCompatActivity {
 
     private int previousAddress;
     private FButton deliverHereBtn;
-    private TextView addressesSaved;
-    private RecyclerView myAddressesRecyclerView;
+    public static TextView addressesSaved;
+    public static RecyclerView myAddressesRecyclerView;
     private Button add_new_address_btn;
-    private static AddressesAdapter addressesAdapter;
+    public static AddressesAdapter addressesAdapter;
     private Dialog loadingDialog;
+    private int mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +81,7 @@ public class MyAddressesActivity extends AppCompatActivity {
         myAddressesRecyclerView.setLayoutManager(linearLayoutManager);
 
 
-        int mode = getIntent().getIntExtra("MODE",-1);
+         mode = getIntent().getIntExtra("MODE",-1);
 
         if(mode ==SELECT_ADDRESS){
             deliverHereBtn.setVisibility(View.VISIBLE);
@@ -89,40 +91,38 @@ public class MyAddressesActivity extends AppCompatActivity {
         deliverHereBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (DBqueries.selectedAddress!= previousAddress){
-                    final int previousAddressIndex = previousAddress;
-                    loadingDialog.show();
-                    Map<String,Object> updateSelection = new HashMap<>();
-                    updateSelection.put("selected_"+String.valueOf(previousAddress+1),false);
-                    updateSelection.put("selected_"+String.valueOf(DBqueries.selectedAddress+1),true);
+                    if (DBqueries.selectedAddress!= previousAddress){
+                        final int previousAddressIndex = previousAddress;
+                        loadingDialog.show();
+                        Map<String,Object> updateSelection = new HashMap<>();
+                        updateSelection.put("selected_"+String.valueOf(previousAddress+1),false);
+                        updateSelection.put("selected_"+String.valueOf(DBqueries.selectedAddress+1),true);
 
-                    previousAddress = DBqueries.selectedAddress;
+                        previousAddress = DBqueries.selectedAddress;
 
-                    FirebaseFirestore.getInstance().collection("USERS")
-                            .document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA")
-                            .document("MY_ADDRESSES").update(updateSelection).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
-                                finish();
-                            }else {
-                                previousAddress = previousAddressIndex;
-                                String error = task.getException().getMessage();
-                                Toast.makeText(MyAddressesActivity.this, error, Toast.LENGTH_SHORT).show();
+                        FirebaseFirestore.getInstance().collection("USERS")
+                                .document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA")
+                                .document("MY_ADDRESSES").update(updateSelection).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    finish();
+                                }else {
+                                    previousAddress = previousAddressIndex;
+                                    String error = task.getException().getMessage();
+                                    Toast.makeText(MyAddressesActivity.this, error, Toast.LENGTH_SHORT).show();
+                                }
+                                loadingDialog.dismiss();
                             }
-                            loadingDialog.dismiss();
-                        }
-                    });
-                }else {
-                    finish();
-                }
+                        });
+                 }
             }
         });
 
-        addressesAdapter = new AddressesAdapter(DBqueries.addressModelList,mode);
-        myAddressesRecyclerView.setAdapter(addressesAdapter);
-        ((SimpleItemAnimator)myAddressesRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-        addressesAdapter.notifyDataSetChanged();
+            addressesAdapter = new AddressesAdapter(DBqueries.addressModelList, mode);
+            myAddressesRecyclerView.setAdapter(addressesAdapter);
+            ((SimpleItemAnimator) myAddressesRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+            addressesAdapter.notifyDataSetChanged();
 
         add_new_address_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,11 +150,11 @@ public class MyAddressesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item)  {
         if(item.getItemId()==android.R.id.home){
-            if (DBqueries.selectedAddress != previousAddress){
-                DBqueries.addressModelList.get(DBqueries.selectedAddress).setSelected(false);
-                DBqueries.addressModelList.get(previousAddress).setSelected(true);
-                DBqueries.selectedAddress = previousAddress;
-            }
+                if (DBqueries.selectedAddress != previousAddress) {
+                    DBqueries.addressModelList.get(DBqueries.selectedAddress).setSelected(false);
+                    DBqueries.addressModelList.get(previousAddress).setSelected(true);
+                    DBqueries.selectedAddress = previousAddress;
+                }
 
             finish();
             return true;
@@ -164,10 +164,14 @@ public class MyAddressesActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (DBqueries.selectedAddress != previousAddress){
-            DBqueries.addressModelList.get(DBqueries.selectedAddress).setSelected(false);
-            DBqueries.addressModelList.get(previousAddress).setSelected(true);
-            DBqueries.selectedAddress = previousAddress;
+        if (mode == OrderDetailsActivity.SELECT_ADDRESS_ORDER){
+            finish();
+        }else {
+            if (DBqueries.selectedAddress != previousAddress) {
+                DBqueries.addressModelList.get(DBqueries.selectedAddress).setSelected(false);
+                DBqueries.addressModelList.get(previousAddress).setSelected(true);
+                DBqueries.selectedAddress = previousAddress;
+            }
         }
         super.onBackPressed();
     }
