@@ -6,6 +6,8 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
@@ -30,12 +32,12 @@ import com.reynagagroup.ryelloshopping.Interface.IOnBackPressed;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.fragment.SignInFragment;
 import com.reynagagroup.ryelloshopping.fragment.SignUpFragment;
-import com.reynagagroup.ryelloshopping.ui.HomeFragment;
-import com.reynagagroup.ryelloshopping.ui.MyAcountFragment;
-import com.reynagagroup.ryelloshopping.ui.MyCartFragment;
-import com.reynagagroup.ryelloshopping.ui.MyOrdersFragment;
-import com.reynagagroup.ryelloshopping.ui.MyRewardsFragment;
-import com.reynagagroup.ryelloshopping.ui.MyWishlistFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.HomeFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyAcountFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyOrdersFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyRewardsFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyWishlistFragment;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -52,6 +54,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.reynagagroup.ryelloshopping.Activity.RegisterActivity.setSignUpFragment;
 
@@ -71,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private  static final  int MYACCOUNT_FRAGMENT = 5;
     public static Boolean showCart;
     public static Activity mainActivity;
-    public static TextView fullname;
+
 
     private FirebaseFirestore firebaseFirestore;
 
@@ -87,9 +91,14 @@ public class MainActivity extends AppCompatActivity {
 
    private AppBarLayout.LayoutParams params;
 
-
-
+    //drawer
+    public static TextView fullnameText;
+    public static TextView email;
+   public static CircleImageView imageAcc;
     public static DrawerLayout drawer;
+    public static ImageView imageAdd;
+    //drawer
+
     private  int scrollFlags;
 
 
@@ -126,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         //loading dialog
 
+
         if (showCart) {
              mainActivity = this;
             drawer.setDrawerLockMode(1);
@@ -145,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
             invalidateOptionsMenu();
 
 
+
+
             //NavController navController = Navigation.findNavController(this , R.id.nav_host_fragment);
             navigationView
                     .addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -153,30 +165,58 @@ public class MainActivity extends AppCompatActivity {
 
                             navigationView.removeOnLayoutChangeListener( this );
 
-                            fullname = findViewById(R.id.main_fullname);
-                            final TextView email = findViewById(R.id.main_email);
+                            fullnameText = findViewById(R.id.main_fullname);
+                            email = findViewById(R.id.main_email);
+                            imageAcc = findViewById(R.id.profile_image);
+                            imageAdd = findViewById(R.id.image_add_profile);
+
 
                             if (currentUser!=null) {
-                                firebaseFirestore = FirebaseFirestore.getInstance();
+
+                                if (DBqueries.email ==null){
+                                    firebaseFirestore = FirebaseFirestore.getInstance();
+
+                                    firebaseFirestore.collection("USERS")
+                                            .document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+
+                                                DBqueries.fullname = task.getResult().get("fullname").toString();
+                                                DBqueries.email = currentUser.getEmail();
+                                                DBqueries.profile = task.getResult().get("profile").toString();
 
 
+                                                fullnameText.setText(task.getResult().get("fullname").toString());
+                                                email.setText(currentUser.getEmail());
+                                                if (DBqueries.profile.equals("")){
+                                                    imageAdd.setVisibility(View.VISIBLE);
+                                                }else {
+                                                    imageAdd.setVisibility(View.INVISIBLE);
+                                                    Glide.with(MainActivity.this).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(imageAcc);
+                                                }
 
-                                firebaseFirestore.collection("USERS")
-                                        .document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            fullname.setText(task.getResult().get("fullname").toString());
-                                            email.setText(currentUser.getEmail());
-
-                                        } else {
-                                            String error = task.getException().getMessage();
-                                            Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                String error = task.getException().getMessage();
+                                                Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+                                            }
                                         }
+                                    });
+                                }else {
+
+                                    fullnameText.setText(DBqueries.fullname);
+                                    email.setText(DBqueries.email);
+                                    if (DBqueries.profile.equals("")){
+                                        imageAcc.setImageDrawable(getResources().getDrawable(R.drawable.account));
+                                        imageAdd.setVisibility(View.VISIBLE);
+                                    }else {
+                                        imageAdd.setVisibility(View.INVISIBLE);
+                                        Glide.with(MainActivity.this).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(imageAcc);
                                     }
-                                });
+                                }
                             }else {
-                                fullname.setText("Not Sign In");
+                                imageAcc.setImageDrawable(getResources().getDrawable(R.drawable.account));
+                                fullnameText.setText("Not Sign In");
                                 email.setText("");
                             }
 
@@ -187,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
                     final DrawerLayout drawer = findViewById(R.id.drawer_layout);
                     drawer.closeDrawer(GravityCompat.START);
+
 
 
 
@@ -236,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
                                     startActivity(mainActivityIntent);
                                     finish();
                                 }
+                                drawer.removeDrawerListener(this);
                             }
                         });
 
@@ -424,12 +466,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if(id==R.id.search_icon){
-            //todo: Search
+            Intent searchIntent = new Intent(this,SearchActivity.class);
+            startActivity(searchIntent);
+
             return true;
         }else if(id ==R.id.main_notification_icon){
             //todo: Notification

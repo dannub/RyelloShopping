@@ -360,6 +360,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                                 rewardModel.setAlreadyUsed(false);
                             }
                         }
+                        discountedPrice.setText("");
                         coupontitle.setText("My Reward");
                         cartItemModelList.get(position).setCouponsApplied(Long.parseLong("0"));
                         couponexpiryDate.setVisibility(View.INVISIBLE);

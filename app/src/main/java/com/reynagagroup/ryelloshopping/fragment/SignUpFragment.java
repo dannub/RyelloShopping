@@ -234,6 +234,7 @@ public class SignUpFragment extends Fragment {
                                     userdata.put("fullname",fullname.getText().toString());
                                     userdata.put("email",email.getText().toString());
                                     userdata.put("hp",hp.getText().toString());
+                                    userdata.put("profile","");
 
 
                                     firebaseFirestore.collection("USERS").document(firebaseAuth.getUid())

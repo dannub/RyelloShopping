@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,10 +24,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.reynagagroup.ryelloshopping.Activity.AddAddressActivity;
 import com.reynagagroup.ryelloshopping.Activity.DeliveryActivity;
 import com.reynagagroup.ryelloshopping.Activity.MainActivity;
-import com.reynagagroup.ryelloshopping.Activity.MyAddressesActivity;
 import com.reynagagroup.ryelloshopping.Activity.PaymentActivity;
 import com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity;
-import com.reynagagroup.ryelloshopping.adapter.AddressesAdapter;
 import com.reynagagroup.ryelloshopping.adapter.CartAdapter;
 import com.reynagagroup.ryelloshopping.adapter.CategoryAdapter;
 import com.reynagagroup.ryelloshopping.adapter.HomePageAdapter;
@@ -43,29 +40,31 @@ import com.reynagagroup.ryelloshopping.model.RewardModel;
 import com.reynagagroup.ryelloshopping.model.SliderModel;
 import com.reynagagroup.ryelloshopping.model.UploadBuktiModel;
 import com.reynagagroup.ryelloshopping.model.WishlistModel;
-import com.reynagagroup.ryelloshopping.ui.MyCartFragment;
-import com.reynagagroup.ryelloshopping.ui.MyOrdersFragment;
-import com.reynagagroup.ryelloshopping.ui.MyRewardsFragment;
-import com.reynagagroup.ryelloshopping.ui.MyWishlistFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyOrdersFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyRewardsFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyWishlistFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import static com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity.addToWishlistBtn;
 
-import static com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity.initialRating;
-import static com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity.productID;
-import static com.reynagagroup.ryelloshopping.ui.HomeFragment.swipeRefreshLayout;
-import static com.reynagagroup.ryelloshopping.ui.MyCartFragment.cartItemsRecyclerView;
-import static com.reynagagroup.ryelloshopping.ui.MyCartFragment.cartlistAdapter;
-import static com.reynagagroup.ryelloshopping.ui.MyCartFragment.continueBtn;
-import static com.reynagagroup.ryelloshopping.ui.MyCartFragment.linearLayoutManager;
-import static com.reynagagroup.ryelloshopping.ui.MyCartFragment.loadingDialog;
-import static com.reynagagroup.ryelloshopping.ui.MyCartFragment.recyclerViewState;
-import static com.reynagagroup.ryelloshopping.ui.MyCartFragment.totalAmount;
+import static com.reynagagroup.ryelloshopping.fragment.ui.HomeFragment.swipeRefreshLayout;
+import static com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment.cartItemsRecyclerView;
+import static com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment.cartlistAdapter;
+import static com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment.continueBtn;
+import static com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment.linearLayoutManager;
+import static com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment.loadingDialog;
+import static com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment.recyclerViewState;
+import static com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment.totalAmount;
 
 public class DBqueries {
 
@@ -84,6 +83,9 @@ public class DBqueries {
     public static List<String> cartlist = new ArrayList<>();
     public static List<CartItemModel> cartItemModelList = new ArrayList<>();
 
+    public  static String fullname,email,profile;
+
+
     public static int selectedAddress = -1;
     private static long size;
     public static List<AddressModel> addressModelList = new ArrayList<>();
@@ -91,6 +93,7 @@ public class DBqueries {
     public static List<RewardModel> rewardModelList = new ArrayList<>();
 
     public static List<MyOrderItemModel> myOrderItemModelArrayList = new ArrayList<>();
+    public static   int iterasi_order_1,n_order_1,iterasi_order_2,n_order_2;
 
     public static void loadCategories(final RecyclerView categoryRecyclerView, final Context context){
         categoryModelList.clear();
@@ -385,8 +388,7 @@ public class DBqueries {
         cartlist.clear();
         cartItemModelList.clear();
 
-
-            dialog.show();
+     dialog.show();
 
 
 
@@ -500,7 +502,7 @@ public class DBqueries {
 
                                                         dialog.dismiss();
                                                         if (DBqueries.addressModelList.size() == 0) {
-                                                            DBqueries.loadAddresses(context, dialog,0);
+                                                            DBqueries.loadAddresses(context, dialog,true,0);
                                                         } else {
                                                             dialog.dismiss();
                                                             Intent deliveryIntent = new Intent(context, DeliveryActivity.class);
@@ -652,7 +654,7 @@ public class DBqueries {
 
                                 loadingDialog.show();
                                 if (DBqueries.addressModelList.size()==0){
-                                    DBqueries.loadAddresses(context,loadingDialog,0);
+                                    DBqueries.loadAddresses(context,loadingDialog,true,0);
                                 }else {
                                     loadingDialog.dismiss();
                                     Intent deliveryIntent = new Intent(context,DeliveryActivity.class);
@@ -689,39 +691,49 @@ public class DBqueries {
 
     }
 
-    public static void loadAddresses(final Context context, final Dialog loadingDialog, final int SELECT_ADDRESS){
+    public static void loadAddresses(final Context context, final Dialog loadingDialog, final boolean gotoDeleveryActivity, final int SELECT_ADDRESS){
         addressModelList.clear();
         firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA")
                 .document("MY_ADDRESSES").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
-                        Intent deliveryIntent;
+                         Intent deliveryIntent = null;
                         if ((long) task.getResult().get("list_size") == 0) {
                             deliveryIntent = new Intent(context, AddAddressActivity.class);
                             deliveryIntent.putExtra("INTENT", "deliveryIntent");
                         } else {
 
                             for (long x = 1; x < (long) task.getResult().get("list_size") + 1; x++) {
-                                addressModelList.add(new AddressModel(task.getResult().get("fullname_" + x).toString(),
-                                        task.getResult().get("address_" + x).toString(),
-                                        task.getResult().get("pincode_" + x).toString(),
-                                        task.getResult().get("phone_" + x).toString(),
-                                        (Boolean) task.getResult().get("selected_" + x)));
+                                addressModelList.add(new AddressModel(task.getResult().getBoolean("selected_"+x)
+                                        ,task.getResult().getString("city_"+x)
+                                        ,task.getResult().getString("locality_"+x)
+                                        ,task.getResult().getString("flatNo_"+x)
+                                        ,task.getResult().getString("pincode_"+x)
+                                        ,task.getResult().getString("landmark_"+x)
+                                        ,task.getResult().getString("name_"+x)
+                                        ,task.getResult().getString("mobile_no_"+x)
+                                        ,task.getResult().getString("alternativeMobileNo_"+x)
+                                        ,task.getResult().getString("state_"+x)
+                                ));
                                 if ((Boolean) task.getResult().get("selected_" + x)) {
                                     selectedAddress = Integer.parseInt(String.valueOf(x - 1));
                                 }
                             }
-                            deliveryIntent = new Intent(context, DeliveryActivity.class);
-
+                            if (gotoDeleveryActivity) {
+                                deliveryIntent = new Intent(context, DeliveryActivity.class);
+                            }
+                            loadingDialog.dismiss();
                         }
-                        context.startActivity(deliveryIntent);
-
+                        loadingDialog.dismiss();
+                        if (gotoDeleveryActivity) {
+                            context.startActivity(deliveryIntent);
+                        }
                 }else {
                     String error = task.getException().getMessage();
                     Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+                    loadingDialog.dismiss();
                 }
-                loadingDialog.dismiss();
             }
         });
     }
@@ -744,7 +756,10 @@ public class DBqueries {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                             if (task.isSuccessful()){
+                                                int n = 0,i=0;
                                                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                                    n =task.getResult().size();
+                                                    
                                                     if (documentSnapshot.get("type").toString().toLowerCase().equals("discount") && lastseenDate.before(documentSnapshot.getDate("validity"))){
                                                         rewardModelList.add(new RewardModel(documentSnapshot.getId(),documentSnapshot.get("type").toString()
                                                                 ,documentSnapshot.get("lower_limit").toString()
@@ -754,6 +769,7 @@ public class DBqueries {
                                                                 ,(Timestamp) documentSnapshot.get("validity")
                                                                 ,(Boolean) documentSnapshot.get("already_used")
                                                         ));
+                                                        i++;
                                                     }else if(documentSnapshot.get("type").toString().equals("Potongan Rp.*") && lastseenDate.before(documentSnapshot.getDate("validity"))){
                                                         rewardModelList.add(new RewardModel(documentSnapshot.getId(),documentSnapshot.get("type").toString()
                                                                 ,documentSnapshot.get("lower_limit").toString()
@@ -763,12 +779,16 @@ public class DBqueries {
                                                                 ,(Timestamp) documentSnapshot.get("validity")
                                                                 ,(Boolean) documentSnapshot.get("already_used")
                                                         ));
+                                                        i++;
                                                     }
+
+
+
                                                 }
                                                 if (onRewardFragment) {
 
-                                                    MyRewardsFragment.myRewardsAdapter.notifyDataSetChanged();
-                                                    loadingDialog.dismiss();
+                                                        MyRewardsFragment.myRewardsAdapter.notifyDataSetChanged();
+                                                        loadingDialog.dismiss();
                                                 }
                                             }else {
                                                 String error = task.getException().getMessage();
@@ -787,20 +807,29 @@ public class DBqueries {
 
     }
 
-    public static void loadOrders(final Context context,final Dialog loadingDialog,final LinearLayoutManager layoutManager,final RecyclerView myOrderRecycleView){
+    public static void loadOrders(final Context context, final Dialog loadingDialog, @Nullable final LinearLayoutManager layoutManager, @Nullable final RecyclerView myOrderRecycleView){
 
-        loadingDialog.show();
+        if (layoutManager!=null&&myOrderRecycleView!=null) {
+            loadingDialog.show();
+        }
+
         myOrderItemModelArrayList.clear();
         firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_NOTA").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
+                    iterasi_order_1=0;
+
                     for (final DocumentSnapshot documentSnapshot :task.getResult().getDocuments()){
+                        n_order_1=task.getResult().size();
                         firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_NOTA").document(documentSnapshot.getId())
                                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+
                                 if (task.isSuccessful()){
+                                    iterasi_order_1++;
                                     final UploadBuktiModel uploadBuktiModel = new UploadBuktiModel(task.getResult().getString("atasNama")
                                             ,task.getResult().getString("id_user")
                                             ,task.getResult().getString("username")
@@ -842,13 +871,15 @@ public class DBqueries {
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                 if (task.isSuccessful()) {
                                                     final String idnota = documentSnapshot.getId();
+                                                     iterasi_order_2=0;
+                                                     n_order_2 = task.getResult().size();
                                                     for (final DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
                                                         firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_NOTA").document(idnota)
                                                                 .collection("ITEM").document(documentSnapshot.getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                 if (task.isSuccessful()) {
-
+                                                                    iterasi_order_2++;
                                                                     final CartItemModel cartItemModel = new CartItemModel();
                                                                     cartItemModel.setProductID(task.getResult().getString("productID"));
                                                                     cartItemModel.setProductImage(task.getResult().getString("productImage"));
@@ -924,13 +955,26 @@ public class DBqueries {
 
 
 
-                                                                                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                                                                                myOrderRecycleView.setLayoutManager(layoutManager);
-                                                                                MyOrdersFragment.myOrderAdapter = new MyOrderAdapter(DBqueries.myOrderItemModelArrayList,loadingDialog);
-                                                                                myOrderRecycleView.setAdapter(MyOrdersFragment.myOrderAdapter);
-                                                                                MyOrdersFragment.myOrderAdapter.notifyDataSetChanged();
-                                                                                loadingDialog.dismiss();
+                                                                                if (iterasi_order_2==n_order_2&&iterasi_order_1==n_order_2) {
+                                                                                    Collections.sort(myOrderItemModelArrayList, new Comparator<MyOrderItemModel>() {
+                                                                                        public int compare(MyOrderItemModel o1, MyOrderItemModel o2) {
+                                                                                            if (o1.getTgl_pesan() == null || o2.getTgl_pesan() == null)
+                                                                                                return 0;
+                                                                                            return o1.getTgl_pesan().compareTo(o2.getTgl_pesan());
+                                                                                        }
+                                                                                    });
 
+                                                                                    if (layoutManager != null && myOrderRecycleView != null) {
+                                                                                        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                                                                                        myOrderRecycleView.setLayoutManager(layoutManager);
+                                                                                        MyOrdersFragment.myOrderAdapter = new MyOrderAdapter(DBqueries.myOrderItemModelArrayList, loadingDialog);
+                                                                                        myOrderRecycleView.setAdapter(MyOrdersFragment.myOrderAdapter);
+                                                                                        MyOrdersFragment.myOrderAdapter.notifyDataSetChanged();
+
+                                                                                    }
+                                                                                    loadingDialog.dismiss();
+
+                                                                                }
 
 
                                                                             } else {
@@ -957,6 +1001,7 @@ public class DBqueries {
                                     }
 
                                 }else {
+                                    iterasi_order_1++;
                                     String error = task.getException().getMessage();
                                     Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
                                 }

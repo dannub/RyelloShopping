@@ -1,4 +1,4 @@
-package com.reynagagroup.ryelloshopping.ui;
+package com.reynagagroup.ryelloshopping.fragment.ui;
 
 
 import android.app.Dialog;
@@ -12,33 +12,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.R;
-import com.reynagagroup.ryelloshopping.adapter.MyRewardsAdapter;
-import com.reynagagroup.ryelloshopping.model.RewardModel;
+import com.reynagagroup.ryelloshopping.adapter.WishlistAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.reynagagroup.ryelloshopping.DBqueries.loadWishlist;
+import static com.reynagagroup.ryelloshopping.DBqueries.wishlist;
+import static com.reynagagroup.ryelloshopping.DBqueries.wishlistModelList;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class  MyRewardsFragment extends Fragment {
+public class MyWishlistFragment extends Fragment {
 
 
-    public MyRewardsFragment() {
+    public MyWishlistFragment() {
         // Required empty public constructor
     }
 
-    private RecyclerView rewardRecyclerView;
-    private  Dialog loadingDialog;
-    public  static MyRewardsAdapter myRewardsAdapter;
+
+    private RecyclerView wistListRecyclerView;
+    private Dialog loadingDialog;
+    public  static WishlistAdapter wishlistAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_my_rewards, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_wishlist, container, false);
 
 
         //loading dialog
@@ -47,24 +48,27 @@ public class  MyRewardsFragment extends Fragment {
         loadingDialog.setCancelable(false);
         loadingDialog.getWindow().setBackgroundDrawable(getContext().getDrawable(R.drawable.slider_background));
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-
-
-
+        loadingDialog.show();
         //loading dialog
 
-        DBqueries.loadRewards(getContext(),loadingDialog,true);
+        wistListRecyclerView = view.findViewById(R.id.my_wishlist_recyclerview);
 
 
-        rewardRecyclerView = view.findViewById(R.id.my_rewards_recycleview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rewardRecyclerView.setLayoutManager(linearLayoutManager);
-        myRewardsAdapter = new MyRewardsAdapter(DBqueries.rewardModelList,false);
-        rewardRecyclerView.setAdapter(myRewardsAdapter);
+        wistListRecyclerView.setLayoutManager(linearLayoutManager);
+
+        if (wishlistModelList.size()==0){
+            wishlist.clear();
+            loadWishlist(getContext(),loadingDialog,true);
+        }else {
+            loadingDialog.dismiss();
+        }
 
 
-
-        myRewardsAdapter.notifyDataSetChanged();
+        wishlistAdapter = new WishlistAdapter(wishlistModelList,true);
+        wistListRecyclerView.setAdapter(wishlistAdapter);
+        wishlistAdapter.notifyDataSetChanged();
 
         return view;
     }

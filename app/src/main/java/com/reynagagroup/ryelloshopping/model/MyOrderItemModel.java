@@ -2,7 +2,7 @@ package com.reynagagroup.ryelloshopping.model;
 
 import java.util.Date;
 
-public class MyOrderItemModel {
+public class MyOrderItemModel implements Comparable<MyOrderItemModel>{
 
 
     private String atasNama;
@@ -438,5 +438,12 @@ public class MyOrderItemModel {
 
     public void setRatting(int ratting) {
         this.ratting = ratting;
+    }
+
+    @Override
+    public int compareTo(MyOrderItemModel o) {
+        if (getTgl_pesan() == null || o.getTgl_pesan() == null)
+            return 0;
+        return getTgl_pesan().compareTo(o.getTgl_pesan());
     }
 }

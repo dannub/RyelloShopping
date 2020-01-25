@@ -238,6 +238,11 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.Viewhold
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
                                             DBqueries.myOrderItemModelArrayList.get(position).setRatting(starPosition);
+                                            for (MyOrderItemModel myOrderItemModel : DBqueries.myOrderItemModelArrayList) {
+                                                if (myOrderItemModel.getProductID()== DBqueries.myOrderItemModelArrayList.get(position).getProductID()){
+                                                    myOrderItemModel.setRatting(starPosition);
+                                                }
+                                            }
                                             if (DBqueries.myRatedIds.contains(productID)){
                                                 DBqueries.myRating.set(DBqueries.myRatedIds.indexOf(productID), Long.parseLong(String.valueOf(starPosition+1)));
                                             }else {
@@ -251,6 +256,10 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.Viewhold
                                         }
                                     }
                                  });
+
+                                int i =0;
+
+
 
                             }
                         });

@@ -1,8 +1,7 @@
-package com.reynagagroup.ryelloshopping.ui;
+package com.reynagagroup.ryelloshopping.fragment.ui;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,33 +14,29 @@ import android.view.ViewGroup;
 
 import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.R;
-import com.reynagagroup.ryelloshopping.adapter.MyOrderAdapter;
-import com.reynagagroup.ryelloshopping.model.MyOrderItemModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.reynagagroup.ryelloshopping.adapter.MyRewardsAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MyOrdersFragment extends Fragment {
+public class  MyRewardsFragment extends Fragment {
 
 
-    public MyOrdersFragment() {
+    public MyRewardsFragment() {
         // Required empty public constructor
     }
 
-    public static RecyclerView myOrderRecycleView;
-    public static Context context;
-
-    public static Dialog loadingDialog;
-    public static MyOrderAdapter myOrderAdapter;
-    public static LinearLayoutManager layoutManager;
+    private RecyclerView rewardRecyclerView;
+    private Dialog loadingDialog;
+    public static MyRewardsAdapter myRewardsAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_my_rewards, container, false);
+
 
         //loading dialog
         loadingDialog = new Dialog(getContext());
@@ -50,19 +45,24 @@ public class MyOrdersFragment extends Fragment {
         loadingDialog.getWindow().setBackgroundDrawable(getContext().getDrawable(R.drawable.slider_background));
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        rewardRecyclerView = view.findViewById(R.id.my_rewards_recycleview);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+
+
+
 
 
         //loading dialog
 
-        View view = inflater.inflate(R.layout.fragment_my_orders, container, false);
+        DBqueries.loadRewards(getContext(),loadingDialog,true);
 
-        myOrderRecycleView = view.findViewById(R.id.my_orders_recyclerview);
+        myRewardsAdapter = new MyRewardsAdapter(DBqueries.rewardModelList,false);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rewardRecyclerView.setLayoutManager(linearLayoutManager);
+        rewardRecyclerView.setAdapter(myRewardsAdapter);
 
-        layoutManager = new LinearLayoutManager(getContext());
+        myRewardsAdapter.notifyDataSetChanged();
 
-        context = getContext();
-
-        DBqueries.loadOrders(getContext(),loadingDialog,layoutManager,myOrderRecycleView);
 
 
         return view;

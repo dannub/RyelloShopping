@@ -13,7 +13,6 @@ import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -23,7 +22,7 @@ import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.CartAdapter;
 import com.reynagagroup.ryelloshopping.adapter.CartPaymentAdapter;
 import com.reynagagroup.ryelloshopping.model.CartItemModel;
-import com.reynagagroup.ryelloshopping.ui.MyCartFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +47,7 @@ public class DeliveryActivity extends AppCompatActivity {
     private Parcelable recyclerViewState;
     public  static LinearLayoutManager linearLayoutManager;
     private ImageButton bri,bca,bni,mandiri;
+    private String  name,mobileNo;
 
 
 
@@ -141,7 +141,7 @@ public class DeliveryActivity extends AppCompatActivity {
                     deliveryActivity = DeliveryActivity.this;
 
                     if (DBqueries.addressModelList.size() == 0) {
-                        DBqueries.loadAddresses(DeliveryActivity.this, loadingDialog,SELECT_ADDRESS);
+                        DBqueries.loadAddresses(DeliveryActivity.this, loadingDialog,true,SELECT_ADDRESS);
                     } else {
 
                         paymentMethodDialog.show();
@@ -260,8 +260,23 @@ public class DeliveryActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        fullname.setText(DBqueries.addressModelList.get(DBqueries.selectedAddress).getFullname());
-        fullAddress.setText(DBqueries.addressModelList.get(DBqueries.selectedAddress).getAddress());
+        name = DBqueries.addressModelList.get(DBqueries.selectedAddress).getName();
+        mobileNo = DBqueries.addressModelList.get(DBqueries.selectedAddress).getMobileNo();
+        if (DBqueries.addressModelList.get(DBqueries.selectedAddress).getAlternativeMobileNo().equals("")){
+            fullname.setText(name + " | "+mobileNo);
+        }else {
+            fullname.setText(name + " | "+mobileNo+" or "+DBqueries.addressModelList.get(DBqueries.selectedAddress).getAlternativeMobileNo());
+        }
+        String flatNo = DBqueries.addressModelList.get(DBqueries.selectedAddress).getFlatNo();
+        String locality = DBqueries.addressModelList.get(DBqueries.selectedAddress).getLocality();
+        String landmark = DBqueries.addressModelList.get(DBqueries.selectedAddress).getLandmark();
+        String city = DBqueries.addressModelList.get(DBqueries.selectedAddress).getCity();
+        String state = DBqueries.addressModelList.get(DBqueries.selectedAddress).getState();
+        if (landmark.equals("")) {
+            fullAddress.setText(locality + " No."+flatNo+" "+city+" "+state);
+        }else {
+            fullAddress.setText(landmark+" "+locality + " No."+flatNo+" "+city+" "+state);
+        }
         pincode.setText(DBqueries.addressModelList.get(DBqueries.selectedAddress).getPincode());
 
     }

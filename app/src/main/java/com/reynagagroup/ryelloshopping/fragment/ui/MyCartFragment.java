@@ -1,4 +1,4 @@
-package com.reynagagroup.ryelloshopping.ui;
+package com.reynagagroup.ryelloshopping.fragment.ui;
 
 
 import android.app.Dialog;
@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,7 +127,7 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
 
                         loadingDialog.show();
                         if (DBqueries.addressModelList.size() == 0) {
-                            DBqueries.loadAddresses(getContext(), loadingDialog,0);
+                            DBqueries.loadAddresses(getContext(), loadingDialog,true,0);
                         } else {
                             loadingDialog.dismiss();
                             Intent deliveryIntent = new Intent(getContext(), DeliveryActivity.class);

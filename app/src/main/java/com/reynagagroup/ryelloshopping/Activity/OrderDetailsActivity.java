@@ -40,7 +40,7 @@ import com.google.firebase.firestore.Transaction;
 import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.model.MyOrderItemModel;
-import com.reynagagroup.ryelloshopping.ui.MyOrdersFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyOrdersFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -300,6 +300,12 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         DBqueries.myOrderItemModelArrayList.get(position).setRatting(starPosition+1);
+                                        for (MyOrderItemModel myOrderItemModel : DBqueries.myOrderItemModelArrayList) {
+                                            if (myOrderItemModel.getProductID()== DBqueries.myOrderItemModelArrayList.get(position).getProductID()){
+                                                myOrderItemModel.setRatting(starPosition+1);
+
+                                            }
+                                        }
                                         if (DBqueries.myRatedIds.contains(myOrderItemModel.getProductID())){
                                             DBqueries.myRating.set(DBqueries.myRatedIds.indexOf(myOrderItemModel.getProductID()), Long.parseLong(String.valueOf(starPosition+1)));
                                         }else {

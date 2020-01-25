@@ -1,4 +1,4 @@
-package com.reynagagroup.ryelloshopping.ui;
+package com.reynagagroup.ryelloshopping.fragment.ui;
 
 
 import android.annotation.SuppressLint;
@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity;
+import com.google.firebase.auth.FirebaseAuth;
 import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.Activity.MainActivity;
 import com.reynagagroup.ryelloshopping.R;
@@ -95,6 +95,8 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager testingLayoutManager = new LinearLayoutManager(getContext());
         testingLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         home_page_recycle.setLayoutManager(testingLayoutManager);
+
+
 
 
         //categories fake list
@@ -226,6 +228,10 @@ public class HomeFragment extends Fragment {
             adapter= new HomePageAdapter(homePageModelFakeList);
             categoryRecyclerView.setAdapter(categoryAdapter);
             home_page_recycle.setAdapter(adapter);
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                DBqueries.loadOrders(getContext(), MainActivity.loadingDialog, null, null);
+                DBqueries.loadAddresses(getContext(), MainActivity.loadingDialog, false, 0);
+            }
 
 
             DBqueries.loadCartList(getContext(), new Dialog(getContext()),false,badgeCount,new TextView(getContext()),false,null);

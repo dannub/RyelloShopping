@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -115,7 +116,8 @@ public class CategoryActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id==R.id.search_icon){
-            //todo: Search
+            Intent searchIntent = new Intent(this,SearchActivity.class);
+            startActivity(searchIntent);
             return true;
         }else if(id == android.R.id.home){
             finish();

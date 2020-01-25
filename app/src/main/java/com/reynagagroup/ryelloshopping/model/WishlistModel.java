@@ -1,5 +1,7 @@
 package com.reynagagroup.ryelloshopping.model;
 
+import java.util.ArrayList;
+
 public class WishlistModel {
 
     private String  productImage;
@@ -13,6 +15,7 @@ public class WishlistModel {
     private Boolean COD;
     private Boolean inStock;
     private long offersApplied;
+    private ArrayList<String> tags;
 
     public WishlistModel( String productID,String productImage, String productTitle, long freeCoupons, String ratting, long totalRattings, String productPrice, String oriPrice, Boolean COD, Boolean inStock, long offersApplied) {
         this.productImage = productImage;
@@ -26,6 +29,14 @@ public class WishlistModel {
         this.COD = COD;
         this.inStock = inStock;
         this.offersApplied = offersApplied;
+    }
+
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<String> tags) {
+        this.tags = tags;
     }
 
     public String getProductImage() {

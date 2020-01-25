@@ -3,7 +3,6 @@
     package="com.reynagagroup.ryelloshopping">
 
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -18,17 +17,21 @@
         android:roundIcon="@mipmap/icon2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.PaymentInfoActivity"
-            android:screenOrientation="portrait"
+        <activity android:name=".Activity.SearchActivity"></activity>
+        <activity android:name=".Activity.UpdateUserInfoActivity"
             android:theme="@style/Form"
             >
 
         </activity>
         <activity
+            android:name=".Activity.PaymentInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Form" />
+        <activity
             android:name=".Activity.PaymentActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Form"
-            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".Activity.ViewAllActivity"
             android:screenOrientation="portrait"

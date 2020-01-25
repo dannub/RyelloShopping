@@ -1,34 +1,63 @@
 package com.reynagagroup.ryelloshopping.model;
 
-public class AddressModel {
-    private String fullname;
-    private String address;
-    private String pincode;
-    private String phone;
-    private Boolean selected;
+import android.widget.EditText;
 
-    public AddressModel(String fullname, String address, String pincode, String phone, Boolean selected) {
-        this.fullname = fullname;
-        this.address = address;
+public class AddressModel {
+    private Boolean selected;
+    private String  city;
+    private String locality;
+    private String flatNo;
+    private String pincode;
+
+    private String  landmark;
+    private String  name;
+    private String mobileNo;
+    private String  alternativeMobileNo;
+    private String state;
+
+    public AddressModel(Boolean selected, String city, String locality, String flatNo, String pincode, String landmark, String name, String mobileNo, String alternativeMobileNo, String state) {
+        this.selected = selected;
+        this.city = city;
+        this.locality = locality;
+        this.flatNo = flatNo;
         this.pincode = pincode;
-        this.phone = phone;
+        this.state = state;
+        this.landmark = landmark;
+        this.name = name;
+        this.mobileNo = mobileNo;
+        this.alternativeMobileNo = alternativeMobileNo;
+    }
+
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
         this.selected = selected;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getCity() {
+        return city;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public String getAddress() {
-        return address;
+    public String getLocality() {
+        return locality;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLocality(String locality) {
+        this.locality = locality;
+    }
+
+    public String getFlatNo() {
+        return flatNo;
+    }
+
+    public void setFlatNo(String flatNo) {
+        this.flatNo = flatNo;
     }
 
     public String getPincode() {
@@ -39,19 +68,43 @@ public class AddressModel {
         this.pincode = pincode;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getState() {
+        return state;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setState(String state) {
+        this.state = state;
     }
 
-    public Boolean getSelected() {
-        return selected;
+    public String getLandmark() {
+        return landmark;
     }
 
-    public void setSelected(Boolean selected) {
-        this.selected = selected;
+    public void setLandmark(String landmark) {
+        this.landmark = landmark;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMobileNo() {
+        return mobileNo;
+    }
+
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
+    }
+
+    public String getAlternativeMobileNo() {
+        return alternativeMobileNo;
+    }
+
+    public void setAlternativeMobileNo(String alternativeMobileNo) {
+        this.alternativeMobileNo = alternativeMobileNo;
     }
 }

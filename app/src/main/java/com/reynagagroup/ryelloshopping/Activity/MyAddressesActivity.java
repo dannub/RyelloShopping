@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -24,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.AddressesAdapter;
-import com.reynagagroup.ryelloshopping.ui.MyOrdersFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +64,12 @@ public class MyAddressesActivity extends AppCompatActivity {
         loadingDialog.setCancelable(false);
         loadingDialog.getWindow().setBackgroundDrawable(this.getDrawable(R.drawable.slider_background));
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-
+        loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                addressesSaved.setText(" "+String.valueOf(DBqueries.addressModelList.size())+" saved addresses ");
+            }
+        });
         //loading dialog
 
 
@@ -119,7 +124,7 @@ public class MyAddressesActivity extends AppCompatActivity {
             }
         });
 
-            addressesAdapter = new AddressesAdapter(DBqueries.addressModelList, mode);
+            addressesAdapter = new AddressesAdapter(DBqueries.addressModelList, mode,loadingDialog);
             myAddressesRecyclerView.setAdapter(addressesAdapter);
             ((SimpleItemAnimator) myAddressesRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
             addressesAdapter.notifyDataSetChanged();
@@ -128,6 +133,11 @@ public class MyAddressesActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent addAddressIntent = new Intent(MyAddressesActivity.this,AddAddressActivity.class);
+                if (mode!=SELECT_ADDRESS){
+                    addAddressIntent.putExtra("INTENT","manage");
+                }else {
+                    addAddressIntent.putExtra("INTENT","null");
+                }
                 addAddressIntent.putExtra("INTENT","null");
                 startActivity(addAddressIntent);
             }
@@ -150,11 +160,13 @@ public class MyAddressesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item)  {
         if(item.getItemId()==android.R.id.home){
+            if (mode==SELECT_ADDRESS) {
                 if (DBqueries.selectedAddress != previousAddress) {
                     DBqueries.addressModelList.get(DBqueries.selectedAddress).setSelected(false);
                     DBqueries.addressModelList.get(previousAddress).setSelected(true);
                     DBqueries.selectedAddress = previousAddress;
                 }
+            }
 
             finish();
             return true;

@@ -4,20 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_forgot"
-    tools:context=".ui.MyAcountFragment">
+    tools:context=".fragment.ui.MyAcountFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/layout_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
-            <include layout="@layout/profile_data_layout"/>
-            <include layout="@layout/order_status_layout"/>
-            <include layout="@layout/your_recent_orders_layout"/>
-            <include layout="@layout/my_address_layout"/>
+            android:orientation="vertical">
+
+            <include layout="@layout/profile_data_layout" />
+
+            <include layout="@layout/order_status_layout" />
+
+            <include layout="@layout/your_recent_orders_layout" />
+
+            <include layout="@layout/my_address_layout" />
 
             <Button
                 android:id="@+id/sign_out_btn"

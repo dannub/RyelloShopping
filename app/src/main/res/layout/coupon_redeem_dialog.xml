@@ -66,7 +66,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Rp.499999/-"
+        android:text=""
 
         android:textColor="@color/colorAccent1"
         android:textSize="20sp"

@@ -48,7 +48,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -67,7 +66,7 @@ import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.CartPaymentAdapter;
 import com.reynagagroup.ryelloshopping.model.CartItemModel;
 import com.reynagagroup.ryelloshopping.model.UploadBuktiModel;
-import com.reynagagroup.ryelloshopping.ui.MyCartFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment;
 import com.reynagagroup.ryelloshopping.util.BitmapUtils;
 import com.reynagagroup.ryelloshopping.util.Utility;
 
@@ -88,8 +87,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import info.hoang8f.widget.FButton;
-
-import static com.reynagagroup.ryelloshopping.Activity.DeliveryActivity.totalAmount;
 
 public class PaymentActivity extends AppCompatActivity {
 
@@ -271,14 +268,6 @@ public class PaymentActivity extends AppCompatActivity {
         tgl.setFocusableInTouchMode(false);
 
 
-
-
-
-
-
-
-
-
         ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -323,20 +312,41 @@ public class PaymentActivity extends AppCompatActivity {
                                     final String dateString = sdf.format(new Date(dateInMillis));
 
 
+                                    final String fullname,fullAddress,pincode;
+                                    String name = DBqueries.addressModelList.get(DBqueries.selectedAddress).getName();
+                                    String mobileNo = DBqueries.addressModelList.get(DBqueries.selectedAddress).getMobileNo();
+                                    if (DBqueries.addressModelList.get(DBqueries.selectedAddress).getAlternativeMobileNo().equals("")){
+                                        fullname = name + " | "+mobileNo;
+                                    }else {
+                                        fullname =name + " | "+mobileNo+" or "+DBqueries.addressModelList.get(DBqueries.selectedAddress).getAlternativeMobileNo();
+                                    }
+                                    String flatNo = DBqueries.addressModelList.get(DBqueries.selectedAddress).getFlatNo();
+                                    String locality = DBqueries.addressModelList.get(DBqueries.selectedAddress).getLocality();
+                                    String landmark = DBqueries.addressModelList.get(DBqueries.selectedAddress).getLandmark();
+                                    String city = DBqueries.addressModelList.get(DBqueries.selectedAddress).getCity();
+                                    String state = DBqueries.addressModelList.get(DBqueries.selectedAddress).getState();
+                                    if (landmark.equals("")) {
+                                        fullAddress =locality + " No."+flatNo+" "+city+" "+state;
+                                    }else {
+                                        fullAddress=landmark+" "+locality + " No."+flatNo+" "+city+" "+state;
+                                    }
+                                    pincode=DBqueries.addressModelList.get(DBqueries.selectedAddress).getPincode();
+
+
                                     Date date= new Date();
 
                                     Toast.makeText(PaymentActivity.this,"Upload successful",Toast.LENGTH_LONG).show();
                                     final UploadBuktiModel uploadBuktiModel = new UploadBuktiModel(
                                             an.getText().toString().trim()
                                             ,currentUser.getUid()
-                                            ,MainActivity.fullname.getText().toString()
+                                            ,DBqueries.fullname
                                             , uri.toString()
                                             ,bank_str,tgl.getText().toString().trim()
-                                            , DBqueries.addressModelList.get(DBqueries.selectedAddress).getFullname()
-                                            ,DBqueries.addressModelList.get(DBqueries.selectedAddress).getAddress()
-                                            ,DBqueries.addressModelList.get(DBqueries.selectedAddress).getPhone()
+                                            , fullname
+                                            ,fullAddress
+                                            ,mobileNo
                                             ,currentUser.getEmail()
-                                            ,DBqueries.addressModelList.get(DBqueries.selectedAddress).getPincode()
+                                            ,pincode
                                             , date
                                             ,cartItemModelList.get(cartItemModelList.size()-1).getTotalAmount()
                                             ,cartItemModelList.get(cartItemModelList.size()-1).getTotalItems()
@@ -366,7 +376,7 @@ public class PaymentActivity extends AppCompatActivity {
                                                 totalBayar.setText("Rp."+cartItemModelList.get(cartItemModelList.size()-1).getTotalAmount()+"/-");
                                                 waktuPesan.setText(dateString);
                                                 status.setText("Belum Dikonfirmasi");
-                                                alamat.setText(DBqueries.addressModelList.get(DBqueries.selectedAddress).getFullname() + " " + DBqueries.addressModelList.get(DBqueries.selectedAddress).getAddress()+" "+DBqueries.addressModelList.get(DBqueries.selectedAddress).getPincode());
+                                                alamat.setText(fullname + " " + fullAddress+" "+pincode);
                                                 bank_tv.setText("Bank " + bank_str);
 
 
@@ -480,12 +490,13 @@ public class PaymentActivity extends AppCompatActivity {
                                                     cartItemModelList.get(i).setTotalAmount(cartItemModelList.get(cartItemModelList.size()-1).getTotalAmount());
                                                     cartItemModelList.get(i).setSavedAmount(cartItemModelList.get(cartItemModelList.size()-1).getSavedAmount());
 
-                                                    Map<String ,Object> updateReward = new HashMap<>();
-                                                    updateReward.put("already_used",true);
+                                                    if (cartItemModelList.get(i).getCouponsApplied()>0) {
+                                                        Map<String, Object> updateReward = new HashMap<>();
+                                                        updateReward.put("already_used", true);
 
-                                                    firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_REWARDS")
-                                                            .document(cartItemModelList.get(i).getSelectedCouponId()).update(updateReward);
-
+                                                        firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_REWARDS")
+                                                                .document(cartItemModelList.get(i).getSelectedCouponId()).update(updateReward);
+                                                    }
                                                     firebaseFirestore.collection("USERS").document(currentUser.getUid()).collection("USER_NOTA").document(key).collection("ITEM").add(cartItemModelList.get(i));
 
                                                 }
@@ -582,8 +593,12 @@ public class PaymentActivity extends AppCompatActivity {
                             image_selected_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                     values);
                             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,image_selected_uri);
-                            startActivityForResult(cameraIntent,REQUEST_CAMERA);
+
+                            if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,image_selected_uri);
+                                startActivityForResult(cameraIntent,REQUEST_CAMERA);
+                            }
+
 
                         }else {
                             Toast.makeText(PaymentActivity.this,"Permission Denied",Toast.LENGTH_SHORT).show();

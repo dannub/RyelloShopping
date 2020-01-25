@@ -203,6 +203,8 @@ public class CartItemModel {
     public void setDeliveryPrice(String deliveryPrice) {
         this.deliveryPrice = deliveryPrice;
     }
+
+
     //////cart total
 
 

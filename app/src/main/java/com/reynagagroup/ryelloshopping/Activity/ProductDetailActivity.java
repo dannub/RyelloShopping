@@ -63,6 +63,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     public  static Activity productDetailsActivity;
     public static Boolean running_cart_query = false;
 
+    public static boolean fromSearch=false;
+
+
     private ViewPager productImageViewPager;
     private  TextView productTitle;
     private  TextView averageRatingMiniView;
@@ -213,7 +216,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         toogleRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogRecyclerView();
+               showDialogRecyclerView();
             }
         });
 
@@ -267,6 +270,20 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+        if (currentUser!=null){
+            if (DBqueries.cartlist.size() == 0) {
+                DBqueries.loadCartList(ProductDetailActivity.this, loadingDialog2,false,badgeCount,new TextView(ProductDetailActivity.this),false,addToCartBtn);
+            }else {
+                badgeCount.setVisibility(View.VISIBLE);
+                if (cartlist.size()<99) {
+                    badgeCount.setText(String.valueOf(cartlist.size()));
+                }else {
+                    badgeCount.setText("99");
+                }
+            }
+        }
+
+
 
 
         firebaseFirestore.collection("PRODUCTS").document(productID)
@@ -305,6 +322,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                     }else {
                         productOriginalPrice = documentSnapshot.get("product_price").toString();
                     }
+                    DBqueries.loadRewards(ProductDetailActivity.this,loadingDialog2,false);
+
                     MyRewardsAdapter myRewardsAdapter = new MyRewardsAdapter(DBqueries.rewardModelList,true,couponRecyclerView,selectedCoupon,productOriginalPrice,coupontitle,couponexpiryDate,couponCouponBody1,coupondiscount,discountLayout,couponLayout,tv_SK,discountedPrice);
                     couponRecyclerView.setAdapter(myRewardsAdapter);
                     myRewardsAdapter.notifyDataSetChanged();
@@ -370,9 +389,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                         } else {
                             loadingDialog2.dismiss();
                         }
-                        if (DBqueries.rewardModelList.size()==0){
-                            DBqueries.loadRewards(ProductDetailActivity.this,loadingDialog2,false);
-                        }
+
+                      //      DBqueries.loadRewards(ProductDetailActivity.this,loadingDialog2,false);
+
                         if (DBqueries.cartlist.size()!=0 && DBqueries.rewardModelList.size()!=0 && DBqueries.wishlist.size() != 0){
                             loadingDialog2.dismiss();
                         }
@@ -794,7 +813,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     }
                     DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.TOTAL_AMOUNT));
                     if (DBqueries.addressModelList.size()==0){
-                        DBqueries.loadAddresses(ProductDetailActivity.this,loadingDialog2,0);
+                        DBqueries.loadAddresses(ProductDetailActivity.this,loadingDialog2,true,0);
                     }else {
                         loadingDialog2.dismiss();
                         Intent deliveryIntent = new Intent(ProductDetailActivity.this,DeliveryActivity.class);
@@ -876,7 +895,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 loadingDialog2.dismiss();
             }
             if (DBqueries.rewardModelList.size()==0){
-                DBqueries.loadRewards(ProductDetailActivity.this,loadingDialog2,false);
+              //  DBqueries.loadRewards(ProductDetailActivity.this,loadingDialog2,false);
             }
             if (DBqueries.cartlist.size()!=0 && DBqueries.rewardModelList.size()!=0 && DBqueries.wishlist.size() != 0){
                 loadingDialog2.dismiss();
@@ -964,18 +983,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             badgeIcon.setImageResource(R.drawable.shop);
             badgeCount = cartItem.getActionView().findViewById(R.id.badge_count);
 
-            if (currentUser!=null){
-                if (DBqueries.cartlist.size() == 0) {
-                    DBqueries.loadCartList(ProductDetailActivity.this, loadingDialog2,false,badgeCount,new TextView(ProductDetailActivity.this),false,addToCartBtn);
-                }else {
-                    badgeCount.setVisibility(View.VISIBLE);
-                    if (cartlist.size()<99) {
-                        badgeCount.setText(String.valueOf(cartlist.size()));
-                    }else {
-                        badgeCount.setText("99");
-                    }
-                }
-            }
             cartItem.getActionView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1008,7 +1015,12 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             return true;
         }else if(id ==R.id.search_icon){
-            //todo: search
+            if (fromSearch){
+                finish();
+            }else {
+                Intent searchIntent = new Intent(this,SearchActivity.class);
+                startActivity(searchIntent);
+            }
             return true;
 
         }else if(id ==R.id.main_chart_icon){
@@ -1024,6 +1036,12 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        fromSearch = false;
     }
 
     @Override
