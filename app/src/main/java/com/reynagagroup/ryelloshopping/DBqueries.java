@@ -18,12 +18,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.reynagagroup.ryelloshopping.Activity.AddAddressActivity;
 import com.reynagagroup.ryelloshopping.Activity.DeliveryActivity;
 import com.reynagagroup.ryelloshopping.Activity.MainActivity;
+import com.reynagagroup.ryelloshopping.Activity.NotificationActivity;
 import com.reynagagroup.ryelloshopping.Activity.PaymentActivity;
 import com.reynagagroup.ryelloshopping.Activity.ProductDetailActivity;
 import com.reynagagroup.ryelloshopping.adapter.CartAdapter;
@@ -36,6 +40,7 @@ import com.reynagagroup.ryelloshopping.model.CategoryModel;
 import com.reynagagroup.ryelloshopping.model.HomePageModel;
 import com.reynagagroup.ryelloshopping.model.HorizontalProductScrollModel;
 import com.reynagagroup.ryelloshopping.model.MyOrderItemModel;
+import com.reynagagroup.ryelloshopping.model.NotificationModel;
 import com.reynagagroup.ryelloshopping.model.RewardModel;
 import com.reynagagroup.ryelloshopping.model.SliderModel;
 import com.reynagagroup.ryelloshopping.model.UploadBuktiModel;
@@ -83,6 +88,8 @@ public class DBqueries {
     public static List<String> cartlist = new ArrayList<>();
     public static List<CartItemModel> cartItemModelList = new ArrayList<>();
 
+    public static ListenerRegistration registration;
+
     public  static String fullname,email,profile;
 
 
@@ -93,6 +100,9 @@ public class DBqueries {
     public static List<RewardModel> rewardModelList = new ArrayList<>();
 
     public static List<MyOrderItemModel> myOrderItemModelArrayList = new ArrayList<>();
+
+    public static List<NotificationModel> notificationModelList = new ArrayList<>();
+
     public static   int iterasi_order_1,n_order_1,iterasi_order_2,n_order_2;
 
     public static void loadCategories(final RecyclerView categoryRecyclerView, final Context context){
@@ -117,6 +127,7 @@ public class DBqueries {
                     }
                 });
     }
+
     public static void loadFragmentData(final RecyclerView homePageRecyclerView, final Context context, final int index, String categoryName){
         firebaseFirestore.collection("CATEGORIES")
                 .document(categoryName.toUpperCase())
@@ -216,6 +227,7 @@ public class DBqueries {
                 });
 
     }
+
     public static void loadWishlist(final Context context, final Dialog dialog,final Boolean loadProductData ){
         wishlist.clear();
         firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid())
@@ -293,6 +305,7 @@ public class DBqueries {
             }
         });
     }
+
     public static void removeFromWishlist(final int index, final Context context){
         final String removedProductID = wishlist.get(index);
         wishlist.remove(index);
@@ -332,7 +345,6 @@ public class DBqueries {
     public static void  loadRatingList(final Context context){
 
 
-        Log.i("initial", "woy");
         if (!ProductDetailActivity.running_rating_query) {
             ProductDetailActivity.running_rating_query =true;
             myRatedIds.clear();
@@ -381,7 +393,6 @@ public class DBqueries {
 
 
     }
-
 
     public static void loadCartList(final Context context, final Dialog dialog, final boolean loadProductData, final TextView badgeCount, final TextView cartTotalAmount,final boolean loadProductDetail, final LinearLayout addCart){
 
@@ -1017,6 +1028,56 @@ public class DBqueries {
         });
     }
 
+    public static void checkNotifications(boolean remove,@Nullable final TextView notifyCount){
+
+        if (remove){
+            registration.remove();
+        }else {
+            registration =  firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA")
+                    .document("MY_NOTIFICATIONS").addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@androidx.annotation.Nullable DocumentSnapshot documentSnapshot, @androidx.annotation.Nullable FirebaseFirestoreException e) {
+
+                            if (documentSnapshot != null && documentSnapshot.exists()) {
+                                notificationModelList.clear();
+                                int unread = 0;
+                                for (long x = 0; x < (long) documentSnapshot.get("list_size"); x++) {
+                                    notificationModelList.add(0,new NotificationModel(
+                                            documentSnapshot.get("Image_" + x).toString()
+                                            , documentSnapshot.get("Body_" + x).toString()
+                                            , documentSnapshot.getBoolean("Readed_" + x)
+                                    ));
+                                    if (!documentSnapshot.getBoolean("Readed_" + x)){
+                                        unread++;
+                                        if (notifyCount!= null){
+                                            if (unread>0) {
+                                                notifyCount.setVisibility(View.VISIBLE);
+                                                if (unread < 99) {
+                                                    notifyCount.setText(String.valueOf(unread));
+                                                } else {
+                                                    notifyCount.setText("99+");
+                                                }
+                                            }else {
+                                                notifyCount.setVisibility(View.INVISIBLE);
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                if (NotificationActivity.adapter != null) {
+                                    NotificationActivity.adapter.notifyDataSetChanged();
+                                }
+
+                            }
+                        }
+                    });
+        }
+
+
+
+
+    }
 
     public static void clearData(){
         categoryModelList.clear();

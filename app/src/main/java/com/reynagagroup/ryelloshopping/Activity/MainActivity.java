@@ -368,9 +368,16 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser ==null){
             navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setEnabled(false);
         }else {
+
             navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setEnabled(true);
         }
         invalidateOptionsMenu();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        DBqueries.checkNotifications(true,null);
     }
 
     @Override
@@ -382,28 +389,44 @@ public class MainActivity extends AppCompatActivity {
             getMenuInflater().inflate(R.menu.main,menu);
 
             MenuItem cartItem = menu.findItem(R.id.main_chart_icon);
-
-
             cartItem.setActionView(R.layout.badge_layout);
             ImageView badgeIcon = cartItem.getActionView().findViewById(R.id.badge_icon);
             badgeIcon.setImageResource(R.drawable.shop);
-            badgeCount = cartItem.getActionView().findViewById(R.id.badge_count);
-            if (currentUser !=null){
 
-
-                DBqueries.loadCartList(MainActivity.this, new Dialog(MainActivity.this),false,badgeCount,new TextView(MainActivity.this),false,null);
-
-            }
 
             cartItem.getActionView().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                if (currentUser ==null) {
-                    signInDialog.show();
-                }else {
-                    gotoFragment("My Cart", new MyCartFragment(), 1);
-                } }
-        });
+                @Override
+                public void onClick(View v) {
+                    if (currentUser ==null) {
+                        signInDialog.show();
+                    }else {
+                        gotoFragment("My Cart", new MyCartFragment(), 1);
+                    } }
+            });
+
+            badgeCount = cartItem.getActionView().findViewById(R.id.badge_count);
+            if (currentUser !=null){
+                DBqueries.loadCartList(MainActivity.this, new Dialog(MainActivity.this),false,badgeCount,new TextView(MainActivity.this),false,null);
+            }
+
+            MenuItem notificationItem = menu.findItem(R.id.main_notification_icon);
+            cartItem.setActionView(R.layout.badge_layout);
+            ImageView notifyIcon = cartItem.getActionView().findViewById(R.id.badge_icon);
+            notifyIcon.setImageResource(R.drawable.notification);
+            TextView notifyCount = cartItem.getActionView().findViewById(R.id.badge_count);
+            if (currentUser!= null){
+                DBqueries.checkNotifications(false,notifyCount);
+            }
+
+            notificationItem.getActionView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent notificationIntent = new Intent(MainActivity.this,NotificationActivity.class);
+                    startActivity(notificationIntent);
+                }
+            });
+
+
 
         }
         return true;
@@ -478,7 +501,8 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         }else if(id ==R.id.main_notification_icon){
-            //todo: Notification
+            Intent notificationIntent = new Intent(this,NotificationActivity.class);
+            startActivity(notificationIntent);
             return true;
 
         }else if(id ==R.id.main_chart_icon){

@@ -17,12 +17,19 @@
         android:roundIcon="@mipmap/icon2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.SearchActivity"></activity>
-        <activity android:name=".Activity.UpdateUserInfoActivity"
+        <activity android:name=".Activity.NotificationActivity"
+            android:theme="@style/Home"
+            android:screenOrientation="portrait"
+            ></activity>
+        <activity android:name=".Activity.SearchActivity"
+            android:theme="@style/Home"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".Activity.UpdateUserInfoActivity"
             android:theme="@style/Form"
-            >
-
-        </activity>
+            android:screenOrientation="portrait"
+            ></activity>
         <activity
             android:name=".Activity.PaymentInfoActivity"
             android:screenOrientation="portrait"
