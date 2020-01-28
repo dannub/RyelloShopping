@@ -48,9 +48,11 @@ public class MyOrderItemModel implements Comparable<MyOrderItemModel>{
     private  Long couponsApplied;
     private String selectedCouponId;
     private String discountedPrice;
+    private Long freeCoupon;
     private int ratting = 0;
+    private String satuan;
 
-    public MyOrderItemModel(String atasNama, String id_user, String id_nota, String id_item, String username, String imageUrl, String bank, String tgl_transfer, String fullnameAddress, String fullAddress, String phone, String email, String pincodeAddress, Date tgl_pesan, int totalAmount, int totalItems, int totalItemsPrice, int savedAmount, String deliveryPrice, boolean ordered, boolean packed, boolean shipped, boolean delivered, boolean canceled, Date ordered_date, Date packed_date, Date shipped_date, Date delivered_date, Date canceled_date, String ket_kirim, String metode_kirim, boolean isfree, String productID, String productImage, String productTitle, String productPrice, String oriPrice, Long productQuantity, Long offersApplied, Long couponsApplied, String selectedCouponId, String discountedPrice, int ratting) {
+    public MyOrderItemModel(String atasNama, String id_user, String id_nota, String id_item, String username, String imageUrl, String bank, String tgl_transfer, String fullnameAddress, String fullAddress, String phone, String email, String pincodeAddress, Date tgl_pesan, int totalAmount, int totalItems, int totalItemsPrice, int savedAmount, String deliveryPrice, boolean ordered, boolean packed, boolean shipped, boolean delivered, boolean canceled, Date ordered_date, Date packed_date, Date shipped_date, Date delivered_date, Date canceled_date, String ket_kirim, String metode_kirim, boolean isfree, String productID, String productImage, String productTitle, String productPrice, String oriPrice, Long productQuantity, Long offersApplied, Long couponsApplied, String selectedCouponId, String discountedPrice,Long freeCoupon, int ratting,String satuan) {
         this.atasNama = atasNama;
         this.id_user = id_user;
         this.id_nota = id_nota;
@@ -93,7 +95,25 @@ public class MyOrderItemModel implements Comparable<MyOrderItemModel>{
         this.couponsApplied = couponsApplied;
         this.selectedCouponId = selectedCouponId;
         this.discountedPrice = discountedPrice;
+        this.freeCoupon = freeCoupon;
         this.ratting = ratting;
+        this.satuan = satuan;
+    }
+
+    public Long getFreeCoupon() {
+        return freeCoupon;
+    }
+
+    public void setFreeCoupon(Long freeCoupon) {
+        this.freeCoupon = freeCoupon;
+    }
+
+    public String getSatuan() {
+        return satuan;
+    }
+
+    public void setSatuan(String satuan) {
+        this.satuan = satuan;
     }
 
     public String getAtasNama() {

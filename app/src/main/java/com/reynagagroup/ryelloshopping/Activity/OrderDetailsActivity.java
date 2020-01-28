@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -59,6 +60,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private TextView productPrice;
     private TextView productQuantity;
     private ImageView productImage;
+    private TextView satuan;
+    private TextView satuan2;
 
     private ImageView orderedIndikator;
     private TextView orderedTitle;
@@ -106,6 +109,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private Button delivered;
 
     private Dialog loadingDialog;
+
+    private int initialRating = -1;
 
 
     private  TextView totalItemsText;
@@ -158,7 +163,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
         firebaseFirestore =FirebaseFirestore.getInstance();
 
         hapus = findViewById(R.id.hapus);
-
+        satuan = findViewById(R.id.satuan);
+        satuan2 = findViewById(R.id.satuan2);
 
         //Packed
         packedIndikator= findViewById(R.id.packed_indicator);
@@ -218,110 +224,159 @@ public class OrderDetailsActivity extends AppCompatActivity {
         setProgress();
 
 
-
-
-
         /////ratting layout
-        setRatting(myOrderItemModel.getRatting());
+
+        if (DBqueries.myRatedIds.contains(myOrderItemModel.getProductID())){
+            int index = DBqueries.myRatedIds.indexOf(myOrderItemModel.getProductID());
+            initialRating = Integer.parseInt(String.valueOf(DBqueries.myRating.get(index)))-1;
+            setRatting(initialRating);
+        }
+
+
         for (int x = 0; x <rateNowContainer.getChildCount();x++){
             final int starPosition = x;
             rateNowContainer.getChildAt(x).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    loadingDialog.show();
+
+
+                    for (int x = 0; x <rateNowContainer.getChildCount();x++){
+                        rateNowContainer.getChildAt(x).setEnabled(false);
+                    }
+
                     setRatting(starPosition);
-                    final DocumentReference documentReference = FirebaseFirestore.getInstance().collection("PRODUCTS")
-                            .document(myOrderItemModel.getProductID());
-                    FirebaseFirestore.getInstance().runTransaction(new Transaction.Function<Void>() {
+                    if (starPosition!=initialRating) {
+                        loadingDialog.show();
+                        final DocumentReference documentReference = FirebaseFirestore.getInstance().collection("PRODUCTS")
+                                .document(myOrderItemModel.getProductID());
+                        FirebaseFirestore.getInstance().runTransaction(new Transaction.Function<Object>() {
 
-                        @Nullable
-                        @Override
-                        public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                            @Nullable
+                            @Override
+                            public Object apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
 
-                            DocumentSnapshot documentSnapshot = transaction.get(documentReference);
+                                DocumentSnapshot documentSnapshot = transaction.get(documentReference);
 
-                            if (myOrderItemModel.getRatting() != 0) {
-                                Long increase = documentSnapshot.getLong(starPosition + 1 + "_star") + 1;
-                                Long decrease = documentSnapshot.getLong(myOrderItemModel.getRatting() + 1 + "_star") - 1;
-                                Long total = documentSnapshot.getLong("total_ratings");
+                                if (DBqueries.myRatedIds.contains(myOrderItemModel.getProductID()))  {
+                                    Long increase = documentSnapshot.getLong(starPosition +1 + "_star") + 1;
+                                    Log.i("starpoin", String.valueOf(starPosition+1));
+                                    Log.i("increase", String.valueOf(increase));
+
+                                    Long decrease = documentSnapshot.getLong(initialRating+1 + "_star") - 1;
+                                    Log.i("initial", String.valueOf(initialRating+1));
+                                    Log.i("decrease", String.valueOf(decrease));
+                                    Long total = documentSnapshot.getLong("total_ratings");
 
 
-                                Double totalStars = Double.valueOf(0);
-                                for (int x = 1; x < 6; x++) {
-                                    if ((x != starPosition + 1) && (x != myOrderItemModel.getRatting() + 1)) {
-                                        totalStars = totalStars + (documentSnapshot.getLong(x + "_star") * x);
+
+                                    Double totalStars = Double.valueOf(0);
+                                    for (int x = 1; x < 6; x++) {
+                                        if ((x != starPosition+1 ) && (x != initialRating+1  )) {
+                                            totalStars = totalStars + (documentSnapshot.getLong(x + "_star") * x);
+                                        }
                                     }
+
+
+
+                                    totalStars = totalStars + (increase * (starPosition +1 ));
+
+                                    totalStars = totalStars + (decrease * (initialRating +1 ));
+
+
+                                    String rate = String.valueOf(Double.valueOf(totalStars / total)).substring(0, 3);
+
+
+
+                                    transaction.update(documentReference, starPosition  + 1 +"_star", increase);
+                                    transaction.update(documentReference, initialRating  +1+"_star", decrease);
+                                    transaction.update(documentReference, "average_ratting", rate);
+                                } else {
+                                    Long increase = documentSnapshot.getLong(starPosition + 1 + "_star") + 1;
+
+
+                                    Long total = documentSnapshot.getLong("total_ratings");
+
+                                    Double totalStars = Double.valueOf(0);
+                                    for (int x = 1; x < 6; x++) {
+                                        if ((x != starPosition + 1)) {
+                                            totalStars = totalStars + (documentSnapshot.getLong(x + "_star") * x);
+                                        }
+                                    }
+
+
+                                    totalStars = totalStars + (increase * (starPosition + 1));
+                                    String rate = String.valueOf(Double.valueOf(totalStars / total + 1)).substring(0, 3);
+
+                                    transaction.update(documentReference, "total_ratings", total + 1);
+                                    transaction.update(documentReference, "average_ratting", rate);
+                                    transaction.update(documentReference, starPosition + 1 + "_star", increase);
                                 }
 
-                                totalStars = totalStars + (increase * (starPosition + 1)) + (decrease * (myOrderItemModel.getRatting() + 1));
-                                String rate = String.valueOf(Double.valueOf(totalStars / total)).substring(0, 3);
-                                Log.i("total", rate);
 
-                                transaction.update(documentReference, starPosition + 1 + "_star", increase);
-                                transaction.update(documentReference, myOrderItemModel.getRatting() + 1 + "_star", decrease);
-                                transaction.update(documentReference, "average_ratting", rate);
-                            } else {
-                                Long increase = documentSnapshot.getLong(starPosition + 1 + "_star") + 1;
+                                return null;
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<Object>() {
+                            @Override
+                            public void onSuccess(Object o) {
 
 
-                                Long total = documentSnapshot.getLong("total_ratings");
-
-
-                                Double totalStars = Double.valueOf(0);
-                                for (int x = 1; x < 6; x++) {
-                                    if ((x != starPosition + 1)) {
-                                        totalStars = totalStars + (documentSnapshot.getLong(x + "_star") * x);
-                                    }
+                                Map<String, Object> myRating = new HashMap<>();
+                                if (DBqueries.myRatedIds.contains(myOrderItemModel.getProductID())) {
+                                    myRating.put("rating_" + DBqueries.myRatedIds.indexOf(myOrderItemModel.getProductID()), (long) starPosition+ 1 );
+                                } else {
+                                    myRating.put("list_size", (long) DBqueries.myRatedIds.size() + 1);
+                                    myRating.put("product_ID_" + DBqueries.myRatedIds.size(), myOrderItemModel.getProductID());
+                                    myRating.put("rating_" + DBqueries.myRatedIds.size(), (long) starPosition+ 1 );
                                 }
 
 
-                            }
-
-
-                            return null;
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<Object>() {
-                        @Override
-                        public void onSuccess(Object o) {
-
-                            Map<String, Object> myRating = new HashMap<>();
-                            if (DBqueries.myRatedIds.contains(myOrderItemModel.getProductID())) {
-                                myRating.put("rating_" + DBqueries.myRatedIds.indexOf(myOrderItemModel.getProductID()), (long) starPosition + 1);
-                            } else {
-                                myRating.put("list_size", (long) DBqueries.myRatedIds.size() + 1);
-                                myRating.put("product_ID_" + DBqueries.myRatedIds.size(), myOrderItemModel.getProductID());
-                                myRating.put("rating_" + DBqueries.myRatedIds.size(), (long) starPosition + 1);
-                            }
-
-
-                            FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA")
-                                    .document("MY_RATINGS").update(myRating).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        DBqueries.myOrderItemModelArrayList.get(position).setRatting(starPosition+1);
-                                        for (MyOrderItemModel myOrderItemModel : DBqueries.myOrderItemModelArrayList) {
-                                            if (myOrderItemModel.getProductID()== DBqueries.myOrderItemModelArrayList.get(position).getProductID()){
-                                                myOrderItemModel.setRatting(starPosition+1);
-
+                                FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA")
+                                        .document("MY_RATINGS").update(myRating).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            loadingDialog.dismiss();
+                                            DBqueries.myOrderItemModelArrayList.get(position).setRatting(starPosition+1);
+                                            for (MyOrderItemModel myOrderItemModel : DBqueries.myOrderItemModelArrayList) {
+                                                if (myOrderItemModel.getProductID() == DBqueries.myOrderItemModelArrayList.get(position).getProductID()) {
+                                                    myOrderItemModel.setRatting(starPosition+1);
+                                                }
                                             }
-                                        }
-                                        if (DBqueries.myRatedIds.contains(myOrderItemModel.getProductID())){
-                                            DBqueries.myRating.set(DBqueries.myRatedIds.indexOf(myOrderItemModel.getProductID()), Long.parseLong(String.valueOf(starPosition+1)));
-                                        }else {
-                                            DBqueries.myRatedIds.add(myOrderItemModel.getProductID());
-                                            DBqueries.myRating.add(Long.parseLong(String.valueOf(starPosition+1)));
-                                        }
-                                        loadingDialog.dismiss();
-                                    }else {
-                                        String error = task.getException().getMessage();
-                                        Toast.makeText(OrderDetailsActivity.this, error, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                                            if (DBqueries.myRatedIds.contains(myOrderItemModel.getProductID())) {
+                                                DBqueries.myRating.set(DBqueries.myRatedIds.indexOf(myOrderItemModel.getProductID()), Long.parseLong(String.valueOf(starPosition+1 )));
+                                            } else {
+                                                DBqueries.myRatedIds.add(myOrderItemModel.getProductID());
+                                                DBqueries.myRating.add(Long.parseLong(String.valueOf(starPosition+1 )));
+                                            }
+                                            loadingDialog.show();
+                                            loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                                @Override
+                                                public void onDismiss(DialogInterface dialog) {
 
-                        }
-                    });
+                                                }
+                                            });
+
+                                            DBqueries.loadRatingList(OrderDetailsActivity.this,loadingDialog);
+
+                                            for (int x = 0; x <rateNowContainer.getChildCount();x++){
+                                                rateNowContainer.getChildAt(x).setEnabled(true);
+                                            }
+
+                                        } else {
+                                            String error = task.getException().getMessage();
+                                            Toast.makeText(OrderDetailsActivity.this, error, Toast.LENGTH_SHORT).show();
+                                            for (int x = 0; x <rateNowContainer.getChildCount();x++){
+                                                rateNowContainer.getChildAt(x).setEnabled(true);
+                                            }
+                                            loadingDialog.dismiss();
+                                        }
+                                    }
+                                });
+
+
+                            }
+                        });
+                    }
 
                 }
             });
@@ -329,18 +384,32 @@ public class OrderDetailsActivity extends AppCompatActivity {
         /////ratting layout
 
 
+
         productTitle.setText(myOrderItemModel.getProductTitle());
         if (!TextUtils.isEmpty(myOrderItemModel.getOriPrice())){
-            productPrice.setText("Rp."+myOrderItemModel.getProductPrice()+"/-");
+            productPrice.setText("Rp."+myOrderItemModel.getProductPrice());
             if (!TextUtils.isEmpty(myOrderItemModel.getSelectedCouponId())){
-                productPrice.setText("Rp."+myOrderItemModel.getDiscountedPrice()+"/-");
+                productPrice.setText("Rp."+myOrderItemModel.getDiscountedPrice());
             }
         }else {
-            productPrice.setText("Rp."+myOrderItemModel.getProductPrice()+"/-");
+            productPrice.setText("Rp."+myOrderItemModel.getProductPrice());
             if (!TextUtils.isEmpty(myOrderItemModel.getSelectedCouponId())){
-                productPrice.setText("Rp."+myOrderItemModel.getDiscountedPrice()+"/-");
+                productPrice.setText("Rp."+myOrderItemModel.getDiscountedPrice());
             }
         }
+
+
+           if (!myOrderItemModel.getSatuan().equals("")) {
+                satuan.setVisibility(View.VISIBLE);
+                satuan.setText("/" + myOrderItemModel.getSatuan());
+                satuan2.setVisibility(View.VISIBLE);
+                satuan2.setText(myOrderItemModel.getSatuan());
+            } else {
+                satuan.setVisibility(View.GONE);
+                satuan2.setVisibility(View.GONE);
+            }
+
+
 
 
         productQuantity.setText("Qty:"+myOrderItemModel.getProductQuantity());
@@ -358,7 +427,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
             deliveryPriceText.setText(myOrderItemModel.getDeliveryPrice());
             totalAmount =0;
         }else {
-            deliveryPriceText.setText("Rp."+myOrderItemModel.getDeliveryPrice()+"/-");
+            deliveryPriceText.setText("Rp."+myOrderItemModel.getDeliveryPrice());
             totalAmount =20000;
         }
 
@@ -384,9 +453,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }
 
 
-        totalItemPriceText.setText("Rp."+totalItemPrice+"/-");
-        totalAmountText.setText("Rp."+totalAmount+"/-");
-        saveAmountText.setText("You saved Rp." + saveAmount + "/- on this order");
+        totalItemPriceText.setText("Rp."+totalItemPrice);
+        totalAmountText.setText("Rp."+totalAmount);
+        saveAmountText.setText("You saved Rp." + saveAmount + " on this order");
 
         Call.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -423,7 +492,16 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                             myOrderItemModel.setDelivered(true);
                                             myOrderItemModel.setDelivered_date(date);
                                             setProgress();
-                                            loadingDialog.dismiss();
+
+                                                loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                                    @Override
+                                                    public void onDismiss(DialogInterface dialog) {
+
+                                                    }
+                                                });
+                                                DBqueries.addReward(OrderDetailsActivity.this,myOrderItemModel.getId_nota(),myOrderItemModel.getId_user(),loadingDialog);
+
+
                                         }else {
                                             sweetAlertDialog.dismiss();
                                             String error = task.getException().getMessage();
@@ -470,7 +548,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()){
                                             sDialog.dismiss();
-                                            DBqueries.loadOrders(MyOrdersFragment.context,MyOrdersFragment.loadingDialog,MyOrdersFragment.layoutManager, MyOrdersFragment.myOrderRecycleView);
+                                            //DBqueries.loadOrders(MyOrdersFragment.context,MyOrdersFragment.loadingDialog,MyOrdersFragment.layoutManager, MyOrdersFragment.myOrderRecycleView);
                                             finish();
                                             Toast.makeText(MyOrdersFragment.context, "Pesanan telah di Hapus", Toast.LENGTH_SHORT).show();
                                         }else {
@@ -539,16 +617,16 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     private void setRatting(int starPosition) {
-        if (starPosition>0) {
-            for (int x = 0; x < rateNowContainer.getChildCount(); x++) {
-                ImageView starBtn = (ImageView) rateNowContainer.getChildAt(x);
-                starBtn.setImageTintList(getResources().getColorStateList(R.color.colorAccent3));
-                if (x <= starPosition) {
-                    starBtn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#ffbb00")));
-                }
 
+        for (int x = 0; x < rateNowContainer.getChildCount(); x++) {
+            ImageView starBtn = (ImageView) rateNowContainer.getChildAt(x);
+            starBtn.setImageTintList(getResources().getColorStateList(R.color.colorAccent3));
+            if (x <= starPosition) {
+                starBtn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#ffbb00")));
             }
+
         }
+
     }
 
     private void setProgress(){
@@ -559,26 +637,32 @@ public class OrderDetailsActivity extends AppCompatActivity {
             orderedDate.setText(changeDate(myOrderItemModel.getOrdered_date()));
             orderedIndikator.setImageTintList(getResources().getColorStateList(R.color.colorSuccess));
             orderedBody.setVisibility(View.VISIBLE);
-            orderedPackedProgressBar.setProgress(100);
+
             if (myOrderItemModel.isPacked()){
+                orderedPackedProgressBar.setVisibility(View.VISIBLE);
+                orderedPackedProgressBar.setProgress(100);
                 cancel.setVisibility(View.VISIBLE);
                 packedDate.setVisibility(View.VISIBLE);
                 packedDate.setText(changeDate(myOrderItemModel.getPacked_date()));
                 packedBody.setVisibility(View.VISIBLE);
                 packedIndikator.setImageTintList(getResources().getColorStateList(R.color.colorSuccess));
-                packedShippingProgressBar.setProgress(100);
+
                 if (myOrderItemModel.isShipped()){
+                    packedShippingProgressBar.setVisibility(View.VISIBLE);
+                    packedShippingProgressBar.setProgress(100);
                     shippingDate.setVisibility(View.VISIBLE);
                     cancel.setVisibility(View.GONE);
                     shippingBody.setVisibility(View.VISIBLE);
                     shippingDate.setText(changeDate(myOrderItemModel.getShipped_date()));
                     shippingIndikator.setImageTintList(getResources().getColorStateList(R.color.colorSuccess));
-                    shippingDeliveredProgressBar.setProgress(100);
+
                     delivered.setVisibility(View.VISIBLE);
                     detailShipping.setText(myOrderItemModel.getMetode_kirim()+" Resi : "+myOrderItemModel.getKet_kirim());
                     detailShipping.setVisibility(View.VISIBLE);
                     copyResi.setVisibility(View.VISIBLE);
                     if (myOrderItemModel.isDelivered()){
+                        shippingDeliveredProgressBar.setVisibility(View.VISIBLE);
+                        shippingDeliveredProgressBar.setProgress(100);
                         deliveredBody.setVisibility(View.VISIBLE);
                         deliveredDate.setVisibility(View.VISIBLE);
                         hapus.setVisibility(View.VISIBLE);
@@ -608,6 +692,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     private void initProgress(){
+        orderedPackedProgressBar.setVisibility(View.INVISIBLE);
+        packedShippingProgressBar.setVisibility(View.INVISIBLE);
+        shippingDeliveredProgressBar.setVisibility(View.INVISIBLE);
+
         orderedDate.setVisibility(View.GONE);
         orderedIndikator.setImageTintList(getResources().getColorStateList(R.color.colorAccent3));
         orderedBody.setVisibility(View.GONE);
@@ -632,11 +720,16 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==android.R.id.home){
-            DBqueries.loadOrders(MyOrdersFragment.context,MyOrdersFragment.loadingDialog,MyOrdersFragment.layoutManager, MyOrdersFragment.myOrderRecycleView);
+           // DBqueries.loadOrders(MyOrdersFragment.context,MyOrdersFragment.loadingDialog,MyOrdersFragment.layoutManager, MyOrdersFragment.myOrderRecycleView);
             finish();
             return true;
         }
@@ -644,8 +737,16 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        DBqueries.loadOrders(MyOrdersFragment.context,MyOrdersFragment.loadingDialog,MyOrdersFragment.layoutManager, MyOrdersFragment.myOrderRecycleView);
+       // DBqueries.loadOrders(MyOrdersFragment.context,MyOrdersFragment.loadingDialog,MyOrdersFragment.layoutManager, MyOrdersFragment.myOrderRecycleView);
         finish();
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
+           // DBqueries.loadOrders(OrderDetailsActivity.this, loadingDialog, MyOrdersFragment.layoutManager, MyOrdersFragment.myOrderRecycleView);
+        }
     }
 }

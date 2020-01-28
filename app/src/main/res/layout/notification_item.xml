@@ -4,7 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/colorAccent"
+    android:layout_marginBottom="8dp"
+    >
 
     <TextView
         android:id="@+id/text_view"
@@ -14,7 +17,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text=""
+        android:text="eeerrerewwe"
         android:textColor="@color/colorAccent1"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

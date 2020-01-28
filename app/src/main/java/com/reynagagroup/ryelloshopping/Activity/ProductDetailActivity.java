@@ -41,6 +41,7 @@ import com.reynagagroup.ryelloshopping.adapter.ProductDetailAdapter;
 import com.reynagagroup.ryelloshopping.adapter.ProductImagesAdapter;
 import com.reynagagroup.ryelloshopping.fragment.SignInFragment;
 import com.reynagagroup.ryelloshopping.fragment.SignUpFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment;
 import com.reynagagroup.ryelloshopping.model.CartItemModel;
 import com.reynagagroup.ryelloshopping.model.ProductSpesificationModel;
 import com.reynagagroup.ryelloshopping.model.WishlistModel;
@@ -75,8 +76,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView oriPrice;
     private  Button couponRedermBtn;
     private  TextView totalRatingMiniView;
-    private ImageView codIndicator;
-    private  TextView tvCodIndicator;
+
+    private TextView satuan;
+
     private View divider;
 
 
@@ -84,8 +86,9 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private  TextView rewardTitle;
     private TextView rewardBody;
-    private  ImageView rewardIcon;
+    private  ConstraintLayout rewardLayout;
     private TextView rewarddiscount;
+    private LinearLayout rewardDiscountLayout;
 
 
 
@@ -241,13 +244,13 @@ public class ProductDetailActivity extends AppCompatActivity {
         totalRatingMiniView = findViewById(R.id.total_ratings_minview);
         productPrice = findViewById(R.id.product_price);
         oriPrice = findViewById(R.id.ori_price);
-        tvCodIndicator= findViewById(R.id.cod_indicator);
-        codIndicator = findViewById(R.id.cod_img_indicator);
+        satuan = findViewById(R.id.satuan);
+
         rewardTitle = findViewById(R.id.reward_title);
-        rewardIcon = findViewById(R.id.reward_icon);
+        rewardLayout = findViewById(R.id.reward_layout);
         rewardBody = findViewById(R.id.reward_body1);
         rewarddiscount = findViewById(R.id.discount_reward);
-
+        rewardDiscountLayout = findViewById(R.id.discount_layout);
 
 
         totalRatings = findViewById(R.id.total_rattings);
@@ -270,18 +273,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        if (currentUser!=null){
-            if (DBqueries.cartlist.size() == 0) {
-                DBqueries.loadCartList(ProductDetailActivity.this, loadingDialog2,false,badgeCount,new TextView(ProductDetailActivity.this),false,addToCartBtn);
-            }else {
-                badgeCount.setVisibility(View.VISIBLE);
-                if (cartlist.size()<99) {
-                    badgeCount.setText(String.valueOf(cartlist.size()));
-                }else {
-                    badgeCount.setText("99");
-                }
-            }
-        }
+
 
 
 
@@ -304,15 +296,25 @@ public class ProductDetailActivity extends AppCompatActivity {
                     averageRatingMiniView.setText(documentSnapshot.get("average_ratting").toString());
                     totalRatingMiniView.setText("("+(long)documentSnapshot.get("total_ratings")+")ratings");
 
+
+
                     if ((Long)documentSnapshot.get("offers_applied")>0) {
                         oriPrice.setVisibility(View.VISIBLE);
                         divider.setVisibility(View.VISIBLE);
-                        productPrice.setText("Rp." + documentSnapshot.get("cutted_price").toString() + "/-");
-                        oriPrice.setText("Rp." + documentSnapshot.get("product_price").toString() + "/-");
+                        productPrice.setText("Rp." + documentSnapshot.get("cutted_price").toString() );
+                        oriPrice.setText("Rp." + documentSnapshot.get("product_price").toString() );
                     }else {
                         oriPrice.setVisibility(View.GONE);
                         divider.setVisibility(View.GONE);
-                        productPrice.setText("Rp." + documentSnapshot.get("product_price").toString() + "/-");
+                        productPrice.setText("Rp." + documentSnapshot.get("product_price").toString() );
+                    }
+
+                    if (!documentSnapshot.get("satuan").toString().equals("")){
+                        satuan.setVisibility(View.VISIBLE);
+                        satuan.setText(" /"+documentSnapshot.get("satuan").toString());
+                    }else {
+                        satuan.setVisibility(View.GONE);
+
                     }
 
                     ///for  coupon dialog
@@ -322,7 +324,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     }else {
                         productOriginalPrice = documentSnapshot.get("product_price").toString();
                     }
-                    DBqueries.loadRewards(ProductDetailActivity.this,loadingDialog2,false);
+//                    DBqueries.loadRewards(ProductDetailActivity.this,loadingDialog2,false);
 
                     MyRewardsAdapter myRewardsAdapter = new MyRewardsAdapter(DBqueries.rewardModelList,true,couponRecyclerView,selectedCoupon,productOriginalPrice,coupontitle,couponexpiryDate,couponCouponBody1,coupondiscount,discountLayout,couponLayout,tv_SK,discountedPrice);
                     couponRecyclerView.setAdapter(myRewardsAdapter);
@@ -330,15 +332,27 @@ public class ProductDetailActivity extends AppCompatActivity {
                     ///for  coupon dialog
 
 
-                    if ((boolean)documentSnapshot.get("COD")){
-                        codIndicator.setVisibility(View.VISIBLE);
-                        tvCodIndicator.setVisibility(View.VISIBLE);
+
+
+                    if ((long)documentSnapshot.get("free_coupon")>0) {
+                        rewardLayout.setVisibility(View.VISIBLE);
+                        if (documentSnapshot.get("free_coupon_type").toString().toUpperCase().equals("DISCOUNT")) {
+                            rewardDiscountLayout.setVisibility(View.VISIBLE);
+                            String discount = documentSnapshot.get("free_coupon_precentage").toString();
+                            rewardTitle.setText(documentSnapshot.get("free_coupon_type").toString().toUpperCase());
+                            rewarddiscount.setText( discount+ "%");
+                        } else {
+                            rewardDiscountLayout.setVisibility(View.GONE);
+                            rewardTitle.setText("POTONGAN Rp." + documentSnapshot.get("free_coupon_amount").toString());
+                            rewarddiscount.setText("Rp." + documentSnapshot.get("free_coupon_amount").toString());
+                        }
+                        rewardBody.setText(documentSnapshot.get("free_coupon_body").toString().replace("\\n", "\n"));
+
                     }else {
-                        codIndicator.setVisibility(View.INVISIBLE);
-                        tvCodIndicator.setVisibility(View.INVISIBLE);
+                        rewardLayout.setVisibility(View.GONE);
                     }
-                    rewardTitle.setText((long)documentSnapshot.get("free_coupon")+" "+documentSnapshot.get("free_coupon_title").toString());
-                    rewardBody.setText(documentSnapshot.get("free_coupon_body1").toString().replace("\\n", "\n"));
+
+
 
                     if ((Boolean) documentSnapshot.get("use_tab_layout")){
                         productDetailTabsContainer.setVisibility(View.VISIBLE);
@@ -379,7 +393,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                     if (currentUser!=null) {
                         if (DBqueries.myRating.size()==0){
-                            DBqueries.loadRatingList(ProductDetailActivity.this);
+                            DBqueries.loadRatingList(ProductDetailActivity.this,null);
                         }
                         if (DBqueries.cartlist.size() == 0) {
                             DBqueries.loadCartList(ProductDetailActivity.this, loadingDialog2,false,badgeCount,new TextView(ProductDetailActivity.this),false,addToCartBtn);
@@ -390,7 +404,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                             loadingDialog2.dismiss();
                         }
 
-                      //      DBqueries.loadRewards(ProductDetailActivity.this,loadingDialog2,false);
+                            DBqueries.loadRewards(ProductDetailActivity.this,loadingDialog2,false);
 
                         if (DBqueries.cartlist.size()!=0 && DBqueries.rewardModelList.size()!=0 && DBqueries.wishlist.size() != 0){
                             loadingDialog2.dismiss();
@@ -468,6 +482,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                                                 , (long) 0
                                                                                 , (Boolean) documentSnapshot.get("in_stock")
                                                                                 ,(int)0
+                                                                                ,documentSnapshot.get("satuan").toString()
                                                                         ));
                                                                     }else {
                                                                         cartItemModelList.add(0, new CartItemModel(CartItemModel.CART_ITEM,
@@ -481,6 +496,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                                                 , (long) 0
                                                                                 , (Boolean) documentSnapshot.get("in_stock")
                                                                                 ,(int)0
+                                                                                ,documentSnapshot.get("satuan").toString()
                                                                         ));
                                                                     }
 
@@ -549,13 +565,15 @@ public class ProductDetailActivity extends AppCompatActivity {
                     signInDialog.show();
                 }else {
                     if (!running_wishlist_query) {
+                        addToWishlistBtn.setEnabled(false);
+
                         running_wishlist_query = true;
                         if (ALREADY_ADDED_TO_WISHLIST) {
                             int index = DBqueries.wishlist.indexOf(productID);
                             DBqueries.removeFromWishlist(index, ProductDetailActivity.this);
                             addToWishlistBtn.setSupportImageTintList(getResources().getColorStateList(R.color.colorAccent3));
+                            addToWishlistBtn.setEnabled(true);
                         } else {
-                            addToWishlistBtn.setEnabled(false);
                             addToWishlistBtn.setSupportImageTintList(getResources().getColorStateList(R.color.colorAccent4));
                             Map<String, Object> addProduct = new HashMap<>();
                             addProduct.put("product_ID_" + String.valueOf(DBqueries.wishlist.size()), productID);
@@ -569,11 +587,12 @@ public class ProductDetailActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         if (DBqueries.wishlistModelList.size() != 0) {
 
+
                                             if ((Long)documentSnapshot.get("offers_applied")>0) {
                                                 DBqueries.wishlistModelList.add(new WishlistModel(
                                                         productID
                                                         , documentSnapshot.get("product_image_1").toString()
-                                                        , documentSnapshot.get("product_title").toString() + " " + documentSnapshot.get("product_subtitle").toString()
+                                                        , documentSnapshot.get("product_title").toString()
                                                         , (long) documentSnapshot.get("free_coupon")
                                                         , documentSnapshot.get("average_ratting").toString()
                                                         , (long) documentSnapshot.get("total_ratings")
@@ -582,12 +601,13 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                         , (Boolean) documentSnapshot.get("COD")
                                                         , (Boolean) documentSnapshot.get("in_stock")
                                                         ,(long)documentSnapshot.get("offers_applied")
+                                                        ,documentSnapshot.get("satuan").toString()
                                                 ));
                                             }else {
                                                 DBqueries.wishlistModelList.add(new WishlistModel(
                                                         productID
                                                         , documentSnapshot.get("product_image_1").toString()
-                                                        , documentSnapshot.get("product_title").toString() + " " + documentSnapshot.get("product_subtitle").toString()
+                                                        , documentSnapshot.get("product_title").toString()
                                                         , (long) documentSnapshot.get("free_coupon")
                                                         , documentSnapshot.get("average_ratting").toString()
                                                         , (long) documentSnapshot.get("total_ratings")
@@ -596,10 +616,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                         , (Boolean) documentSnapshot.get("COD")
                                                         , (Boolean) documentSnapshot.get("in_stock")
                                                         ,(long)documentSnapshot.get("offers_applied")
+                                                        ,documentSnapshot.get("satuan").toString()
                                                 ));
                                             }
-                                            DBqueries.loadRatingList(ProductDetailActivity.this);
-                                            addToWishlistBtn.setEnabled(true);
+                                            DBqueries.loadRatingList(ProductDetailActivity.this,null);
 
                                         }
 
@@ -608,6 +628,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                         DBqueries.wishlist.add(productID);
                                         loadingDialog2.dismiss();
                                         Toast.makeText(ProductDetailActivity.this, "Added to wishlist successfull", Toast.LENGTH_SHORT).show();
+                                        addToWishlistBtn.setEnabled(true);
 
                                     } else {
                                         addToWishlistBtn.setEnabled(true);
@@ -649,17 +670,18 @@ public class ProductDetailActivity extends AppCompatActivity {
         /////ratting layout
 
 
-        DBqueries.loadRatingList(ProductDetailActivity.this);
+        DBqueries.loadRatingList(ProductDetailActivity.this,null);
         for (int x = 0; x <rateNowContainer.getChildCount();x++){
             final int starPosition = x;
             rateNowContainer.getChildAt(x).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    loadingDialog2.show();
+
                     if (currentUser ==null) {
                         signInDialog.show();
                     }else {
                          if (starPosition!= initialRating) {
+                             loadingDialog2.show();
                             if (!running_rating_query) {
                                 running_rating_query = true;
 
@@ -796,6 +818,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 , (long) 0
                                 , (Boolean) documentSnapshot.get("in_stock")
                                 ,0
+                                , documentSnapshot.get("satuan").toString()
                         ));
                     }else {
                         DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.CART_ITEM,
@@ -809,6 +832,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 , (long) 0
                                 , (Boolean) documentSnapshot.get("in_stock")
                                 ,0
+                                , documentSnapshot.get("satuan").toString()
                         ));
                     }
                     DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.TOTAL_AMOUNT));
@@ -887,7 +911,9 @@ public class ProductDetailActivity extends AppCompatActivity {
 
 
         if (currentUser!=null) {
-               DBqueries.loadRatingList(ProductDetailActivity.this);
+
+               DBqueries.loadRatingList(ProductDetailActivity.this,null);
+
 
             if (DBqueries.wishlist.size() == 0) {
                 DBqueries.loadWishlist(ProductDetailActivity.this, loadingDialog2,false);
@@ -899,6 +925,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
             if (DBqueries.cartlist.size()!=0 && DBqueries.rewardModelList.size()!=0 && DBqueries.wishlist.size() != 0){
                 loadingDialog2.dismiss();
+
             }
         }else {
             loadingDialog2.dismiss();
@@ -960,12 +987,12 @@ public class ProductDetailActivity extends AppCompatActivity {
             TextView ratingNo = (TextView) ratingsNoContainer.getChildAt(5-x);
             totalStars = totalStars +(Long.parseLong(ratingNo.getText().toString())*x);
         }
-
         totalStars = totalStars + currentUserRating;
+
         if (update){
             return String.valueOf(totalStars / Long.parseLong(totalRatingsFigure.getText().toString())).substring(0,3);
         }else {
-
+            Log.i("total", String.valueOf(totalStars));
             return String.valueOf(totalStars / (Long.parseLong(totalRatingsFigure.getText().toString())+ 1)).substring(0,3);
         }
     }
@@ -982,6 +1009,19 @@ public class ProductDetailActivity extends AppCompatActivity {
             ImageView badgeIcon = cartItem.getActionView().findViewById(R.id.badge_icon);
             badgeIcon.setImageResource(R.drawable.shop);
             badgeCount = cartItem.getActionView().findViewById(R.id.badge_count);
+
+            if (currentUser!=null){
+                if (DBqueries.cartlist.size() == 0) {
+                    DBqueries.loadCartList(ProductDetailActivity.this, loadingDialog2,false,badgeCount,new TextView(ProductDetailActivity.this),false,addToCartBtn);
+                }else {
+                    badgeCount.setVisibility(View.VISIBLE);
+                    if (cartlist.size()<99) {
+                        badgeCount.setText(String.valueOf(cartlist.size()));
+                    }else {
+                        badgeCount.setText("99");
+                    }
+                }
+            }
 
             cartItem.getActionView().setOnClickListener(new View.OnClickListener() {
                 @Override

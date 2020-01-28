@@ -66,9 +66,10 @@ public class CartPaymentAdapter extends RecyclerView.Adapter {
                 String discountedPrice = cartItemModelList.get(position).getDiscountedPrice();
                 Long offersApplied = cartItemModelList.get(position).getOffersApplied();
                 Long couponsApplied=cartItemModelList.get(position).getCouponsApplied();
+                String satuan = cartItemModelList.get(position).getSatuan();
 
 
-                ((CartItemViewholder)viewHolder).setItemDetails(productID,title,quantity,oriPrice,productPrice,discountedPrice,offersApplied,couponsApplied);
+                ((CartItemViewholder)viewHolder).setItemDetails(productID,title,quantity,oriPrice,productPrice,discountedPrice,offersApplied,couponsApplied,satuan);
                 break;
             case CartItemModel.TOTAL_AMOUNT:
                 int totalItems = 0;
@@ -147,6 +148,7 @@ public class CartPaymentAdapter extends RecyclerView.Adapter {
         private TextView productQuantity;
         private TextView discount;
         private TextView voucher;
+        private TextView satuan;
 
         public CartItemViewholder(View cartItemView) {
             super(cartItemView);
@@ -155,12 +157,20 @@ public class CartPaymentAdapter extends RecyclerView.Adapter {
             productQuantity = cartItemView.findViewById(R.id.jml_barang);
             discount = cartItemView.findViewById(R.id.discounted);
             voucher = cartItemView.findViewById(R.id.couponed);
+            satuan = cartItemView.findViewById(R.id.satuan);
         }
 
-        private void setItemDetails(String productID, String title, Long quantity, String oriPriceText,String productPriceText,String discountedPriceText, Long offerApplied,Long coupenApplied) {
+        private void setItemDetails(String productID, String title, Long quantity, String oriPriceText,String productPriceText,String discountedPriceText, Long offerApplied,Long coupenApplied,String satuanText) {
             productTitle.setText(title);
             productPrice.setText("Rp."+productPriceText);
             productQuantity.setText("x"+ Long.toString(quantity));
+            if (!satuanText.equals("")){
+                satuan.setText(satuanText);
+                satuan.setVisibility(View.VISIBLE);
+            }else {
+                satuan.setVisibility(View.GONE);
+
+            }
             if (offerApplied>0) {
                 String discountText = "Discount - Rp." + Long.toString((Long.parseLong(oriPriceText) - Long.parseLong(productPriceText)));
                 discount.setText(discountText);
@@ -202,15 +212,15 @@ public class CartPaymentAdapter extends RecyclerView.Adapter {
 
         private  void setTotalAmount(int totalItemText, int totalItemPriceText, String deliveryPriceText, int totalAmountText, int saveAmountText){
             totalItems.setText("Subtotal untuk ("+totalItemText+" item)");
-            totalItemPrice.setText("Rp."+totalItemPriceText+"/-");
+            totalItemPrice.setText("Rp."+totalItemPriceText);
             if (deliveryPriceText.equals("FREE")) {
                 deliveryPrice.setText(deliveryPriceText);
             }else {
-                deliveryPrice.setText("Rp."+deliveryPriceText+"/-");
+                deliveryPrice.setText("Rp."+deliveryPriceText);
             }
             if (!(totalAmountText==0)) {
-                totalAmount.setText("Rp." + totalAmountText + "/-");
-                savedAmount.setText("You saved Rp." + saveAmountText + "/- on this order");
+                totalAmount.setText("Rp." + totalAmountText);
+                savedAmount.setText("You saved Rp." + saveAmountText + " on this order");
             }
 
         }

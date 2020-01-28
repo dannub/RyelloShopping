@@ -466,17 +466,18 @@ public class PaymentActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onClick(View v) {
 
+                                                        if (fromCart) {
+                                                            if (MyCartFragment.mycartfragment.getActivity() != null) {
+                                                                if (!MainActivity.showCart) {
+                                                                    MyCartFragment.mycartfragment.getActivity().finish();
+                                                                    Intent mainIntent = new Intent(PaymentActivity.this, MainActivity.class);
+                                                                    startActivity(mainIntent);
+                                                                }
+                                                                MainActivity.showCart = false;
+                                                                MyCartFragment.mycartfragment = null;
 
-                                                        if (MyCartFragment.mycartfragment != null) {
-                                                            if (!MainActivity.showCart) {
-                                                                MyCartFragment.mycartfragment.getActivity().finish();
-                                                                Intent mainIntent = new Intent(PaymentActivity.this, MainActivity.class);
-                                                                startActivity(mainIntent);
+
                                                             }
-                                                            MainActivity.showCart = false;
-                                                            MyCartFragment.mycartfragment = null;
-
-
                                                         }
                                                         finish();
 

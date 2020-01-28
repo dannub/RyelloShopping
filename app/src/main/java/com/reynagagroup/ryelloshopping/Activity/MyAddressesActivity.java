@@ -155,6 +155,7 @@ public class MyAddressesActivity extends AppCompatActivity {
     public static void refreshItem(int deselect, int select){
         addressesAdapter.notifyItemChanged(deselect);
         addressesAdapter.notifyItemChanged(select);
+        addressesAdapter.notifyDataSetChanged();
     }
 
     @Override

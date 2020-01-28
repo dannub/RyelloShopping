@@ -260,7 +260,7 @@ public class SignUpFragment extends Fragment {
                                                         myAddressesMap.put("list_size",(long)0);
 
                                                         Map<String ,Object> notificationMap = new HashMap<>();
-                                                        myAddressesMap.put("list_size",(long)0);
+                                                        notificationMap.put("list_size",(long)0);
                                                         ///MAPS
 
                                                         final List<String> documentNames = new ArrayList<>();

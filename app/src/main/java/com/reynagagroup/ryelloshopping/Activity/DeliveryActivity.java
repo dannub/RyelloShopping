@@ -303,12 +303,14 @@ public class DeliveryActivity extends AppCompatActivity {
             deliveryActivity = null;
             finish();
 
+            if (fromCart){
             linearLayoutManager = new LinearLayoutManager(DeliveryActivity.this);
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             MyCartFragment.cartItemsRecyclerView.setLayoutManager(linearLayoutManager);
 
             linearLayoutManager.scrollToPosition(cartItemModelList.size() - 1);
             MyCartFragment.cartlistAdapter.notifyDataSetChanged();
+            }
             return true;
         }
 

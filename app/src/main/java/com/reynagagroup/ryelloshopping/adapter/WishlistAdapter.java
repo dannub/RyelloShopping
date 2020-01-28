@@ -75,8 +75,9 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         Boolean COD = wishlistModelList.get(position).getCOD();
         Boolean inStock = wishlistModelList.get(position).getInStock();
         long offersApplied = wishlistModelList.get(position).getOffersApplied();
+        String satuan = wishlistModelList.get(position).getSatuan();
 
-        viewHolder.SetData(productId,resource,freeCoupon,title,ratting,totalRattings,productPrice,oriPrice,COD,position,inStock,offersApplied);
+        viewHolder.SetData(productId,resource,freeCoupon,title,ratting,totalRattings,productPrice,oriPrice,COD,position,inStock,offersApplied,satuan);
 
 
         if (lastPosition <position) {
@@ -102,8 +103,8 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         private  TextView totalRattings;
         private TextView productPrice;
         private TextView oriPrice;
-        private TextView paymentMethod;
         private ImageButton deleteBtn;
+        private TextView satuan;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -117,18 +118,18 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             priceCut = itemView.findViewById(R.id.price_cut);
             productPrice = itemView.findViewById(R.id.product_price);
             oriPrice = itemView.findViewById(R.id.ori_price);
-            paymentMethod = itemView.findViewById(R.id.payment_method);
             deleteBtn = itemView.findViewById(R.id.delete_btn);
-
+            satuan = itemView.findViewById(R.id.satuan);
         }
 
-        private void SetData(final String productId, String resource, long freeCouponNo, String title, String avarageRate, long totalRattingNo, String price, String oriPriceValue, Boolean COD, final int index,Boolean inStock,long offersApplied){
+        private void SetData(final String productId, String resource, long freeCouponNo, String title, String avarageRate, long totalRattingNo, String price, String oriPriceValue, Boolean COD, final int index,Boolean inStock,long offersApplied,String satuanText){
 
             Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.drawable.load)).into(productImage);
             Log.i("image",resource);
             productTitle.setText(title);
             if(freeCouponNo !=0 && inStock){
                 couponIcon.setVisibility(View.VISIBLE);
+                freeCoupon.setVisibility(View.VISIBLE);
                 if (freeCouponNo ==1){
                     freeCoupon.setText("free "+ freeCouponNo + " coupon");
                 }else {
@@ -140,6 +141,12 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                 freeCoupon.setVisibility(View.INVISIBLE);
             }
             LinearLayout linearLayout = (LinearLayout) ratting.getParent();
+            if (!satuanText.equals("")) {
+                satuan.setVisibility(View.VISIBLE);
+                satuan.setText(" /"+satuanText);
+            }else {
+                satuan.setVisibility(View.GONE);
+            }
 
             if (inStock){
                 ratting.setVisibility(View.VISIBLE);
@@ -152,15 +159,11 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
 
                 ratting.setText(avarageRate);
                 totalRattings.setText("("+totalRattingNo+")rattings");
-                productPrice.setText("Rp."+price+"/-");
-                if(COD){
-                    paymentMethod.setVisibility(View.VISIBLE);
-                }else {
-                    paymentMethod.setVisibility(View.GONE);
-                }
+                productPrice.setText("Rp."+price);
+
 
                 if (offersApplied>0) {
-                    oriPrice.setText("Rp." + oriPriceValue + "/-");
+                    oriPrice.setText("Rp." + oriPriceValue );
                     priceCut.setVisibility(View.VISIBLE);
                     oriPrice.setVisibility(View.VISIBLE);
                 }else {
@@ -175,7 +178,6 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                 productPrice.setText("Out of Stock");
                 productPrice.setTextColor(itemView.getContext().getResources().getColor(R.color.colorPrimary));
                 oriPrice.setVisibility(View.INVISIBLE);
-                paymentMethod.setVisibility(View.INVISIBLE);
                 priceCut.setVisibility(View.INVISIBLE);
             }
 

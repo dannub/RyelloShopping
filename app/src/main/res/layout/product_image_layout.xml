@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Rp.400000/-"
+        android:text="Rp.400000"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/colorAccent1"
@@ -121,7 +121,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:text="Rp.500000/-"
         app:layout_constraintBottom_toBottomOf="@+id/product_price"
         app:layout_constraintStart_toEndOf="@+id/product_price" />
@@ -137,28 +137,7 @@
         app:layout_constraintStart_toStartOf="@+id/ori_price"
         app:layout_constraintTop_toTopOf="@+id/ori_price" />
 
-    <ImageView
-        android:id="@+id/cod_img_indicator"
-        android:layout_width="30sp"
-        android:layout_height="30sp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/ori_price"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/product_title"
-        app:srcCompat="@mipmap/cod" />
 
-    <TextView
-        android:id="@+id/cod_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Available"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/coupen_redemption_layout"
-        app:layout_constraintEnd_toEndOf="@+id/cod_img_indicator"
-        app:layout_constraintStart_toStartOf="@+id/cod_img_indicator"
-        app:layout_constraintTop_toBottomOf="@+id/cod_img_indicator" />
 
     <LinearLayout
         android:id="@+id/coupen_redemption_layout"
@@ -191,5 +170,16 @@
             android:layout_height="wrap_content"
             android:text="redeem"/>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/satuan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" / meter"
+        android:textColor="@color/colorAccent1"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="@+id/product_price"
+        app:layout_constraintStart_toEndOf="@+id/ori_price"
+        app:layout_constraintTop_toTopOf="@+id/product_price" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

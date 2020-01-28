@@ -12,9 +12,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,12 +74,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:text="Rp.500000/-"
+            android:text="Rp.500000"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/satuan2"
             app:layout_constraintTop_toBottomOf="@+id/tv_free_coupon" />
 
         <TextView
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="Rp. 550000/-"
+            android:text="Rp. 550000"
             android:textColor="@color/colorPrimary"
             android:textSize="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/product_price"
@@ -103,14 +103,14 @@
             app:layout_constraintTop_toTopOf="@+id/ori_price" />
 
         <TextView
-            android:visibility="invisible"
             android:id="@+id/offers_applied"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="Offers applied"
-            android:textSize="10dp"
             android:textColor="@color/colorPrimaryDark4"
+            android:textSize="10dp"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/product_quantity" />
 
@@ -175,6 +175,31 @@
                 android:textSize="12sp" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/satuan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:text="meter"
+            android:visibility="gone"
+            android:textColor="@color/colorAccent1"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/product_quantity"
+            app:layout_constraintStart_toEndOf="@+id/product_quantity"
+            app:layout_constraintTop_toTopOf="@+id/product_quantity" />
+
+        <TextView
+            android:id="@+id/satuan2"
+            android:textSize="14dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent1"
+            android:visibility="gone"
+            android:text="/meter"
+            app:layout_constraintBottom_toBottomOf="@+id/product_price"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/product_price" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

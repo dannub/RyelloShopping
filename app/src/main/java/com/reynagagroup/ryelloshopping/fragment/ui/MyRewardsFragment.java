@@ -2,15 +2,22 @@ package com.reynagagroup.ryelloshopping.fragment.ui;
 
 
 import android.app.Dialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.R;
@@ -26,7 +33,17 @@ public class  MyRewardsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private RecyclerView rewardRecyclerView;
+
+
+    public static TextView noData;
+    public static ConstraintLayout background;
+    public static ImageView no_internet;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ConnectivityManager connectivityManager;
+    private NetworkInfo networkInfo;
+
+
+    public static RecyclerView rewardRecyclerView;
     private Dialog loadingDialog;
     public static MyRewardsAdapter myRewardsAdapter;
     private LinearLayoutManager linearLayoutManager;
@@ -49,12 +66,29 @@ public class  MyRewardsFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getContext());
 
 
+        noData = view.findViewById(R.id.pesanan);
+        background =  view.findViewById(R.id.bg);
+        no_internet = view.findViewById(R.id.no_internet_connection);
+        swipeRefreshLayout = view.findViewById(R.id.swipe);
+        connectivityManager =(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connectivityManager.getActiveNetworkInfo();
 
+
+        swipeRefreshLayout.setColorSchemeColors(getContext().getResources().getColor(R.color.colorPrimary),getContext().getResources().getColor(R.color.colorPrimary),getContext().getResources().getColor(R.color.colorPrimary));
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadPage();
+                swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
 
 
         //loading dialog
 
-        DBqueries.loadRewards(getContext(),loadingDialog,true);
 
         myRewardsAdapter = new MyRewardsAdapter(DBqueries.rewardModelList,false);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -68,4 +102,24 @@ public class  MyRewardsFragment extends Fragment {
         return view;
     }
 
+    public void reloadPage(){
+        networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo !=null && networkInfo.isConnected()==true) {
+
+            DBqueries.loadRewards(getContext(),loadingDialog,true);
+        }else {
+            noData.setVisibility(View.GONE);
+            background.setBackgroundColor(getContext().getResources().getColor(R.color.colorAccent));
+            no_internet.setVisibility(View.VISIBLE);
+            rewardRecyclerView.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        reloadPage();
+    }
 }

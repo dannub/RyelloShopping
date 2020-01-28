@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.reynagagroup.ryelloshopping.Activity.NotificationActivity;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.model.NotificationModel;
@@ -60,7 +61,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         private void setData (String image,String body,boolean readed){
-            Glide.with(itemView.getContext()).load(image).into(imageView);
+            if (image.equals("")) {
+                Glide.with(itemView.getContext()).load(image).apply(new RequestOptions().placeholder(R.drawable.rewards)).into(imageView);
+            }else {
+                imageView.setImageDrawable(itemView.getResources().getDrawable(R.drawable.rewards));
+            }
             if (readed){
                 textView.setAlpha(0.5f);
             }else {

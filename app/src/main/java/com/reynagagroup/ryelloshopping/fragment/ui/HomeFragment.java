@@ -233,8 +233,9 @@ public class HomeFragment extends Fragment {
                 DBqueries.loadAddresses(getContext(), MainActivity.loadingDialog, false, 0);
             }
 
-
-            DBqueries.loadCartList(getContext(), new Dialog(getContext()),false,badgeCount,new TextView(getContext()),false,null);
+            if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                DBqueries.loadCartList(getContext(), new Dialog(getContext()), false, badgeCount, new TextView(getContext()), false, null);
+            }
             loadCategories(categoryRecyclerView,getContext());
 
             loadedCategoriesNames.add("HOME");

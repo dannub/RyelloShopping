@@ -148,7 +148,7 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
                 couponDiscount.setText(discount+"%");
             }else {
                 discountlayout.setVisibility(View.GONE);
-                couponTitle.setText("POTONGAN Rp."+discount+"/-");
+                couponTitle.setText("POTONGAN Rp."+discount);
                 couponDiscount.setText("Rp."+discount);
             }
 
@@ -186,7 +186,7 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
                                 selectedcouponDiscount.setText(discount + "%");
                             } else {
                                 selecteddiscountLayout.setVisibility(View.GONE);
-                                selectedcouponTitle.setText("POTONGAN Rp." + discount + "/-");
+                                selectedcouponTitle.setText("POTONGAN Rp." + discount );
                                 selectedcouponDiscount.setText("Rp." + discount);
                             }
 
@@ -196,9 +196,9 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
                             if (Long.valueOf(productOriginalPrice) > Long.valueOf(lowerLimit) && Long.valueOf(productOriginalPrice) < Long.valueOf(upperLimit)) {
                                 if (type.toUpperCase().equals("DISCOUNT")) {
                                     Long discountAmount = Long.valueOf(productOriginalPrice) * Long.valueOf(discount) / 100;
-                                    discountedPrice.setText("Rp." + String.valueOf(Long.valueOf(productOriginalPrice) - discountAmount) + "/-");
+                                    discountedPrice.setText("Rp." + String.valueOf(Long.valueOf(productOriginalPrice) - discountAmount) );
                                 } else {
-                                    discountedPrice.setText("Rp." + String.valueOf(Long.valueOf(productOriginalPrice) - Long.valueOf(discount)) + "/-");
+                                    discountedPrice.setText("Rp." + String.valueOf(Long.valueOf(productOriginalPrice) - Long.valueOf(discount)) );
                                 }
                                 if (cartItemPosition!= -1) {
                                     cartItemModelList.get(cartItemPosition).setSelectedCouponId(couponId);

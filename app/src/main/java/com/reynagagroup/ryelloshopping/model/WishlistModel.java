@@ -2,7 +2,7 @@ package com.reynagagroup.ryelloshopping.model;
 
 import java.util.ArrayList;
 
-public class WishlistModel {
+public class WishlistModel implements Comparable<WishlistModel> {
 
     private String  productImage;
     private String productID;
@@ -15,9 +15,10 @@ public class WishlistModel {
     private Boolean COD;
     private Boolean inStock;
     private long offersApplied;
+    private String satuan;
     private ArrayList<String> tags;
 
-    public WishlistModel( String productID,String productImage, String productTitle, long freeCoupons, String ratting, long totalRattings, String productPrice, String oriPrice, Boolean COD, Boolean inStock, long offersApplied) {
+    public WishlistModel( String productID,String productImage, String productTitle, long freeCoupons, String ratting, long totalRattings, String productPrice, String oriPrice, Boolean COD, Boolean inStock, long offersApplied,String satuan) {
         this.productImage = productImage;
         this.productID = productID;
         this.productTitle = productTitle;
@@ -29,6 +30,7 @@ public class WishlistModel {
         this.COD = COD;
         this.inStock = inStock;
         this.offersApplied = offersApplied;
+        this.satuan = satuan;
     }
 
     public ArrayList<String> getTags() {
@@ -37,6 +39,14 @@ public class WishlistModel {
 
     public void setTags(ArrayList<String> tags) {
         this.tags = tags;
+    }
+
+    public String getSatuan() {
+        return satuan;
+    }
+
+    public void setSatuan(String satuan) {
+        this.satuan = satuan;
     }
 
     public String getProductImage() {
@@ -125,5 +135,12 @@ public class WishlistModel {
 
     public void setOffersApplied(long offersApplied) {
         this.offersApplied = offersApplied;
+    }
+
+    @Override
+    public int compareTo(WishlistModel o) {
+        if (getProductTitle() == null || o.getProductTitle() == null)
+            return 0;
+        return getProductTitle().compareTo(o.getProductTitle());
     }
 }

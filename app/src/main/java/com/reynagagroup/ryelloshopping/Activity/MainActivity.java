@@ -3,7 +3,15 @@ package com.reynagagroup.ryelloshopping.Activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
@@ -17,6 +25,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -26,6 +36,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.Interface.IOnBackPressed;
@@ -60,6 +71,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.reynagagroup.ryelloshopping.Activity.RegisterActivity.setSignUpFragment;
 
 public class MainActivity extends AppCompatActivity {
+
+
+
 
     public static int currentFragment= -1;
     private static Window window;
@@ -136,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
         //loading dialog
 
 
+
+
         if (showCart) {
              mainActivity = this;
             drawer.setDrawerLockMode(1);
@@ -173,47 +189,49 @@ public class MainActivity extends AppCompatActivity {
 
                             if (currentUser!=null) {
 
-                                if (DBqueries.email ==null){
-                                    firebaseFirestore = FirebaseFirestore.getInstance();
-
-                                    firebaseFirestore.collection("USERS")
-                                            .document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-
-                                                DBqueries.fullname = task.getResult().get("fullname").toString();
-                                                DBqueries.email = currentUser.getEmail();
-                                                DBqueries.profile = task.getResult().get("profile").toString();
 
 
-                                                fullnameText.setText(task.getResult().get("fullname").toString());
-                                                email.setText(currentUser.getEmail());
-                                                if (DBqueries.profile.equals("")){
-                                                    imageAdd.setVisibility(View.VISIBLE);
-                                                }else {
-                                                    imageAdd.setVisibility(View.INVISIBLE);
-                                                    Glide.with(MainActivity.this).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(imageAcc);
-                                                }
+                                loadingDialog.show();
+                                loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialog) {
 
-                                            } else {
-                                                String error = task.getException().getMessage();
-                                                Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
-                                }else {
-
-                                    fullnameText.setText(DBqueries.fullname);
-                                    email.setText(DBqueries.email);
-                                    if (DBqueries.profile.equals("")){
-                                        imageAcc.setImageDrawable(getResources().getDrawable(R.drawable.account));
-                                        imageAdd.setVisibility(View.VISIBLE);
-                                    }else {
-                                        imageAdd.setVisibility(View.INVISIBLE);
-                                        Glide.with(MainActivity.this).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(imageAcc);
                                     }
-                                }
+                                });
+
+                                firebaseFirestore = FirebaseFirestore.getInstance();
+
+                                firebaseFirestore.collection("USERS")
+                                        .document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+
+                                            DBqueries.fullname = task.getResult().get("fullname").toString();
+                                            DBqueries.email = currentUser.getEmail();
+                                            DBqueries.profile = task.getResult().get("profile").toString();
+
+
+                                            fullnameText.setText(DBqueries.fullname);
+                                            email.setText(DBqueries.email);
+                                            if (DBqueries.profile.equals("")){
+                                                // imageAdd.setVisibility(View.INVISIBLE);
+                                            }else {
+                                                // imageAdd.setVisibility(View.INVISIBLE);
+                                                Glide.with(MainActivity.this).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(imageAcc);
+                                            }
+                                            loadingDialog.dismiss();
+
+                                        } else {
+                                            loadingDialog.dismiss();
+                                            String error = task.getException().getMessage();
+                                            Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+
+
+
                             }else {
                                 imageAcc.setImageDrawable(getResources().getDrawable(R.drawable.account));
                                 fullnameText.setText("Not Sign In");
@@ -369,7 +387,49 @@ public class MainActivity extends AppCompatActivity {
             navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setEnabled(false);
         }else {
 
-            navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setEnabled(true);
+                FirebaseFirestore.getInstance().collection("USERS").document(currentUser.getUid()).update("Last seen", FieldValue.serverTimestamp())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    MainActivity.showCart =false;
+                                }else {
+                                    String error = task.getException().getMessage();
+                                    Toast.makeText(MainActivity.this,error,Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+
+                navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setEnabled(true);
+
+            FirebaseFirestore.getInstance().collection("USERS")
+                    .document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+
+                        DBqueries.fullname = task.getResult().get("fullname").toString();
+                        DBqueries.email = currentUser.getEmail();
+                        DBqueries.profile = task.getResult().get("profile").toString();
+
+
+
+
+                    } else {
+                        String error = task.getException().getMessage();
+                        Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+
+
+
+
+        if (currentUser!=null) {
+            DBqueries.checkNotifications(MainActivity.this,false, null);
         }
         invalidateOptionsMenu();
     }
@@ -377,7 +437,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        DBqueries.checkNotifications(true,null);
+        if (currentUser!=null) {
+            DBqueries.checkNotifications(MainActivity.this,true, null);
+        }
     }
 
     @Override
@@ -407,15 +469,16 @@ public class MainActivity extends AppCompatActivity {
             badgeCount = cartItem.getActionView().findViewById(R.id.badge_count);
             if (currentUser !=null){
                 DBqueries.loadCartList(MainActivity.this, new Dialog(MainActivity.this),false,badgeCount,new TextView(MainActivity.this),false,null);
+
             }
 
             MenuItem notificationItem = menu.findItem(R.id.main_notification_icon);
-            cartItem.setActionView(R.layout.badge_layout);
-            ImageView notifyIcon = cartItem.getActionView().findViewById(R.id.badge_icon);
+            notificationItem.setActionView(R.layout.badge_layout);
+            ImageView notifyIcon = notificationItem.getActionView().findViewById(R.id.badge_icon);
             notifyIcon.setImageResource(R.drawable.notification);
-            TextView notifyCount = cartItem.getActionView().findViewById(R.id.badge_count);
+            TextView notifyCount = notificationItem.getActionView().findViewById(R.id.badge_count);
             if (currentUser!= null){
-                DBqueries.checkNotifications(false,notifyCount);
+                DBqueries.checkNotifications(MainActivity.this,false,notifyCount);
             }
 
             notificationItem.getActionView().setOnClickListener(new View.OnClickListener() {
@@ -514,7 +577,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         }else  if (id == android.R.id.home){
-
+            MyCartFragment.mycartfragment = null;
 
 
             if(drawer.isDrawerOpen(GravityCompat.START)){
@@ -533,6 +596,7 @@ public class MainActivity extends AppCompatActivity {
                         if (showCart){
                             mainActivity = null;
                             showCart = false;
+                            MyCartFragment.mycartfragment = null;
                             getSupportActionBar().setDisplayShowTitleEnabled(true);
                             currentFragment = -1;
                             finish();
@@ -546,6 +610,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
                     if (showCart){
+                        MyCartFragment.mycartfragment = null;
                         mainActivity = null;
                         showCart = false;
                         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -601,4 +666,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 }

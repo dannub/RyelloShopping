@@ -45,30 +45,10 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-                if (currentUser!=null){
-                    FirebaseFirestore.getInstance().collection("USERS").document(currentUser.getUid()).update("Last seen", FieldValue.serverTimestamp())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()){
-                                        Intent mainIntent = new Intent(SplashActivity.this,MainActivity.class);
-                                        MainActivity.showCart =false;
-                                        startActivity(mainIntent);
-                                        finish();
-                                    }else {
-                                        String error = task.getException().getMessage();
-                                        Toast.makeText(SplashActivity.this,error,Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                }else {
                     Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
                     MainActivity.showCart = false;
                     startActivity(mainIntent);
                     finish();
-                }
 
             }
             public  void  finish(){

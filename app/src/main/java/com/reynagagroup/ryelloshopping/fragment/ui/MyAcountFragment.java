@@ -159,7 +159,7 @@ public class MyAcountFragment extends Fragment {
                     yourRecentOrdersTitle.setText("No recent Orders");
                 }
 
-                if (i<3){
+                if (i<4){
 
                     for (int x=i;x<4;x++){
                         recentOrdersContainer.getChildAt(x).setVisibility(View.GONE);
@@ -250,6 +250,7 @@ public class MyAcountFragment extends Fragment {
     }
 
     private void initProgress(){
+        currentOrderTitle.setText("Pesananmu");
         tvCurrentOrderStatus.setText("Status pesananmu sekarang");
         orderIndicator.setImageTintList(getResources().getColorStateList(R.color.colorAccent3));
         O_P_progreess.setProgress(0);
@@ -347,20 +348,24 @@ public class MyAcountFragment extends Fragment {
 
     private void setProgress(MyOrderItemModel myOrderItemModel){
         initProgress();
+        currentOrderTitle.setText(myOrderItemModel.getProductTitle());
         if (myOrderItemModel.isOrdered()) {
             currentOrderTitle.setText(myOrderItemModel.getProductTitle());
             tvCurrentOrderStatus.setText("Telah Dikonfirmasi");
             orderIndicator.setImageTintList(getResources().getColorStateList(R.color.colorSuccess));
-            O_P_progreess.setProgress(100);
+
             if (myOrderItemModel.isPacked()) {
                 tvCurrentOrderStatus.setText("Telah dikemas");
+                O_P_progreess.setProgress(100);
                 packedIndicator.setImageTintList(getResources().getColorStateList(R.color.colorSuccess));
-                P_S_progress.setProgress(100);
+
                 if (myOrderItemModel.isShipped()) {
                     tvCurrentOrderStatus.setText("Sedang dikirim");
+                    P_S_progress.setProgress(100);
                     shippedIndicator.setImageTintList(getResources().getColorStateList(R.color.colorSuccess));
-                    S_D_progress.setProgress(100);
+
                     if (myOrderItemModel.isDelivered()) {
+                        S_D_progress.setProgress(100);
                         tvCurrentOrderStatus.setText("Telah sampai");
                         deliveredIndicator.setImageTintList(getResources().getColorStateList(R.color.colorSuccess));
                     }
@@ -387,11 +392,11 @@ public class MyAcountFragment extends Fragment {
         MainActivity.fullnameText.setText(DBqueries.fullname);
         MainActivity.email.setText(DBqueries.email);
         if (!DBqueries.profile.equals("")){
-            MainActivity.imageAdd.setVisibility(View.INVISIBLE);
+           // MainActivity.imageAdd.setVisibility(View.INVISIBLE);
             Glide.with(getContext()).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(MainActivity.imageAcc);
 
         }else {
-            MainActivity.imageAdd.setVisibility(View.VISIBLE);
+            //MainActivity.imageAdd.setVisibility(View.VISIBLE);
             MainActivity.imageAcc.setImageDrawable(getResources().getDrawable(R.drawable.account));
 
         }

@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/colorAccent"
-    android:elevation="3dp"
-    android:layout_marginBottom="4dp"
+    android:layout_height="wrap_content"
     android:layout_marginTop="4dp"
-    android:layout_height="wrap_content">
+    android:layout_marginBottom="4dp"
+    android:background="@color/colorAccent"
+    android:elevation="3dp">
 
     <ImageView
         android:id="@+id/product_image"
@@ -22,13 +21,15 @@
 
     <TextView
         android:id="@+id/product_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="BAN TERKENAL"
-        android:textSize="16sp"
         android:textColor="@color/colorAccent1"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/product_quantity"
+        app:layout_constraintEnd_toStartOf="@+id/product_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,35 +38,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Rp. 499999/-"
+        android:text="Rp. 499999"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/product_image"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_quantity" />
 
     <TextView
         android:id="@+id/product_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="3dp"
+        android:background="@drawable/border_background"
+        android:padding="3dp"
+
         android:text="Qty:1"
         android:textColor="@color/colorPrimary"
-        android:background="@drawable/border_background"
-
-        android:padding="3dp"
         app:layout_constraintBottom_toBottomOf="@+id/product_image"
-        app:layout_constraintEnd_toStartOf="@+id/product_image" />
+        app:layout_constraintEnd_toStartOf="@+id/satuan2" />
 
     <View
         android:id="@+id/divider9"
         android:layout_width="match_parent"
         android:layout_height="3dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/product_image" />
+        app:layout_constraintTop_toBottomOf="@+id/product_price" />
 
     <ImageView
         android:id="@+id/ordered_indicator"
@@ -95,10 +96,10 @@
     <ImageView
         android:id="@+id/packed_indicator"
         android:layout_width="15dp"
-        android:tint="@color/colorAccent3"
         android:layout_height="15dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="50dp"
+        android:tint="@color/colorAccent3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ordered_indicator"
         app:srcCompat="@mipmap/dot" />
@@ -147,8 +148,8 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_marginStart="16dp"
-        android:tint="@color/colorAccent3"
         android:layout_marginTop="50dp"
+        android:tint="@color/colorAccent3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shipping_delivered_progressbar"
         app:srcCompat="@mipmap/dot" />
@@ -159,9 +160,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Dikonfirmasi"
-        android:textStyle="bold"
-        android:textSize="12sp"
         android:textColor="@color/colordetail"
+        android:textSize="12sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/ordered_indicator"
         app:layout_constraintStart_toEndOf="@+id/ordered_indicator"
         app:layout_constraintTop_toTopOf="@+id/ordered_indicator" />
@@ -193,9 +194,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Dikemas"
-        android:textStyle="bold"
-        android:textSize="12sp"
         android:textColor="@color/colordetail"
+        android:textSize="12sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/packed_indicator"
         app:layout_constraintStart_toEndOf="@+id/packed_indicator"
         app:layout_constraintTop_toTopOf="@+id/packed_indicator" />
@@ -209,7 +210,6 @@
         android:textColor="@color/colordetail"
         android:textSize="10sp"
         android:visibility="visible"
-        app:layout_constraintEnd_toStartOf="@+id/textView36"
         app:layout_constraintStart_toStartOf="@+id/packed_title"
         app:layout_constraintTop_toBottomOf="@+id/packed_title" />
 
@@ -229,9 +229,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Dikirim"
-        android:textStyle="bold"
-        android:textSize="12sp"
         android:textColor="@color/colordetail"
+        android:textSize="12sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/shipping_indicator"
         app:layout_constraintStart_toEndOf="@+id/shipping_indicator"
         app:layout_constraintTop_toTopOf="@+id/shipping_indicator" />
@@ -265,9 +265,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Sampai"
-        android:textStyle="bold"
-        android:textSize="12sp"
         android:textColor="@color/colordetail"
+        android:textSize="12sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/delivered_indicator"
         app:layout_constraintStart_toEndOf="@+id/delivered_indicator"
         app:layout_constraintTop_toTopOf="@+id/delivered_indicator" />
@@ -386,9 +386,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="JNE Resi : 78789789798"
-        android:visibility="gone"
-        android:textSize="10sp"
         android:textColor="@color/colordetail"
+        android:textSize="10sp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/shipping_body"
         app:layout_constraintTop_toBottomOf="@+id/shipping_body" />
 
@@ -402,8 +402,8 @@
         android:text="Copy Resi"
         android:textColor="@color/colordetail"
 
-        android:visibility="gone"
         android:textSize="10dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/shipping_body"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/shipping_date" />
@@ -412,14 +412,14 @@
         android:id="@+id/cancel_dikemas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textColor="@color/colorAccent4"
-        android:background="@drawable/border_background5"
         android:layout_marginEnd="16dp"
-        android:textAlignment="center"
-        android:visibility="gone"
-        android:textSize="6dp"
+        android:background="@drawable/border_background5"
         android:text="Cancel Order \nMon,12th Dec 2015 - 7:00 A.M."
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent4"
+        android:textSize="6dp"
+        android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/packed_date" />
 
@@ -427,16 +427,38 @@
         android:id="@+id/cancel_konfirmasi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/border_background5"
+        android:text="Cancel Order \nMon,12th Dec 2015 - 7:00 A.M."
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent4"
+        android:textSize="6dp"
         android:textStyle="bold"
         android:visibility="gone"
-        android:textColor="@color/colorAccent4"
-        android:background="@drawable/border_background5"
-        android:layout_marginEnd="16dp"
-        android:textAlignment="center"
-        android:textSize="6dp"
-        android:text="Cancel Order \nMon,12th Dec 2015 - 7:00 A.M."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/ordered_date" />
+
+    <TextView
+        android:id="@+id/satuan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:textColor="@color/colorAccent1"
+        android:text="/ meter"
+        app:layout_constraintBottom_toBottomOf="@+id/product_price"
+        app:layout_constraintStart_toEndOf="@+id/product_price"
+        app:layout_constraintTop_toTopOf="@+id/product_price" />
+
+    <TextView
+        android:id="@+id/satuan2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/colorAccent1"
+        android:text="meter"
+        app:layout_constraintBottom_toBottomOf="@+id/product_quantity"
+        app:layout_constraintEnd_toStartOf="@+id/product_image"
+        app:layout_constraintTop_toTopOf="@+id/product_quantity" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -84,6 +84,7 @@ public class SearchActivity extends AppCompatActivity {
                                                 , (Boolean) documentSnapshot.get("COD")
                                                 , (Boolean) documentSnapshot.get("in_stock")
                                                 ,(Long)documentSnapshot.get("offers_applied")
+                                                , documentSnapshot.get("satuan").toString()
                                         );
                                     }else {
                                         wishlistModel = new WishlistModel(
@@ -97,6 +98,7 @@ public class SearchActivity extends AppCompatActivity {
                                                 , (Boolean) documentSnapshot.get("COD")
                                                 , (Boolean) documentSnapshot.get("in_stock")
                                                 ,(Long)documentSnapshot.get("offers_applied")
+                                                , documentSnapshot.get("satuan").toString()
                                         );
                                     }
 

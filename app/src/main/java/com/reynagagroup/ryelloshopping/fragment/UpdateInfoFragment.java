@@ -377,6 +377,7 @@ public class UpdateInfoFragment extends Fragment {
         }else {
 
             Map<String ,Object> updateData = new HashMap<>();
+            updateData.put("email",emailField.getText().toString());
             updateData.put("fullname",nameField.getText().toString());
             updateField(user,updateData);
         }

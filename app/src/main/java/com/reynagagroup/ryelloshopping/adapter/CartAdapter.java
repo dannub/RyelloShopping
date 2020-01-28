@@ -107,8 +107,9 @@ public class CartAdapter extends RecyclerView.Adapter {
                 Long offersApplied = cartItemModelList.get(position).getOffersApplied();
                 Boolean inStock = cartItemModelList.get(position).getInStock();
                 Long quantity = cartItemModelList.get(position).getProductQuantity();
+                String satuan = cartItemModelList.get(position).getSatuan();
 
-                ((CartItemViewholder)viewHolder).setItemDetails(context,resource,productID,title,quantity,freeCoupons,productPrice,oriPrice,offersApplied,position,inStock);
+                ((CartItemViewholder)viewHolder).setItemDetails(context,resource,productID,title,quantity,freeCoupons,productPrice,oriPrice,offersApplied,position,inStock,satuan);
                 break;
             case CartItemModel.TOTAL_AMOUNT:
                 int totalItems = 0;
@@ -215,6 +216,7 @@ public class CartAdapter extends RecyclerView.Adapter {
         private ConstraintLayout couponLayout;
         private String productOriginalPrice;
         private TextView couponRedeemptionBody;
+        private TextView satuan,satuan2;
         ////coupondialog
 
         public CartItemViewholder(@NonNull View itemView) {
@@ -233,26 +235,38 @@ public class CartAdapter extends RecyclerView.Adapter {
             deleteBtn = itemView.findViewById(R.id.remove_item_btn);
             divider = itemView.findViewById(R.id.price_cut_divider);
             couponRedeemptionBody = itemView.findViewById(R.id.tv_coupen_redemption);
+            satuan = itemView.findViewById(R.id.satuan);
+            satuan2 = itemView.findViewById(R.id.satuan2);
         }
 
         @RequiresApi(api = Build.VERSION_CODES.M)
-        private void  setItemDetails(final Context context, String resource, String productID, String title, Long quantity, Long freeCouponsNo, final String productPriceText, final String oriPriceText, final Long offersAppliedNo, final int position, Boolean inStock) {
+        private void  setItemDetails(final Context context, String resource, String productID, String title, Long quantity, Long freeCouponsNo, final String productPriceText, final String oriPriceText, final Long offersAppliedNo, final int position, Boolean inStock, String satuanText) {
             Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.drawable.load)).into(productImage);
             productTitle.setText(title);
 
 
             final Dialog checkCouponPriceDialog = new Dialog(itemView.getContext());
             checkCouponPriceDialog.setContentView(R.layout.coupon_redeem_dialog);
-            checkCouponPriceDialog.setCancelable(false);
+            checkCouponPriceDialog.setCancelable(true);
             checkCouponPriceDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
 
 
+            if (!satuanText.equals("")){
+                satuan.setText(satuanText);
+                satuan2.setText("/"+satuanText);
+                satuan.setVisibility(View.VISIBLE);
+                satuan2.setVisibility(View.VISIBLE);
+            }else {
+                satuan.setVisibility(View.GONE);
+                satuan2.setVisibility(View.GONE);
+            }
             if (inStock) {
                 couponRedeemptionLayout.setVisibility(View.VISIBLE);
                 productQuantity.setVisibility(View.VISIBLE);
                 freeCoupons.setVisibility(View.VISIBLE);
                 freeCouponsIcon.setVisibility(View.VISIBLE);
                 couponsApplied.setVisibility(View.INVISIBLE);
+
                 if (freeCouponsNo > 0) {
                     freeCouponsIcon.setVisibility(View.VISIBLE);
                     freeCoupons.setVisibility(View.VISIBLE);
@@ -267,7 +281,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                     freeCoupons.setVisibility(View.INVISIBLE);
                 }
 
-                productPrice.setText("Rp." + productPriceText + "/-");
+                productPrice.setText("Rp." + productPriceText );
                 productPrice.setTextColor(itemView.getContext().getResources().getColor(R.color.colorPrimary));
                 if (offersAppliedNo > 0){
                     divider.setVisibility(View.VISIBLE);
@@ -278,7 +292,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                     oriPrice.setVisibility(View.GONE);
 
                 }
-                oriPrice.setText("Rp." + oriPriceText + "/-");
+                oriPrice.setText("Rp." + oriPriceText );
 
                 ///////coupon dialog
 
@@ -345,7 +359,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                             cartItemModelList.get(position).setCouponsApplied(Long.parseLong("1"));
                             productPrice.setText(discountedPrice.getText());
                             String  offerDiscountedAmt = String.valueOf(Long.valueOf(productPriceText)-Long.valueOf(discountedPrice.getText().toString().substring(3,discountedPrice.getText().length()-2)));
-                            couponsApplied.setText("Coupen applied -Rp." + offerDiscountedAmt+"/-");
+                            couponsApplied.setText("Coupen applied -Rp." + offerDiscountedAmt);
                             notifyItemChanged(cartItemModelList.size()-1);
                             checkCouponPriceDialog.dismiss();
                         }
@@ -372,7 +386,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                         couponRedeemptionLayout.setBackgroundColor(itemView.getContext().getResources().getColor(R.color.colorPrimary));
                         couponRedeemptionBody.setText("Apply your coupen here");
                         redeemBtn.setText("Redeem");
-                        productPrice.setText("Rp."+productPriceText+"/-");
+                        productPrice.setText("Rp."+productPriceText);
                         cartItemModelList.get(position).setSelectedCouponId(null);
                         notifyItemChanged(cartItemModelList.size()-1);
                         checkCouponPriceDialog.dismiss();
@@ -403,7 +417,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                                 coupondiscount.setText(rewardModel.getDiscount()+"%");
                             }else {
                                 discountLayout.setVisibility(View.GONE);
-                                coupontitle.setText("POTONGAN Rp."+rewardModel.getDiscount()+"/-");
+                                coupontitle.setText("POTONGAN Rp."+rewardModel.getDiscount());
                                 coupondiscount.setText("Rp."+rewardModel.getDiscount());
                             }
                             couponLayout.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.reward_gradient_background));
@@ -411,11 +425,11 @@ public class CartAdapter extends RecyclerView.Adapter {
                             couponexpiryDate.setText("till " + simpleDateFormat.format(rewardModel.getValidity().toDate()));
                         }
                     }
-                    discountedPrice.setText("Rp."+cartItemModelList.get(position).getDiscountedPrice()+"/-");
+                    discountedPrice.setText("Rp."+cartItemModelList.get(position).getDiscountedPrice());
                     couponsApplied.setVisibility(View.VISIBLE);
-                    productPrice.setText("Rp."+cartItemModelList.get(position).getDiscountedPrice()+"/-");
+                    productPrice.setText("Rp."+cartItemModelList.get(position).getDiscountedPrice());
                     String  offerDiscountedAmt = String.valueOf(Long.valueOf(productPriceText)-Long.valueOf(cartItemModelList.get(position).getDiscountedPrice()));
-                    couponsApplied.setText("Coupen applied -Rp." + offerDiscountedAmt+"/-");
+                    couponsApplied.setText("Coupen applied -Rp." + offerDiscountedAmt);
                 }else {
                     couponsApplied.setVisibility(View.INVISIBLE);
                     couponRedeemptionLayout.setBackgroundColor(itemView.getContext().getResources().getColor(R.color.colorPrimary));
@@ -482,7 +496,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                 if(offersAppliedNo >0){
                     offersApplied.setVisibility(View.VISIBLE);
                     String  offerDiscountedAmt = String.valueOf(Long.valueOf(oriPriceText)-Long.valueOf(productPriceText));
-                    offersApplied.setText("Offer applied - Rp."+offerDiscountedAmt+"/-");
+                    offersApplied.setText("Offer applied - Rp."+offerDiscountedAmt);
                 }else {
                     offersApplied.setVisibility(View.INVISIBLE);
                 }
@@ -577,16 +591,16 @@ public class CartAdapter extends RecyclerView.Adapter {
 
 
             totalItems.setText("Price("+totalItemText+" items)");
-            totalItemPrice.setText("Rp."+totalItemPriceText+"/-");
+            totalItemPrice.setText("Rp."+totalItemPriceText);
             if (deliveryPriceText.equals("FREE")) {
                 deliveryPrice.setText(deliveryPriceText);
             }else {
-                deliveryPrice.setText("Rp."+deliveryPriceText+"/-");
+                deliveryPrice.setText("Rp."+deliveryPriceText);
             }
             if (!(totalAmountText==0)) {
-                totalAmount.setText("Rp." + totalAmountText + "/-");
-                cartTotalAmount.setText("Rp." + totalAmountText + "/-");
-                saveAmount.setText("You saved Rp." + saveAmountText + "/- on this order");
+                totalAmount.setText("Rp." + totalAmountText );
+                cartTotalAmount.setText("Rp." + totalAmountText );
+                saveAmount.setText("You saved Rp." + saveAmountText +" on this order");
             }
             if (totalItemPriceText == 0){
                 cartItemModelList.remove(cartItemModelList.size()-1);

@@ -2,12 +2,17 @@ package com.reynagagroup.ryelloshopping.fragment.ui;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -15,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +62,14 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
     public static LinearLayoutManager linearLayoutManager;
 
 
+    public static TextView noData;
+    public static ConstraintLayout background;
+    public static ImageView no_internet;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ConnectivityManager connectivityManager;
+    private NetworkInfo networkInfo;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,6 +89,14 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
 
 
 
+        noData = view.findViewById(R.id.pesanan);
+        background =  view.findViewById(R.id.bg);
+        no_internet = view.findViewById(R.id.no_internet_connection);
+        swipeRefreshLayout = view.findViewById(R.id.swipe);
+        connectivityManager =(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connectivityManager.getActiveNetworkInfo();
+
+
 
         cartItemsRecyclerView = view.findViewById(R.id.cart_item_recycleview);
         continueBtn = view.findViewById(R.id.deliv_continue_btn);
@@ -83,6 +105,17 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
 
 
 
+        swipeRefreshLayout.setColorSchemeColors(getContext().getResources().getColor(R.color.colorPrimary),getContext().getResources().getColor(R.color.colorPrimary),getContext().getResources().getColor(R.color.colorPrimary));
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadPage();
+                swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
 
 
 
@@ -185,6 +218,23 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
 
     }
 
+    public void reloadPage(){
+        networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo !=null && networkInfo.isConnected()==true) {
+            DBqueries.loadCartList(getContext(), loadingDialog,true,new TextView(getContext()),totalAmount,false,null);
+            DBqueries.loadRewards(getContext(),loadingDialog,false);
+
+        }else {
+            noData.setVisibility(View.GONE);
+            background.setBackgroundColor(getContext().getResources().getColor(R.color.colorAccent));
+            no_internet.setVisibility(View.VISIBLE);
+            cartItemsRecyclerView.setVisibility(View.GONE);
+        }
+
+    }
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -207,6 +257,7 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
     @Override
     public boolean onBackPressed() {
         mycartfragment = null;
+
         if (MainActivity.showCart){
             MyCartFragment.this.getActivity().finish();
         }

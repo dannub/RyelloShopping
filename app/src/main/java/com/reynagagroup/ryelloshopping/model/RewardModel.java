@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp;
 
 import java.util.Date;
 
-public class RewardModel {
+public class RewardModel implements Comparable<RewardModel>{
 
     private String type;
     private String lowerLimit;
@@ -15,7 +15,15 @@ public class RewardModel {
     private Boolean alreadyUsed;
     private String couponId;
 
-    public RewardModel(String couponId,String type, String lowerLimit, String upperLimit, String discount, String couponBody, Timestamp validity,Boolean alreadyUsed) {
+    public RewardModel(String type, String lowerLimit, String upperLimit, String discount, String couponBody) {
+        this.type = type;
+        this.lowerLimit = lowerLimit;
+        this.upperLimit = upperLimit;
+        this.discount = discount;
+        CouponBody = couponBody;
+    }
+
+    public RewardModel(String couponId, String type, String lowerLimit, String upperLimit, String discount, String couponBody, Timestamp validity, Boolean alreadyUsed) {
         this.couponId = couponId;
         this.type = type;
         this.lowerLimit = lowerLimit;
@@ -89,5 +97,12 @@ public class RewardModel {
 
     public void setValidity(Timestamp validity) {
         this.validity = validity;
+    }
+
+    @Override
+    public int compareTo(RewardModel o) {
+        if (getAlreadyUsed() == null || o.getAlreadyUsed() == null)
+            return 0;
+        return getAlreadyUsed().compareTo(o.getAlreadyUsed());
     }
 }

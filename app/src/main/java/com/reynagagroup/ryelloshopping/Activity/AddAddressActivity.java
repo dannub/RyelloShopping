@@ -6,8 +6,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.location.Address;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -196,6 +198,7 @@ public class AddAddressActivity extends AppCompatActivity {
                                                         if (!updateAddress) {
                                                             if (DBqueries.addressModelList.size() > 0) {
                                                                 DBqueries.addressModelList.get(DBqueries.selectedAddress).setSelected(false);
+
                                                             }
                                                             DBqueries.addressModelList.add(new AddressModel(true, city.getText().toString(),locality.getText().toString(),flatNo.getText().toString(),pincode.getText().toString(),landmark.getText().toString(),name.getText().toString(),mobileNo.getText().toString(),alternativeMobileNo.getText().toString(),selectedState));
 
@@ -213,11 +216,12 @@ public class AddAddressActivity extends AppCompatActivity {
                                                         }
 
                                                        if (getIntent().getStringExtra("INTENT").equals("deliveryIntent")) {
-                                                            Intent deliveryIntent = new Intent(AddAddressActivity.this, DeliveryActivity.class);
+                                                           Intent deliveryIntent = new Intent(AddAddressActivity.this, DeliveryActivity.class);
                                                             startActivity(deliveryIntent);
                                                         }else {
                                                             MyAddressesActivity.refreshItem(DBqueries.selectedAddress,DBqueries.addressModelList.size()-1);
-                                                        }
+
+                                                       }
                                                         finish();
                                                     }else {
                                                         String error = task.getException().getMessage();

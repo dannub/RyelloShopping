@@ -6,17 +6,56 @@
     android:layout_height="match_parent"
     tools:context=".fragment.ui.MyCartFragment">
 
-    <!-- TODO: Update blank fragment layout -->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cart_item_recycleview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/colorAccent3"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:id="@+id/bg"
+            android:layout_height="match_parent"
+            tools:context=".fragment.ui.MyOrdersFragment">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/cart_item_recycleview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorAccent3"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/no_internet"
+                android:id="@+id/no_internet_connection"
+                />
+
+
+            <TextView
+                android:id="@+id/pesanan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="Keranjang Kosong"
+                android:textColor="@color/colorAccent1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <LinearLayout
         android:id="@+id/linearLayout4"
@@ -58,6 +97,7 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
 
         <Button
             android:id="@+id/deliv_continue_btn"

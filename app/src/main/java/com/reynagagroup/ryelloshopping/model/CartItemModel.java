@@ -1,6 +1,6 @@
 package com.reynagagroup.ryelloshopping.model;
 
-public class CartItemModel {
+public class CartItemModel implements Comparable<CartItemModel>{
 
     public  static final int CART_ITEM = 0;
     public  static final int TOTAL_AMOUNT = 1;
@@ -29,12 +29,14 @@ public class CartItemModel {
     private String selectedCouponId;
     private String discountedPrice;
     private int ratting;
+    private String satuan;
+
 
     public CartItemModel(){
 
     }
 
-    public CartItemModel(int type,String productID, String productImage, String productTitle, Long freeCoupons, String productPrice, String oriPrice, Long productQuantity, Long offersApplied, Long couponsApplied,Boolean inStock,int ratting) {
+    public CartItemModel(int type,String productID, String productImage, String productTitle, Long freeCoupons, String productPrice, String oriPrice, Long productQuantity, Long offersApplied, Long couponsApplied,Boolean inStock,int ratting,String satuan) {
         this.type = type;
         this.productID = productID;
         this.productImage = productImage;
@@ -47,8 +49,16 @@ public class CartItemModel {
         this.couponsApplied = couponsApplied;
         this.inStock = inStock;
         this.ratting = ratting;
+        this.satuan = satuan;
     }
 
+    public String  getSatuan() {
+        return satuan;
+    }
+
+    public void setSatuan(String satuan) {
+        this.satuan = satuan;
+    }
 
     public String getDiscountedPrice() {
         return discountedPrice;
@@ -202,6 +212,13 @@ public class CartItemModel {
 
     public void setDeliveryPrice(String deliveryPrice) {
         this.deliveryPrice = deliveryPrice;
+    }
+
+    @Override
+    public int compareTo(CartItemModel o) {
+        if (getProductTitle() == null || o.getProductTitle() == null)
+            return 0;
+        return getProductTitle().compareTo(o.getProductTitle());
     }
 
 
