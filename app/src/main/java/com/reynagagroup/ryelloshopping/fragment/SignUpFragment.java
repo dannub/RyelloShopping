@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.Activity.MainActivity;
@@ -235,6 +238,8 @@ public class SignUpFragment extends Fragment {
                                     userdata.put("email",email.getText().toString());
                                     userdata.put("hp",hp.getText().toString());
                                     userdata.put("profile","");
+                                    userdata.put("Lastseen", FieldValue.serverTimestamp());
+
 
 
                                     firebaseFirestore.collection("USERS").document(firebaseAuth.getUid())
@@ -287,6 +292,7 @@ public class SignUpFragment extends Fragment {
                                                                 public void onComplete(@NonNull Task<Void> task) {
                                                                     if(task.isSuccessful()){
                                                                         if (finalX == documentNames.size()-1) {
+
                                                                             mainIntent();
                                                                         }
                                                                     }else {

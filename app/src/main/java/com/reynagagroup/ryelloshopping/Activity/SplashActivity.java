@@ -48,7 +48,7 @@ public class SplashActivity extends AppCompatActivity {
                 FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
                 if (currentUser!=null){
-                    FirebaseFirestore.getInstance().collection("USERS").document(currentUser.getUid()).update("Last seen", FieldValue.serverTimestamp())
+                    FirebaseFirestore.getInstance().collection("USERS").document(currentUser.getUid()).update("Lastseen", FieldValue.serverTimestamp())
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

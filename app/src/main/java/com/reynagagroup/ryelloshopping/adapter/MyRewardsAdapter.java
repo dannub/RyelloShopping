@@ -164,6 +164,15 @@ public class  MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.Vie
                     couponLayout.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.reward_gradient_background));
                     couponExpiryDate.setText("till " + simpleDateFormat.format(date.toDate()));
                 }
+            }else {
+                if (alreadyUsed) {
+                    couponLayout.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.border_background));
+                    couponExpiryDate.setText("Already used");
+                    couponExpiryDate.setTextColor(itemView.getContext().getResources().getColor(R.color.colorAccent4));
+                } else {
+                    couponLayout.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.reward_gradient_background));
+                    couponExpiryDate.setText("till " + simpleDateFormat.format(date.toDate()));
+                }
             }
             couponBody.setText(body);
 

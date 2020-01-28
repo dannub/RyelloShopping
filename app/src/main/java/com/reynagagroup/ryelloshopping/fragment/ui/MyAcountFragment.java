@@ -177,16 +177,17 @@ public class MyAcountFragment extends Fragment {
             public void onDismiss(DialogInterface dialog) {
 
                 loadingDialog.setOnDismissListener(null);
-                for (MyOrderItemModel orderItemModel : DBqueries.myOrderItemModelArrayList){
-                    if (!orderItemModel.isCanceled()){
-                        layoutContainer.getChildAt(1).setVisibility(View.VISIBLE);
-                        currentOrderTitle.setText(orderItemModel.getProductTitle());
-                        Glide.with(getContext()).load(orderItemModel.getProductImage()).apply(new RequestOptions().placeholder(getContext().getResources().getDrawable(R.drawable.load))).into(currentOrderImage);
-                        setProgress(orderItemModel);
+                    for (MyOrderItemModel orderItemModel : DBqueries.myOrderItemModelArrayList) {
+                        if (!orderItemModel.isCanceled()) {
+                            layoutContainer.getChildAt(1).setVisibility(View.VISIBLE);
+                            currentOrderTitle.setText(orderItemModel.getProductTitle());
+                            Glide.with(getContext()).load(orderItemModel.getProductImage()).apply(new RequestOptions().placeholder(getContext().getResources().getDrawable(R.drawable.load))).into(currentOrderImage);
+                            setProgress(orderItemModel);
 
 
+                        }
                     }
-                }
+
                 int i =0;
 
                 for (final MyOrderItemModel myOrderItemModel : DBqueries.myOrderItemModelArrayList) {

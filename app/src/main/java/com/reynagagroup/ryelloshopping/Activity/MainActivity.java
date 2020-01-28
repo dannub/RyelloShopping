@@ -10,12 +10,23 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
@@ -24,9 +35,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -50,6 +66,7 @@ import com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyOrdersFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyRewardsFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyWishlistFragment;
+import com.squareup.picasso.Picasso;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -107,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
    private AppBarLayout.LayoutParams params;
 
+
     //drawer
     public static TextView fullnameText;
     public static TextView email;
@@ -153,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
         if (showCart) {
              mainActivity = this;
             drawer.setDrawerLockMode(1);
@@ -163,14 +180,40 @@ public class MainActivity extends AppCompatActivity {
             gotoFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
         } else {
 
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0);
+            final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0);
+
+
+
+
             drawer.addDrawerListener(toggle);
+
+
+
             toggle.syncState();
             navigationView.getMenu().getItem(0).setChecked(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setFragment(new HomeFragment(), HOME_FRAGMENT);
 
             invalidateOptionsMenu();
+
+
+
+
+
+            Drawable dr = getResources().getDrawable(R.drawable.account);
+            final Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+            final Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80, true));
+
+
+            toolbar.post(new Runnable() {
+                @Override
+                public void run() {
+                    toolbar.setNavigationIcon(d);
+
+                }
+            });
+
+
 
 
 
@@ -214,11 +257,52 @@ public class MainActivity extends AppCompatActivity {
                                             DBqueries.profile = task.getResult().get("profile").toString();
 
 
+
                                             fullnameText.setText(DBqueries.fullname);
                                             email.setText(DBqueries.email);
                                             if (DBqueries.profile.equals("")){
+                                                Drawable dr = getResources().getDrawable(R.drawable.account);
+                                                final Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+                                                final Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80, true));
+
+
+                                                toolbar.post(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        toolbar.setNavigationIcon(d);
+
+                                                    }
+                                                });
+
+
                                                 // imageAdd.setVisibility(View.INVISIBLE);
                                             }else {
+
+
+
+                                                Glide.with(MainActivity.this).asBitmap().load(DBqueries.profile).apply(new RequestOptions().override(80, 80).placeholder(R.drawable.account)).centerCrop() .into(new CustomTarget<Bitmap>() {
+                                                    @Override
+                                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                        final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                                        circularBitmapDrawable.setCircular(true);
+
+                                                        toolbar.post(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                toolbar.setNavigationIcon(circularBitmapDrawable);
+
+                                                            }
+                                                        });
+
+
+                                                    }
+
+                                                    @Override
+                                                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                                                    }
+                                                });
+
+
                                                 // imageAdd.setVisibility(View.INVISIBLE);
                                                 Glide.with(MainActivity.this).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(imageAcc);
                                             }
@@ -234,10 +318,25 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
                             }else {
                                 imageAcc.setImageDrawable(getResources().getDrawable(R.drawable.account));
                                 fullnameText.setText("Not Sign In");
                                 email.setText("");
+
+                                Drawable dr = getResources().getDrawable(R.drawable.account);
+                                final Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+                                final Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80, true));
+
+
+                                toolbar.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        toolbar.setNavigationIcon(d);
+
+                                    }
+                                });
                             }
 
                         }
@@ -435,6 +534,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+            DBqueries.lastSeen(MainActivity.this,loadingDialog);
 
                 navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setEnabled(true);
 
@@ -677,6 +777,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 
 

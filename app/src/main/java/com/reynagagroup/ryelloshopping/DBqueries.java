@@ -880,7 +880,11 @@ public class DBqueries {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()){
-                             lastseenDate = task.getResult().getDate("Last seen");
+
+
+                            if (task.getResult().getDate("Lastseen")!=null) {
+                                lastseenDate = task.getResult().getDate("Lastseen");
+                            }
 
                             firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_REWARDS").get()
                                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -942,13 +946,9 @@ public class DBqueries {
                                                    }
 
                                                     if (onRewardFragment) {
-
-
-
-
                                                         MyRewardsFragment.myRewardsAdapter.notifyDataSetChanged();
-                                                            loadingDialog.dismiss();
                                                     }
+                                                    loadingDialog.dismiss();
                                                 }else {
 
 
@@ -1220,9 +1220,10 @@ loadingDialog.setOnDismissListener(null);
                             MyOrdersFragment.noData.setVisibility(View.VISIBLE);
                             MyOrdersFragment.background.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                             MyOrdersFragment.myOrderRecycleView.setVisibility(View.GONE);
-                            loadingDialog.dismiss();
-                            myOrderItemModelArrayList.clear();
+
                         }
+                        loadingDialog.dismiss();
+                        myOrderItemModelArrayList.clear();
                     }
                 }else {
 
@@ -1518,7 +1519,7 @@ loadingDialog.setOnDismissListener(null);
             }
         });
 
-        FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).update("Last seen", FieldValue.serverTimestamp())
+        FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).update("Lastseen", FieldValue.serverTimestamp())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -1529,8 +1530,8 @@ loadingDialog.setOnDismissListener(null);
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                             if (task.isSuccessful()) {
-                                                lastseenDate = task.getResult().getDate("Last seen");
-                                                Log.i("Last seen",lastseenDate.toString());
+                                                lastseenDate = task.getResult().getDate("Lastseen");
+                                                Log.i("Lastseen",lastseenDate.toString());
 
                                                 loadingDialog.dismiss();
                                             }else {
