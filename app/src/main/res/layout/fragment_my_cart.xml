@@ -36,6 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/no_internet"
+                android:visibility="gone"
                 android:id="@+id/no_internet_connection"
                 />
 
@@ -45,6 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+
                 android:text="Keranjang Kosong"
                 android:textColor="@color/colorAccent1"
                 app:layout_constraintBottom_toBottomOf="parent"

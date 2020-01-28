@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -46,6 +47,8 @@ public class MyAcountFragment extends Fragment {
 
     private FloatingActionButton settingBtn;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     private Button viewAllAddressBtn;
     public static final int MANAGE_ADDRESS =1;
     private CircleImageView profileview,currentOrderImage;
@@ -72,9 +75,10 @@ public class MyAcountFragment extends Fragment {
         loadingDialog.setCancelable(false);
         loadingDialog.getWindow().setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.slider_background));
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        loadingDialog.show();
+
         //loading dialog
 
+        swipeRefreshLayout = view.findViewById(R.id.swipe);
         layoutContainer = view.findViewById(R.id.layout_container);
         profileview = view.findViewById(R.id.profile_image);
         name = view.findViewById(R.id.fullname);
@@ -100,6 +104,18 @@ public class MyAcountFragment extends Fragment {
 
 
 
+        swipeRefreshLayout.setColorSchemeColors(getContext().getResources().getColor(R.color.colorPrimary),getContext().getResources().getColor(R.color.colorPrimary),getContext().getResources().getColor(R.color.colorPrimary));
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadPage();
+                swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
+
 
         signoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +135,43 @@ public class MyAcountFragment extends Fragment {
 
         layoutContainer.setVisibility(View.GONE);
         layoutContainer.getChildAt(1).setVisibility(View.GONE);
+
+
+
+
+
+        viewAllAddressBtn = view.findViewById(R.id.view_all_addresses_btn);
+        viewAllAddressBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myAddressIntent = new Intent(getContext(), MyAddressesActivity.class);
+                myAddressIntent.putExtra("MODE",MANAGE_ADDRESS);
+                startActivity(myAddressIntent);
+
+            }
+        });
+
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent updateUserInfo = new Intent(getContext(), UpdateUserInfoActivity.class);
+                updateUserInfo.putExtra("Name",name.getText());
+                updateUserInfo.putExtra("Email",email.getText());
+                updateUserInfo.putExtra("Photo",DBqueries.profile);
+                startActivity(updateUserInfo);
+            }
+        });
+
+
+        return view;
+    }
+
+    private void reloadPage(){
+
+        //DBqueries.loadOrders(getContext(), loadingDialog, null, null);
+
+
+        loadingDialog.show();
         loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
@@ -177,7 +230,7 @@ public class MyAcountFragment extends Fragment {
                             address.setText("-");
                             pincode.setText("-");
                         }else {
-                           setAddress();
+                            setAddress();
                         }
                         layoutContainer.setVisibility(View.VISIBLE);
                     }
@@ -196,34 +249,6 @@ public class MyAcountFragment extends Fragment {
 
         //loadingDialog.dismiss();
 
-
-
-
-
-        viewAllAddressBtn = view.findViewById(R.id.view_all_addresses_btn);
-        viewAllAddressBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myAddressIntent = new Intent(getContext(), MyAddressesActivity.class);
-                myAddressIntent.putExtra("MODE",MANAGE_ADDRESS);
-                startActivity(myAddressIntent);
-
-            }
-        });
-
-        settingBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent updateUserInfo = new Intent(getContext(), UpdateUserInfoActivity.class);
-                updateUserInfo.putExtra("Name",name.getText());
-                updateUserInfo.putExtra("Email",email.getText());
-                updateUserInfo.putExtra("Photo",DBqueries.profile);
-                startActivity(updateUserInfo);
-            }
-        });
-
-
-        return view;
     }
 
     private void setAddress() {
@@ -420,5 +445,6 @@ public class MyAcountFragment extends Fragment {
            }
 
        }
+       reloadPage();
     }
 }

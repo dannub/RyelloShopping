@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -104,6 +105,8 @@ public class DBqueries {
     public  static String fullname,email,profile;
 
     public static NotificationManager notifManager;
+
+    public static Date lastseenDate;
 
 
 
@@ -877,7 +880,7 @@ public class DBqueries {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()){
-                            final Date lastseenDate = task.getResult().getDate("Last seen");
+                             lastseenDate = task.getResult().getDate("Last seen");
 
                             firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_REWARDS").get()
                                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -898,7 +901,7 @@ public class DBqueries {
                                                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
                                                         n =task.getResult().size();
 
-                                                        if (documentSnapshot.get("type").toString().toLowerCase().equals("discount") && lastseenDate.before(documentSnapshot.getDate("validity"))){
+                                                       if (documentSnapshot.get("type").toString().toLowerCase().equals("discount") && lastseenDate.before(documentSnapshot.getDate("validity"))){
                                                             rewardModelList.add(new RewardModel(documentSnapshot.getId(),documentSnapshot.get("type").toString()
                                                                     ,documentSnapshot.get("lower_limit").toString()
                                                                     ,documentSnapshot.get("upper_limit").toString()
@@ -983,7 +986,7 @@ public class DBqueries {
             loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-
+loadingDialog.setOnDismissListener(null);
                 }
             });
         }
@@ -1142,8 +1145,6 @@ public class DBqueries {
                                                                         if (iterasi_order_2 == n_order_2 && iterasi_order_1 == n_order_1) {
 
 
-                                                                            iterasi_order_1 = 0;
-                                                                            iterasi_order_2 = 0;
 
                                                                             if (myOrderItemModelArrayList.size() > 1) {
                                                                                 Collections.sort(myOrderItemModelArrayList, new Comparator<MyOrderItemModel>() {
@@ -1182,7 +1183,7 @@ public class DBqueries {
 
                                                                     } else {
 
-                                                                        loadingDialog.dismiss();
+
                                                                         String error = task.getException().getMessage();
                                                                         Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
                                                                     }
@@ -1190,7 +1191,7 @@ public class DBqueries {
                                                             });
                                                         }
                                                     } else {
-                                                        loadingDialog.dismiss();
+
                                                         String error = task.getException().getMessage();
                                                         Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
                                                     }
@@ -1201,7 +1202,7 @@ public class DBqueries {
 
 
                                     } else {
-                                        loadingDialog.dismiss();
+
                                         String error = task.getException().getMessage();
                                         Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
                                     }
@@ -1224,7 +1225,7 @@ public class DBqueries {
                         }
                     }
                 }else {
-                    loadingDialog.dismiss();
+
                     String error = task.getException().getMessage();
                     Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
                 }
@@ -1504,6 +1505,48 @@ public class DBqueries {
         }
         Notification notification = builder.build();
         notifManager.notify(NOTIFY_ID, notification);
+    }
+
+    public static void lastSeen (final Context context,final Dialog loadingDialog){
+
+        loadingDialog.show();
+        loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                loadingDialog.setOnDismissListener(null);
+
+            }
+        });
+
+        FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).update("Last seen", FieldValue.serverTimestamp())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+
+                            firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                lastseenDate = task.getResult().getDate("Last seen");
+                                                Log.i("Last seen",lastseenDate.toString());
+
+                                                loadingDialog.dismiss();
+                                            }else {
+                                                String error = task.getException().getMessage();
+                                                Toast.makeText(context,error,Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        }
+                                    });
+
+                        }else {
+                            String error = task.getException().getMessage();
+                            Toast.makeText(context,error,Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     public static void clearData(){

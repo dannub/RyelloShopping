@@ -43,6 +43,7 @@ import com.reynagagroup.ryelloshopping.Interface.IOnBackPressed;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.fragment.SignInFragment;
 import com.reynagagroup.ryelloshopping.fragment.SignUpFragment;
+import com.reynagagroup.ryelloshopping.fragment.ui.AboutFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.HomeFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyAcountFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private  static final  int WISHLIST_FRAGMENT = 3;
     private  static final  int REWARD_FRAGMENT = 4;
     private  static final  int MYACCOUNT_FRAGMENT = 5;
+    private  static final  int ABOUT_FRAGMENT = 6;
     public static Boolean showCart;
     public static Activity mainActivity;
 
@@ -251,7 +253,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                     menuItem = item;
-                    if (currentUser !=null) {
 
                         drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
                             @Override
@@ -262,49 +263,94 @@ public class MainActivity extends AppCompatActivity {
 
                                 int id = menuItem.getItemId();
                                 if (id == R.id.nav_home) {
-                                    //todo:Home
+                                        //todo:Home
                                     getSupportActionBar().setDisplayShowTitleEnabled(false);
                                     actionBarLogo.setVisibility(View.VISIBLE);
                                     invalidateOptionsMenu();
                                     setFragment(new HomeFragment(), HOME_FRAGMENT);
                                 } else if (id == R.id.nav_orders) {
-                                    gotoFragment("My Orders", new MyOrdersFragment(), ORDER_FRAGMENT);
+                                    if (currentUser !=null) {
+
+                                        gotoFragment("My Orders", new MyOrdersFragment(), ORDER_FRAGMENT);
+
+                                    }else {
+                                        signInDialog.show();
+
+                                    }
+
                                 } else if (id == R.id.nav_rewards) {
-                                    gotoFragment("My Rewards", new MyRewardsFragment(), REWARD_FRAGMENT);
+                                    if (currentUser !=null) {
+
+                                        gotoFragment("My Rewards", new MyRewardsFragment(), REWARD_FRAGMENT);
+                                    }else {
+                                        signInDialog.show();
+
+                                    }
                                 } else if (id == R.id.nav_chart) {
-                                    mainActivity = MainActivity.this;
+                                    if (currentUser !=null) {
+
+                                        mainActivity = MainActivity.this;
                                     gotoFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
+                                    }else {
+                                        signInDialog.show();
+
+                                    }
+
 
                                 } else if (id == R.id.nav_wishlist) {
-                                    gotoFragment("My Wishlist", new MyWishlistFragment(), WISHLIST_FRAGMENT);
+                                    if (currentUser !=null) {
 
+                                        gotoFragment("My Wishlist", new MyWishlistFragment(), WISHLIST_FRAGMENT);
+
+                                    }else {
+                                        signInDialog.show();
+
+                                    }
                                 } else if (id == R.id.nav_myaccount) {
-                                    gotoFragment("My Account", new MyAcountFragment(), MYACCOUNT_FRAGMENT);
+                                    if (currentUser !=null) {
 
+                                        gotoFragment("My Account", new MyAcountFragment(), MYACCOUNT_FRAGMENT);
+
+                                    }else {
+                                        signInDialog.show();
+
+                                    }
                                 } else if (id == R.id.nav_about) {
+                                    gotoFragment("About", new AboutFragment(), ABOUT_FRAGMENT);
+
 
                                 } else if (id == R.id.nav_signout) {
-                                    FirebaseAuth.getInstance().signOut();
-                                    DBqueries.clearData();
-                                    drawer.closeDrawer(GravityCompat.START);
-                                    MainActivity.mainActivity = null;
-                                    MainActivity.currentFragment = -1;
-                                    Toast.makeText(MainActivity.this,"Logged Out successfully!",Toast.LENGTH_SHORT).show();
-                                    Intent mainActivityIntent = new Intent(MainActivity.this, MainActivity.class);
-                                    MainActivity.showCart = false;
-                                    startActivity(mainActivityIntent);
-                                    finish();
+                                    if (currentUser !=null) {
+
+                                            FirebaseAuth.getInstance().signOut();
+                                        DBqueries.clearData();
+                                        drawer.closeDrawer(GravityCompat.START);
+                                        MainActivity.mainActivity = null;
+                                        MainActivity.currentFragment = -1;
+                                        Toast.makeText(MainActivity.this,"Logged Out successfully!",Toast.LENGTH_SHORT).show();
+                                        Intent mainActivityIntent = new Intent(MainActivity.this, MainActivity.class);
+                                        MainActivity.showCart = false;
+                                        startActivity(mainActivityIntent);
+                                        finish();
+                                    }else {
+                                        signInDialog.show();
+
+                                    }
                                 }
                                 drawer.removeDrawerListener(this);
                             }
+
+
                         });
 
+                    if (currentUser !=null) {
                         return true;
                     }else {
-                        signInDialog.show();
-
-                        return false;
+                        return  false;
                     }
+
+
+
                 }
             });
 
@@ -387,18 +433,7 @@ public class MainActivity extends AppCompatActivity {
             navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setEnabled(false);
         }else {
 
-                FirebaseFirestore.getInstance().collection("USERS").document(currentUser.getUid()).update("Last seen", FieldValue.serverTimestamp())
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()){
-                                    MainActivity.showCart =false;
-                                }else {
-                                    String error = task.getException().getMessage();
-                                    Toast.makeText(MainActivity.this,error,Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+
 
 
                 navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setEnabled(true);
@@ -651,7 +686,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFragment(Fragment fragment, int fragmentNo){
         if (fragmentNo!=currentFragment){
-            if ( fragmentNo== MYACCOUNT_FRAGMENT){
+            if ( fragmentNo== MYACCOUNT_FRAGMENT && fragmentNo== ABOUT_FRAGMENT){
                 window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
                 toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
             }else {

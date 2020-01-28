@@ -38,6 +38,7 @@ import com.reynagagroup.ryelloshopping.model.RewardModel;
 import java.util.ArrayList;
 
 import static com.reynagagroup.ryelloshopping.DBqueries.cartItemModelList;
+import static com.reynagagroup.ryelloshopping.DBqueries.lastSeen;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -192,6 +193,8 @@ public class MyCartFragment extends Fragment implements IOnBackPressed {
     public void onStart() {
 
         super.onStart();
+
+
         this_fragment = MyCartFragment.this;
         DBqueries.loadCartList(getContext(), loadingDialog,true,new TextView(getContext()),totalAmount,false,null);
         DBqueries.loadRewards(getContext(),loadingDialog,false);
