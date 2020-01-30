@@ -3,9 +3,11 @@ package com.reynagagroup.ryelloshopping.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -24,15 +26,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.reynagagroup.ryelloshopping.DBqueries;
 import com.reynagagroup.ryelloshopping.R;
 import com.reynagagroup.ryelloshopping.adapter.NotificationAdapter;
+import com.reynagagroup.ryelloshopping.adapter.YoutubeVideoAdapter;
+import com.reynagagroup.ryelloshopping.model.YoutubeVideoModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.reynagagroup.ryelloshopping.Activity.MainActivity.loadingDialog;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.reynagagroup.ryelloshopping.Activity.MainActivity.showCart;
 
 public class NotificationActivity extends AppCompatActivity {
@@ -40,6 +48,7 @@ public class NotificationActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     public static NotificationAdapter adapter;
     private boolean runQuery=false;
+    private Dialog loadingDialog;
 
 
     @Override
@@ -47,54 +56,22 @@ public class NotificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle("Notifications");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.inflateMenu(R.menu.setting);
+        //loading dialog
+        loadingDialog = new Dialog(NotificationActivity.this);
+        loadingDialog.setContentView(R.layout.loading_progress_dialog);
+        loadingDialog.setCancelable(false);
+        loadingDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.slider_background));
+        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                if(item.getItemId()==R.id.delete)
-                {
-
-                    loadingDialog.show();
-                    loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-
-                        }
-                    });
-
-                    Map<String, Object> notifdata = new HashMap<>();
-                    notifdata.put("list_size", 0);
-
-                   FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA")
-                            .document("MY_NOTIFICATIONS").set(notifdata).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-
-                            if (task.isSuccessful()) {
-                                DBqueries.checkNotifications(NotificationActivity.this,false, null);
-                                Toast.makeText(NotificationActivity.this,"Notifikasi telah terhapus", Toast.LENGTH_SHORT).show();
-                                loadingDialog.dismiss();
-                            } else {
-                                String error = task.getException().getMessage();
-                                Toast.makeText(NotificationActivity.this, error, Toast.LENGTH_SHORT).show();
-                                loadingDialog.dismiss();
-                            }
-                        }
-                            });
-                }
-
-                return false;
-            }
-        });
 
 
         recyclerView = findViewById(R.id.recycler_view);
@@ -120,7 +97,82 @@ public class NotificationActivity extends AppCompatActivity {
                     .document("MY_NOTIFICATIONS").update(readMap);
         }
 
+
+        //loading dialog
+
+        toolbar.inflateMenu(R.menu.setting);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                if(item.getItemId()==R.id.delete)
+                {
+
+                    loadingDialog.show();
+                    loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+
+                        }
+                    });
+
+                    Map<String, Object> notifdata = new HashMap<>();
+                    notifdata.put("list_size", 0);
+
+                    FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA")
+                            .document("MY_NOTIFICATIONS").set(notifdata).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            if (task.isSuccessful()) {
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(NotificationActivity.this);
+                                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                                recyclerView.setLayoutManager(linearLayoutManager);
+
+                                adapter = new NotificationAdapter(DBqueries.notificationModelList);
+                                recyclerView.setAdapter(adapter);
+
+                                Map<String ,Object> readMap = new HashMap<>();
+                                for (int x=0;x<DBqueries.notificationModelList.size();x++){
+                                    if (!DBqueries.notificationModelList.get(x).isReaded()) {
+                                        runQuery = true;
+                                    }
+                                    readMap.put("Readed_" + x, true);
+                                }
+
+
+                                if (runQuery) {
+                                    FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA")
+                                            .document("MY_NOTIFICATIONS").update(readMap);
+                                }
+
+
+
+                                Toast.makeText(NotificationActivity.this,"Notifikasi telah terhapus", Toast.LENGTH_SHORT).show();
+                                loadingDialog.dismiss();
+                            } else {
+                                String error = task.getException().getMessage();
+                                Toast.makeText(NotificationActivity.this, error, Toast.LENGTH_SHORT).show();
+                                loadingDialog.dismiss();
+                            }
+                        }
+                    });
+
+
+
+                }
+
+                return false;
+            }
+        });
+
+
+
     }
+
+
 
     @Override
     protected void onDestroy() {

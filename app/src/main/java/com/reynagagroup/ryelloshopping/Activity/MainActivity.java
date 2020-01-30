@@ -66,7 +66,8 @@ import com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyOrdersFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyRewardsFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyWishlistFragment;
-import com.squareup.picasso.Picasso;
+import com.reynagagroup.ryelloshopping.fragment.ui.VideoFragment;
+
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static int currentFragment= -1;
     private static Window window;
-    private static Toolbar toolbar;
+    public static Toolbar toolbar;
     private AppBarConfiguration mAppBarConfiguration;
     private FrameLayout frameLayout;
 
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
     private  static final  int REWARD_FRAGMENT = 4;
     private  static final  int MYACCOUNT_FRAGMENT = 5;
     private  static final  int ABOUT_FRAGMENT = 6;
+    private  static final  int VIDEO_FRAGMENT = 6;
     public static Boolean showCart;
     public static Activity mainActivity;
 
@@ -159,15 +161,7 @@ public class MainActivity extends AppCompatActivity {
         drawer = findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
-        //loading dialog
-        loadingDialog = new Dialog(MainActivity.this);
-        loadingDialog.setContentView(R.layout.loading_progress_dialog);
-        loadingDialog.setCancelable(false);
-        loadingDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.slider_background));
-        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
 
-
-        //loading dialog
 
 
 
@@ -235,12 +229,11 @@ public class MainActivity extends AppCompatActivity {
                             if (currentUser!=null) {
 
 
-
                                 loadingDialog.show();
                                 loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                     @Override
                                     public void onDismiss(DialogInterface dialog) {
-
+                                        loadingDialog.setOnDismissListener(null);
                                     }
                                 });
 
@@ -273,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                     }
                                                 });
+                                                loadingDialog.dismiss();
 
 
                                                 // imageAdd.setVisibility(View.INVISIBLE);
@@ -295,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
                                                         });
 
 
+
                                                     }
 
                                                     @Override
@@ -305,9 +300,10 @@ public class MainActivity extends AppCompatActivity {
 
                                                 // imageAdd.setVisibility(View.INVISIBLE);
                                                 Glide.with(MainActivity.this).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(imageAcc);
+                                                loadingDialog.dismiss();
                                             }
-                                            loadingDialog.dismiss();
 
+                                            loadingDialog.dismiss();
                                         } else {
                                             loadingDialog.dismiss();
                                             String error = task.getException().getMessage();
@@ -337,6 +333,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     }
                                 });
+                                loadingDialog.dismiss();
                             }
 
                         }
@@ -405,6 +402,17 @@ public class MainActivity extends AppCompatActivity {
                                         signInDialog.show();
 
                                     }
+                                } else if (id == R.id.nav_video) {
+                                    if (currentUser !=null) {
+
+                                        gotoFragment("Video Tutorial", new VideoFragment(), VIDEO_FRAGMENT);
+
+                                    }else {
+                                        signInDialog.show();
+
+
+                                }
+
                                 } else if (id == R.id.nav_myaccount) {
                                     if (currentUser !=null) {
 
@@ -414,6 +422,7 @@ public class MainActivity extends AppCompatActivity {
                                         signInDialog.show();
 
                                     }
+
                                 } else if (id == R.id.nav_about) {
                                     gotoFragment("About", new AboutFragment(), ABOUT_FRAGMENT);
 
@@ -527,14 +536,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        //loading dialog
+        loadingDialog = new Dialog(MainActivity.this);
+        loadingDialog.setContentView(R.layout.loading_progress_dialog);
+        loadingDialog.setCancelable(false);
+        loadingDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.slider_background));
+        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+        //loading dialog
+
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser ==null){
             navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setEnabled(false);
         }else {
 
 
-
-            DBqueries.lastSeen(MainActivity.this,loadingDialog);
 
                 navigationView.getMenu().getItem(navigationView.getMenu().size()-1).setEnabled(true);
 
@@ -565,7 +583,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (currentUser!=null) {
             DBqueries.checkNotifications(MainActivity.this,false, null);
+            if (loadingDialog!=null) {
+                DBqueries.lastSeen(MainActivity.this, loadingDialog);
+            }else {
+                DBqueries.lastSeen(MainActivity.this, null);
+
+            }
+
         }
+
         invalidateOptionsMenu();
     }
 
@@ -619,10 +645,14 @@ public class MainActivity extends AppCompatActivity {
             notificationItem.getActionView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent notificationIntent = new Intent(MainActivity.this,NotificationActivity.class);
-                    startActivity(notificationIntent);
-                }
+                    if (currentUser ==null) {
+                        signInDialog.show();
+                    }else {
+                        Intent notificationIntent = new Intent(MainActivity.this,NotificationActivity.class);
+                        startActivity(notificationIntent);
+                    } }
             });
+
 
 
 
@@ -787,7 +817,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFragment(Fragment fragment, int fragmentNo){
         if (fragmentNo!=currentFragment){
-            if ( fragmentNo== MYACCOUNT_FRAGMENT && fragmentNo== ABOUT_FRAGMENT){
+            if ( fragmentNo== MYACCOUNT_FRAGMENT && fragmentNo== ABOUT_FRAGMENT && fragmentNo== VIDEO_FRAGMENT){
                 window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
                 toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
             }else {

@@ -355,10 +355,10 @@ public class CartAdapter extends RecyclerView.Adapter {
                                 }
                             }
                             couponsApplied.setVisibility(View.VISIBLE);
-                            cartItemModelList.get(position).setDiscountedPrice(discountedPrice.getText().toString().substring(3,discountedPrice.getText().length()-2));
+                            cartItemModelList.get(position).setDiscountedPrice(discountedPrice.getText().toString().substring(3,discountedPrice.getText().length()));
                             cartItemModelList.get(position).setCouponsApplied(Long.parseLong("1"));
                             productPrice.setText(discountedPrice.getText());
-                            String  offerDiscountedAmt = String.valueOf(Long.valueOf(productPriceText)-Long.valueOf(discountedPrice.getText().toString().substring(3,discountedPrice.getText().length()-2)));
+                            String  offerDiscountedAmt = String.valueOf(Long.valueOf(productPriceText)-Long.valueOf(discountedPrice.getText().toString().substring(3,discountedPrice.getText().length())));
                             couponsApplied.setText("Coupen applied -Rp." + offerDiscountedAmt);
                             notifyItemChanged(cartItemModelList.size()-1);
                             checkCouponPriceDialog.dismiss();

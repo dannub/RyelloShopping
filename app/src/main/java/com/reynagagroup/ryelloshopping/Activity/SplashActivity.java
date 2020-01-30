@@ -3,7 +3,10 @@ package com.reynagagroup.ryelloshopping.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
@@ -22,10 +25,20 @@ public class SplashActivity extends AppCompatActivity {
 
     private  FirebaseAuth firebaseAuth;
 
+
+    private ConnectivityManager connectivityManager;
+    NetworkInfo networkInfo;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+
+        connectivityManager =(ConnectivityManager) SplashActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connectivityManager.getActiveNetworkInfo();
+
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -45,24 +58,32 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+                if (networkInfo !=null && networkInfo.isConnected()==true) {
+                    FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
-                if (currentUser!=null){
-                    FirebaseFirestore.getInstance().collection("USERS").document(currentUser.getUid()).update("Lastseen", FieldValue.serverTimestamp())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()){
-                                        Intent mainIntent = new Intent(SplashActivity.this,MainActivity.class);
-                                        MainActivity.showCart =false;
-                                        startActivity(mainIntent);
-                                        finish();
-                                    }else {
-                                        String error = task.getException().getMessage();
-                                        Toast.makeText(SplashActivity.this,error,Toast.LENGTH_SHORT).show();
+                    if (currentUser != null) {
+
+                        FirebaseFirestore.getInstance().collection("USERS").document(currentUser.getUid()).update("Lastseen", FieldValue.serverTimestamp())
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+                                            MainActivity.showCart = false;
+                                            startActivity(mainIntent);
+                                            finish();
+                                        } else {
+                                            String error = task.getException().getMessage();
+                                            Toast.makeText(SplashActivity.this, error, Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                    } else {
+                        Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+                        MainActivity.showCart = false;
+                        startActivity(mainIntent);
+                        finish();
+                    }
                 }else {
                     Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
                     MainActivity.showCart = false;

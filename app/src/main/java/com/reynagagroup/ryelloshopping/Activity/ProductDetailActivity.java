@@ -793,8 +793,9 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         /////ratting layout
 
-
-        DBqueries.loadRatingList(ProductDetailActivity.this,null);
+        if (currentUser !=null) {
+            DBqueries.loadRatingList(ProductDetailActivity.this, null);
+        }
         for (int x = 0; x <rateNowContainer.getChildCount();x++){
             final int starPosition = x;
             rateNowContainer.getChildAt(x).setOnClickListener(new View.OnClickListener() {

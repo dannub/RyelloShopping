@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,6 +47,8 @@ import com.reynagagroup.ryelloshopping.adapter.CartAdapter;
 import com.reynagagroup.ryelloshopping.adapter.CategoryAdapter;
 import com.reynagagroup.ryelloshopping.adapter.HomePageAdapter;
 import com.reynagagroup.ryelloshopping.adapter.MyOrderAdapter;
+import com.reynagagroup.ryelloshopping.adapter.YoutubeVideoAdapter;
+import com.reynagagroup.ryelloshopping.fragment.ui.VideoFragment;
 import com.reynagagroup.ryelloshopping.model.AddressModel;
 import com.reynagagroup.ryelloshopping.model.CartItemModel;
 import com.reynagagroup.ryelloshopping.model.CategoryModel;
@@ -60,6 +64,7 @@ import com.reynagagroup.ryelloshopping.fragment.ui.MyCartFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyOrdersFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyRewardsFragment;
 import com.reynagagroup.ryelloshopping.fragment.ui.MyWishlistFragment;
+import com.reynagagroup.ryelloshopping.model.YoutubeVideoModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -120,7 +125,10 @@ public class DBqueries {
 
     public static List<NotificationModel> notificationModelList = new ArrayList<>();
 
+    public static List<YoutubeVideoModel> youtubeVideoModelList = new ArrayList<>();
+
     public static   int iterasi_order_1,n_order_1,iterasi_order_2,n_order_2;
+
 
 
 
@@ -467,12 +475,14 @@ public class DBqueries {
 
     }
 
-    public static void loadCartList(final Context context, final Dialog dialog, final boolean loadProductData, final TextView badgeCount, final TextView cartTotalAmount,final boolean loadProductDetail, final LinearLayout addCart){
+    public static void loadCartList(final Context context, @Nullable final Dialog dialog, final boolean loadProductData, final TextView badgeCount, final TextView cartTotalAmount,final boolean loadProductDetail, final LinearLayout addCart){
 
         cartlist.clear();
         cartItemModelList.clear();
 
-     dialog.show();
+        if (dialog!=null) {
+            dialog.show();
+        }
 
 
 
@@ -482,6 +492,7 @@ public class DBqueries {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
+
 
 
 
@@ -512,7 +523,9 @@ public class DBqueries {
                                 if (loadProductDetail) {
                                     addCart.setEnabled(true);
                                 }
-                                dialog.dismiss();
+                                if (dialog!=null) {
+                                    dialog.dismiss();
+                                }
                             }
 
 
@@ -624,11 +637,15 @@ public class DBqueries {
                                                             }
                                                             DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.TOTAL_AMOUNT));
 
-                                                            dialog.dismiss();
+                                                            if (dialog!=null) {
+                                                                dialog.dismiss();
+                                                            }
                                                             if (DBqueries.addressModelList.size() == 0) {
                                                                 DBqueries.loadAddresses(context, dialog, true, 0);
                                                             } else {
-                                                                dialog.dismiss();
+                                                                if (dialog!=null) {
+                                                                    dialog.dismiss();
+                                                                }
                                                                 Intent deliveryIntent = new Intent(context, DeliveryActivity.class);
                                                                 context.startActivity(deliveryIntent);
                                                             }
@@ -640,7 +657,9 @@ public class DBqueries {
                                                     }
                                                 });
 
-                                                dialog.dismiss();
+                                                if (dialog!=null) {
+                                                    dialog.dismiss();
+                                                }
                                             }
                                             cartlistAdapter = new CartAdapter(context, cartItemsRecyclerView, linearLayoutManager, DBqueries.cartItemModelList, totalAmount, true, loadingDialog);
                                             cartlistAdapter.SetAdapter(cartlistAdapter);
@@ -692,14 +711,17 @@ public class DBqueries {
 
 
                             }
-                            MainActivity.loadingDialog.dismiss();
+                            if (dialog!=null) {
+                                dialog.dismiss();
+                            }
 
 
                         }
 
                         if (x == 0) {
-                            MainActivity.loadingDialog.dismiss();
-                            dialog.dismiss();
+                            if (dialog!=null) {
+                                dialog.dismiss();
+                            }
                         }
 
 
@@ -714,7 +736,9 @@ public class DBqueries {
                             } else {
                                 badgeCount.setText("99+");
                             }
-                            dialog.dismiss();
+                            if (dialog!=null) {
+                                dialog.dismiss();
+                            }
                         }
 
                     }else {
@@ -725,6 +749,11 @@ public class DBqueries {
                             MyCartFragment.background.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                             cartItemsRecyclerView.setVisibility(View.GONE);
                             cartItemModelList.clear();
+                            if (dialog!=null) {
+                                dialog.dismiss();
+                            }
+                        }
+                        if (dialog!=null) {
                             dialog.dismiss();
                         }
                     }
@@ -1137,10 +1166,6 @@ loadingDialog.setOnDismissListener(null);
                                                                         ));
 
 
-                                                                        Log.i("iterasi1", String.valueOf(iterasi_order_1));
-                                                                        Log.i("iterasi2", String.valueOf(iterasi_order_2));
-                                                                        Log.i("n1", String.valueOf(n_order_1));
-                                                                        Log.i("n2", String.valueOf(n_order_2));
 
                                                                         if (iterasi_order_2 == n_order_2 && iterasi_order_1 == n_order_1) {
 
@@ -1198,6 +1223,51 @@ loadingDialog.setOnDismissListener(null);
                                                 }
                                             });
 
+                                        }else {
+                                            if (iterasi_order_1 == n_order_1) {
+                                                if (myOrderItemModelArrayList.size()==0) {
+                                                    if (layoutManager != null && myOrderRecycleView != null) {
+                                                        MyOrdersFragment.no_internet.setVisibility(View.GONE);
+                                                        MyOrdersFragment.noData.setVisibility(View.VISIBLE);
+                                                        MyOrdersFragment.background.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                                                        MyOrdersFragment.myOrderRecycleView.setVisibility(View.GONE);
+
+                                                    }
+                                                    loadingDialog.dismiss();
+                                                }else {
+                                                    if (myOrderItemModelArrayList.size() > 1) {
+                                                        Collections.sort(myOrderItemModelArrayList, new Comparator<MyOrderItemModel>() {
+                                                            public int compare(MyOrderItemModel o1, MyOrderItemModel o2) {
+                                                                if (o1.getTgl_pesan() == null || o2.getTgl_pesan() == null)
+                                                                    return 0;
+                                                                return o1.getTgl_pesan().compareTo(o2.getTgl_pesan());
+                                                            }
+                                                        });
+
+                                                        Collections.sort(myOrderItemModelArrayList, Collections.reverseOrder());
+                                                    }
+
+                                                    if (layoutManager != null && myOrderRecycleView != null) {
+                                                        loadingDialog.show();
+                                                        loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                                            @Override
+                                                            public void onDismiss(DialogInterface dialog) {
+
+                                                            }
+                                                        });
+                                                        loadRatingList(context, loadingDialog);
+
+                                                        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                                                        myOrderRecycleView.setLayoutManager(layoutManager);
+                                                        MyOrdersFragment.myOrderAdapter = new MyOrderAdapter(DBqueries.myOrderItemModelArrayList, loadingDialog);
+                                                        myOrderRecycleView.setAdapter(MyOrdersFragment.myOrderAdapter);
+                                                        MyOrdersFragment.myOrderAdapter.notifyDataSetChanged();
+                                                        loadingDialog.dismiss();
+
+                                                    }
+                                                    loadingDialog.dismiss();
+                                                }
+                                            }
                                         }
 
 
@@ -1248,7 +1318,6 @@ loadingDialog.setOnDismissListener(null);
                             if (documentSnapshot != null && documentSnapshot.exists()) {
                                 notificationModelList.clear();
                                 int unread = 0;
-                                Log.i("bhbhb","vgvvg");
                                 if ((long) documentSnapshot.get("list_size") > 0) {
 
                                     for (long x = 0; x < (long) documentSnapshot.get("list_size"); x++) {
@@ -1264,10 +1333,11 @@ loadingDialog.setOnDismissListener(null);
 
                                                     if (unread < 99) {
                                                         notifyCount.setText(String.valueOf(unread));
+                                                        createNotification("Anda mendapatkan beberapa reward ",context);
                                                     } else {
                                                         notifyCount.setText("99+");
                                                     }
-                                                  //  createNotification("Anda mendapatkan beberapa reward ",context);
+
 
                                                 } else {
                                                     notifyCount.setVisibility(View.INVISIBLE);
@@ -1369,7 +1439,7 @@ loadingDialog.setOnDismissListener(null);
                                                                                 if (task.isSuccessful()) {
                                                                                     notificationModelList.clear();
 
-                                                                                    Map<String, Object> notifdata = new HashMap<>();
+                                                                                    final Map<String, Object> notifdata = new HashMap<>();
                                                                                     notifdata.put("list_size", (long) task.getResult().get("list_size") + 1);
                                                                                     notifdata.put("Body_" + (long) task.getResult().get("list_size"), "Selamat Anda Mendapatkan Reward " + reward);
                                                                                     notifdata.put("Image_" + (long) task.getResult().get("list_size"), "");
@@ -1380,6 +1450,8 @@ loadingDialog.setOnDismissListener(null);
                                                                                         @Override
                                                                                         public void onComplete(@NonNull Task<Void> task) {
                                                                                             iterasi_order_1++;
+
+                                                                                          checkNotifications(context,false,null);
 
 
                                                                                             Toast.makeText(context, "Selamat Anda Mendapatkan Reward", Toast.LENGTH_LONG).show();
@@ -1508,16 +1580,18 @@ loadingDialog.setOnDismissListener(null);
         notifManager.notify(NOTIFY_ID, notification);
     }
 
-    public static void lastSeen (final Context context,final Dialog loadingDialog){
+    public static void lastSeen (final Context context,@Nullable final Dialog loadingDialog){
 
-        loadingDialog.show();
-        loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                loadingDialog.setOnDismissListener(null);
+        if (loadingDialog!=null) {
+            loadingDialog.show();
+            loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    loadingDialog.setOnDismissListener(null);
 
-            }
-        });
+                }
+            });
+        }
 
         FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).update("Lastseen", FieldValue.serverTimestamp())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -1531,24 +1605,123 @@ loadingDialog.setOnDismissListener(null);
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                             if (task.isSuccessful()) {
                                                 lastseenDate = task.getResult().getDate("Lastseen");
-                                                Log.i("Lastseen",lastseenDate.toString());
 
-                                                loadingDialog.dismiss();
+                                                if (loadingDialog!=null) {
+                                                    loadingDialog.dismiss();
+                                                }
                                             }else {
                                                 String error = task.getException().getMessage();
                                                 Toast.makeText(context,error,Toast.LENGTH_SHORT).show();
-
+                                                if (loadingDialog!=null) {
+                                                    loadingDialog.dismiss();
+                                                }
                                             }
                                         }
                                     });
 
                         }else {
+                            if (loadingDialog!=null) {
+                                loadingDialog.dismiss();
+                            }
                             String error = task.getException().getMessage();
                             Toast.makeText(context,error,Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
+
+    public static void loadVideolist(final Context context, final Dialog dialog, final Boolean loadPVideoData, @Nullable final RecyclerView recyclerViewFeed, @Nullable final ImageView no_internet, @Nullable final TextView noData){
+
+       youtubeVideoModelList.clear();
+
+        firebaseFirestore.collection("VIDEOS")
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if (task.isSuccessful()) {
+                    if (task.getResult().getDocuments().size() != 0) {
+
+                        if (loadPVideoData){
+                            noData.setVisibility(View.GONE);
+                            no_internet.setVisibility(View.GONE);
+                            recyclerViewFeed.setVisibility(View.VISIBLE);
+                        }
+
+                        iterasi_order_1= 0;
+                        n_order_1 =task.getResult().getDocuments().size();
+                        for (final DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
+
+                            final String id = documentSnapshot.getId();
+                            firebaseFirestore.collection("VIDEOS").document(documentSnapshot.getId()).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+
+                                                youtubeVideoModelList.add(new YoutubeVideoModel( task.getResult().get("title").toString()
+                                                        ,id
+                                                        ,task.getResult().get("videoId").toString()
+                                                        ,task.getResult().get("imageUrl").toString()
+                                                        ));
+
+                                                iterasi_order_1++;
+                                                if (iterasi_order_1==n_order_1) {
+                                                    if (loadPVideoData) {
+                                                        if (youtubeVideoModelList.size() > 1) {
+                                                            Collections.sort(youtubeVideoModelList, new Comparator<YoutubeVideoModel>() {
+                                                                @Override
+                                                                public int compare(YoutubeVideoModel o1, YoutubeVideoModel o2) {
+                                                                    if (o1.getTitle() == null || o2.getTitle() == null)
+                                                                        return 0;
+                                                                    return o1.getTitle().compareTo(o2.getTitle());
+
+                                                                }
+                                                            });
+                                                        }
+
+                                                        VideoFragment.mRecyclerAdapter = new YoutubeVideoAdapter(DBqueries.youtubeVideoModelList);
+                                                        recyclerViewFeed.setAdapter(VideoFragment.mRecyclerAdapter);
+                                                        VideoFragment.mRecyclerAdapter.notifyDataSetChanged();
+
+
+                                                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+                                                        recyclerViewFeed.setLayoutManager(mLayoutManager);
+                                                        recyclerViewFeed.setItemAnimator(new DefaultItemAnimator());
+                                                        recyclerViewFeed.setAdapter(VideoFragment.mRecyclerAdapter);
+
+                                                    }
+                                                    dialog.dismiss();
+                                                }
+
+                                            }else {
+                                                String error = task.getException().getMessage();
+                                                Toast.makeText(context,error,Toast.LENGTH_SHORT).show();
+                                                dialog.dismiss();
+                                            }
+
+                                        }
+                                    });
+
+                        }
+                    } else {
+                        if (loadPVideoData) {
+                            no_internet.setVisibility(View.GONE);
+                            noData.setVisibility(View.VISIBLE);
+                            recyclerViewFeed.setVisibility(View.GONE);
+                            dialog.dismiss();
+                            youtubeVideoModelList.clear();
+                        }
+                    }
+                }else {
+                    String error = task.getException().getMessage();
+                    Toast.makeText(context,error,Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            }
+        });
+    }
+
 
     public static void clearData(){
         categoryModelList.clear();

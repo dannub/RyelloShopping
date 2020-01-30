@@ -4,8 +4,15 @@ package com.reynagagroup.ryelloshopping.fragment.ui;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,8 +30,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.reynagagroup.ryelloshopping.Activity.MainActivity;
 import com.reynagagroup.ryelloshopping.Activity.MyAddressesActivity;
 import com.reynagagroup.ryelloshopping.Activity.UpdateUserInfoActivity;
@@ -410,42 +423,116 @@ public class MyAcountFragment extends Fragment {
     public void onStart() {
        super.onStart();
 
-        name.setText(DBqueries.fullname);
-        email.setText(DBqueries.email);
-
-
-        ///drawer update
-        MainActivity.fullnameText.setText(DBqueries.fullname);
-        MainActivity.email.setText(DBqueries.email);
-        if (!DBqueries.profile.equals("")){
-           // MainActivity.imageAdd.setVisibility(View.INVISIBLE);
-            Glide.with(getContext()).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(MainActivity.imageAcc);
-
-        }else {
-            //MainActivity.imageAdd.setVisibility(View.VISIBLE);
-            MainActivity.imageAcc.setImageDrawable(getResources().getDrawable(R.drawable.account));
-
-        }
-        ///drawer update
-
-        if (!DBqueries.profile.equals("")){
-            Glide.with(getContext()).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(profileview);
-
-        }else {
-            profileview.setImageDrawable(getContext().getResources().getDrawable(R.drawable.account));
-
-        }
-
-       if (!loadingDialog.isShowing()){
-           if (DBqueries.addressModelList.size()==0) {
-               addressname.setText("No Address");
-               address.setText("-");
-               pincode.setText("-");
-           }else {
-               setAddress();
+       loadingDialog.show();
+       loadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+           @Override
+           public void onDismiss(DialogInterface dialog) {
+               loadingDialog.setOnDismissListener(null);
            }
+       });
+        FirebaseFirestore.getInstance().collection("USERS")
+                .document(FirebaseAuth.getInstance().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
 
-       }
-       reloadPage();
+                    DBqueries.fullname = task.getResult().get("fullname").toString();
+                    DBqueries.email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                    DBqueries.profile = task.getResult().get("profile").toString();
+
+                    name.setText(DBqueries.fullname);
+                    email.setText(DBqueries.email);
+
+
+
+
+                    ///drawer update
+                    MainActivity.fullnameText.setText(DBqueries.fullname);
+                    MainActivity.email.setText(DBqueries.email);
+                    if (!DBqueries.profile.equals("")){
+                        // MainActivity.imageAdd.setVisibility(View.INVISIBLE);
+
+
+
+                        Glide.with(getContext()).asBitmap().load(DBqueries.profile).apply(new RequestOptions().override(80, 80).placeholder(R.drawable.account)).centerCrop() .into(new CustomTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+
+                                MainActivity.toolbar.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MainActivity.toolbar.setNavigationIcon(circularBitmapDrawable);
+
+                                    }
+                                });
+
+
+
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                            }
+                        });
+
+                        Glide.with(getContext()).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(MainActivity.imageAcc);
+
+                    }else {
+                        //MainActivity.imageAdd.setVisibility(View.VISIBLE);
+
+                        Drawable dr = getResources().getDrawable(R.drawable.account);
+                        final Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+                        final Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80, true));
+
+
+                        MainActivity.toolbar.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                MainActivity.toolbar.setNavigationIcon(d);
+
+                            }
+                        });
+
+
+                        MainActivity.imageAcc.setImageDrawable(getResources().getDrawable(R.drawable.account));
+
+                    }
+                    ///drawer update
+
+                    if (!DBqueries.profile.equals("")){
+                        Glide.with(getContext()).load(DBqueries.profile).apply(new RequestOptions().placeholder(R.drawable.account)).into(profileview);
+
+                    }else {
+                        profileview.setImageDrawable(getContext().getResources().getDrawable(R.drawable.account));
+
+                    }
+
+                    if (!loadingDialog.isShowing()){
+                        if (DBqueries.addressModelList.size()==0) {
+                            addressname.setText("No Address");
+                            address.setText("-");
+                            pincode.setText("-");
+                        }else {
+                            setAddress();
+                        }
+
+                    }
+
+                    reloadPage();
+
+
+                }else {
+
+                    loadingDialog.dismiss();
+                    String error = task.getException().getMessage();
+                    Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
     }
 }

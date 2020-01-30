@@ -148,7 +148,6 @@ public class HomeFragment extends Fragment {
         networkInfo = connectivityManager.getActiveNetworkInfo();
 
 
-        Log.i("hvhvv","hhhj");
 
         if (networkInfo !=null && networkInfo.isConnected()==true) {
             MainActivity.drawer.setDrawerLockMode(0);
@@ -176,6 +175,8 @@ public class HomeFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
             home_page_recycle.setAdapter(adapter);
+            reloadPage();
+
 
 
 
@@ -214,7 +215,7 @@ public class HomeFragment extends Fragment {
 
 //        categoryModelList.clear();
        //  lists.clear();
-//        loadedCategoriesNames.clear();
+      //loadedCategoriesNames.clear();
         DBqueries.clearData();
 
         if (networkInfo !=null && networkInfo.isConnected()==true) {
@@ -229,18 +230,17 @@ public class HomeFragment extends Fragment {
             categoryRecyclerView.setAdapter(categoryAdapter);
             home_page_recycle.setAdapter(adapter);
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                DBqueries.loadOrders(getContext(), MainActivity.loadingDialog, null, null);
-                DBqueries.loadAddresses(getContext(), MainActivity.loadingDialog, false, 0);
-            }
+                DBqueries.loadOrders(getContext(), new Dialog(getContext()), null, null);
+                DBqueries.loadAddresses(getContext(),new Dialog(getContext()), false, 0);
 
-            if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
-                DBqueries.loadCartList(getContext(), new Dialog(getContext()), false, badgeCount, new TextView(getContext()), false, null);
+//                DBqueries.loadCartList(getContext(), new Dialog(getContext()), false, MainActivity.badgeCount, new TextView(getContext()), false, null);
             }
             loadCategories(categoryRecyclerView,getContext());
 
             loadedCategoriesNames.add("HOME");
             lists.add(new ArrayList<HomePageModel>());
             loadFragmentData(home_page_recycle,getContext(),0,"HOME");
+            swipeRefreshLayout.setRefreshing(false);
 
 
         }else {
